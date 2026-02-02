@@ -9,6 +9,17 @@ import (
 	"github.com/stainless-sdks/nimbleway-cli/internal/requestflag"
 )
 
+func TestCrawlList(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	mocktest.TestRunMockTestWithFlags(
+		t,
+		"crawl", "list",
+		"--status", "pending",
+		"--cursor", "cursor",
+		"--limit", "10",
+	)
+}
+
 func TestCrawlRoot(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
