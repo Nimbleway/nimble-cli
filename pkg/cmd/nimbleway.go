@@ -700,6 +700,11 @@ var search = cli.Command{
 			Required: true,
 			BodyPath: "query",
 		},
+		&requestflag.Flag[any]{
+			Name:     "content-type",
+			Usage:    "Filter by content type (only supported with focus=general). Supports semantic groups ('documents', 'spreadsheets', 'presentations') and specific formats ('pdf', 'docx', 'xlsx', etc.)",
+			BodyPath: "content_type",
+		},
 		&requestflag.Flag[string]{
 			Name:     "country",
 			Default:  "US",

@@ -220,6 +220,7 @@ func TestSearch(t *testing.T) {
 		t,
 		"search",
 		"--query", "x",
+		"--content-type", "string",
 		"--country", "country",
 		"--deep-search=true",
 		"--end-date", "end_date",

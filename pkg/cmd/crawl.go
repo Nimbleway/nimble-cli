@@ -15,6 +15,34 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+var crawlList = cli.Command{
+	Name:    "list",
+	Usage:   "Get crawl data by filters",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "status",
+			Usage:     "Filter crawls by their status.",
+			Required:  true,
+			QueryPath: "status",
+		},
+		&requestflag.Flag[any]{
+			Name:      "cursor",
+			Usage:     "Cursor for pagination.",
+			Default:   nil,
+			QueryPath: "cursor",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "limit",
+			Usage:     "Number of crawls to return per page.",
+			Default:   100,
+			QueryPath: "limit",
+		},
+	},
+	Action:          handleCrawlList,
+	HideHelpCommand: true,
+}
+
 var crawlRoot = requestflag.WithInnerFlags(cli.Command{
 	Name:    "root",
 	Usage:   "Create crawl task",
@@ -376,6 +404,40 @@ var crawlTerminate = cli.Command{
 	},
 	Action:          handleCrawlTerminate,
 	HideHelpCommand: true,
+}
+
+func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
+	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := nimbleway.CrawlListParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Crawl.List(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "crawl list", obj, format, transform)
 }
 
 func handleCrawlRoot(ctx context.Context, cmd *cli.Command) error {
