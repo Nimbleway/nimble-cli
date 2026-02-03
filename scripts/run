@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-go run ./cmd/nimbleway "$@"
+go run ./cmd/nimble "$@"

@@ -22,7 +22,7 @@ var (
 
 func init() {
 	Command = &cli.Command{
-		Name:    "nimbleway",
+		Name:    "nimble",
 		Usage:   "CLI for the nimbleway API",
 		Suggest: true,
 		Version: Version,
@@ -90,7 +90,7 @@ func init() {
 			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
-				UsageText:       "nimbleway @manpages [-o nimbleway.1] [--gzip]",
+				UsageText:       "nimble @manpages [-o nimble.1] [--gzip]",
 				Hidden:          true,
 				Action:          generateManpages,
 				HideHelpCommand: true,
@@ -143,7 +143,7 @@ func generateManpages(ctx context.Context, c *cli.Command) error {
 		// handle error
 	}
 	if c.Bool("text") {
-		file, err := os.Create(filepath.Join(dir, "man1", "nimbleway.1"))
+		file, err := os.Create(filepath.Join(dir, "man1", "nimble.1"))
 		if err != nil {
 			return err
 		}
@@ -153,7 +153,7 @@ func generateManpages(ctx context.Context, c *cli.Command) error {
 		}
 	}
 	if c.Bool("gzip") {
-		file, err := os.Create(filepath.Join(dir, "man1", "nimbleway.1.gz"))
+		file, err := os.Create(filepath.Join(dir, "man1", "nimble.1.gz"))
 		if err != nil {
 			return err
 		}
