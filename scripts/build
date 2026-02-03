@@ -4,5 +4,5 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-echo "==> Building nimbleway"
-go build ./cmd/nimbleway
+echo "==> Building nimble"
+go build ./cmd/nimble

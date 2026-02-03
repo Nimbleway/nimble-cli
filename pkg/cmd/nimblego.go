@@ -787,14 +787,14 @@ var search = cli.Command{
 }
 
 func handleExtract(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := nimbleway.ExtractParams{}
+	params := nimblego.ExtractParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -821,14 +821,14 @@ func handleExtract(ctx context.Context, cmd *cli.Command) error {
 }
 
 func handleExtractTemplate(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := nimbleway.ExtractTemplateParams{}
+	params := nimblego.ExtractTemplateParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -855,14 +855,14 @@ func handleExtractTemplate(ctx context.Context, cmd *cli.Command) error {
 }
 
 func handleMap(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := nimbleway.MapParams{}
+	params := nimblego.MapParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -889,14 +889,14 @@ func handleMap(ctx context.Context, cmd *cli.Command) error {
 }
 
 func handleSearch(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := nimbleway.SearchParams{}
+	params := nimblego.SearchParams{}
 
 	options, err := flagOptions(
 		cmd,

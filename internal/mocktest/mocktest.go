@@ -77,7 +77,7 @@ func TestRunMockTestWithFlags(t *testing.T, flags ...string) {
 	args := []string{"run", project, "--base-url", mockServerURL.String()}
 	args = append(args, flags...)
 
-	t.Logf("Testing command: nimbleway %s", strings.Join(args[4:], " "))
+	t.Logf("Testing command: nimble %s", strings.Join(args[4:], " "))
 
 	cmd := exec.Command("go", args...)
 	output, err := cmd.CombinedOutput()
