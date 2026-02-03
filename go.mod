@@ -10,7 +10,7 @@ require (
 	github.com/goccy/go-yaml v1.18.0
 	github.com/itchyny/json2yaml v0.1.4
 	github.com/muesli/reflow v0.3.0
-	github.com/stainless-sdks/nimbleway-go v0.0.0-20260202085621-5e242e26fbf9
+	github.com/stainless-sdks/nimbleway-go v0.0.0-20260203080002-245aa80555e9
 	github.com/stretchr/testify v1.10.0
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/pretty v1.2.1
