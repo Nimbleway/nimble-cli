@@ -1,20 +1,20 @@
-project_name: nimbleway
+project_name: nimble
 version: 2
 
 before:
   hooks:
     - mkdir -p completions
-    - sh -c "go run ./cmd/nimbleway/main.go @completion bash > completions/nimbleway.bash"
-    - sh -c "go run ./cmd/nimbleway/main.go @completion zsh > completions/nimbleway.zsh"
-    - sh -c "go run ./cmd/nimbleway/main.go @completion fish > completions/nimbleway.fish"
-    - sh -c "go run ./cmd/nimbleway/main.go @manpages -o man"
+    - sh -c "go run ./cmd/nimble/main.go @completion bash > completions/nimble.bash"
+    - sh -c "go run ./cmd/nimble/main.go @completion zsh > completions/nimble.zsh"
+    - sh -c "go run ./cmd/nimble/main.go @completion fish > completions/nimble.fish"
+    - sh -c "go run ./cmd/nimble/main.go @manpages -o man"
 
 builds:
   - id: macos
     goos: [darwin]
     goarch: [amd64, arm64]
     binary: '{{ .ProjectName }}'
-    main: ./cmd/nimbleway/main.go
+    main: ./cmd/nimble/main.go
     mod_timestamp: '{{ .CommitTimestamp }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
@@ -25,7 +25,7 @@ builds:
     env:
       - CGO_ENABLED=0
     binary: '{{ .ProjectName }}'
-    main: ./cmd/nimbleway/main.go
+    main: ./cmd/nimble/main.go
     mod_timestamp: '{{ .CommitTimestamp }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
@@ -34,7 +34,7 @@ builds:
     goos: [windows]
     goarch: ['386', amd64, arm64]
     binary: '{{ .ProjectName }}'
-    main: ./cmd/nimbleway/main.go
+    main: ./cmd/nimble/main.go
     mod_timestamp: '{{ .CommitTimestamp }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'

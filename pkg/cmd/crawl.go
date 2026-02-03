@@ -407,14 +407,14 @@ var crawlTerminate = cli.Command{
 }
 
 func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := nimbleway.CrawlListParams{}
+	params := nimblego.CrawlListParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -441,14 +441,14 @@ func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
 }
 
 func handleCrawlRoot(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := nimbleway.CrawlRootParams{}
+	params := nimblego.CrawlRootParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -475,7 +475,7 @@ func handleCrawlRoot(ctx context.Context, cmd *cli.Command) error {
 }
 
 func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("id") && len(unusedArgs) > 0 {
 		cmd.Set("id", unusedArgs[0])
@@ -510,7 +510,7 @@ func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
 }
 
 func handleCrawlTerminate(ctx context.Context, cmd *cli.Command) error {
-	client := nimbleway.NewClient(getDefaultRequestOptions(cmd)...)
+	client := nimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("id") && len(unusedArgs) > 0 {
 		cmd.Set("id", unusedArgs[0])
