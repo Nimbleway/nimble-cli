@@ -11,7 +11,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/stainless-sdks/nimbleway-cli/internal/autocomplete"
+	"github.com/Nimbleway/nimble-cli/internal/autocomplete"
 	docs "github.com/urfave/cli-docs/v3"
 	"github.com/urfave/cli/v3"
 )
@@ -23,7 +23,7 @@ var (
 func init() {
 	Command = &cli.Command{
 		Name:    "nimble",
-		Usage:   "CLI for the nimbleway API",
+		Usage:   "CLI for the nimble API",
 		Suggest: true,
 		Version: Version,
 		Flags: []cli.Flag{
@@ -66,23 +66,26 @@ func init() {
 				Name:  "transform-error",
 				Usage: "The GJSON transformation for errors.",
 			},
-			&cli.StringFlag{
-				Name:  "environment",
-				Usage: "Set the environment for API requests",
-			},
 		},
 		Commands: []*cli.Command{
 			&extract,
-			&extractTemplate,
 			&map_,
 			&search,
+			{
+				Name:     "agents",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&agentsList,
+					&agentsGet,
+				},
+			},
 			{
 				Name:     "crawl",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&crawlList,
-					&crawlRoot,
 					&crawlStatus,
 					&crawlTerminate,
 				},

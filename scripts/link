@@ -8,9 +8,9 @@ if [[ -n "$1" ]]; then
   LOCAL_GO="$1"
   shift
 else
-  LOCAL_GO=../nimbleway-go
+  LOCAL_GO=../nimble-go
 fi
 
 echo "==> Linking with local directory"
 go mod tidy -e
-go mod edit -replace github.com/stainless-sdks/nimbleway-go="$LOCAL_GO"
+go mod edit -replace github.com/Nimbleway/nimble-go="$LOCAL_GO"

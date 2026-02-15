@@ -1,8 +1,10 @@
-# Nimbleway CLI
+# Nimble CLI
 
-The official CLI for the [Nimbleway REST API](docs.nimbleway.com).
+The official CLI for the [Nimble REST API](docs.nimbleway.com).
 
 It is generated with [Stainless](https://www.stainless.com/).
+
+<!-- x-release-please-start-version -->
 
 ## Installation
 
@@ -11,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 To test or install the CLI locally, you need [Go](https://go.dev/doc/install) version 1.22 or later installed.
 
 ```sh
-go install 'github.com/stainless-sdks/nimbleway-cli/cmd/nimble@latest'
+go install 'github.com/Nimbleway/nimble-cli/cmd/nimble@latest'
 ```
 
 Once you have run `go install`, the binary is placed in your Go bin directory:
@@ -25,6 +27,8 @@ If commands aren't found after installation, add the Go bin directory to your PA
 # Add to your shell profile (.zshrc, .bashrc, etc.)
 export PATH="$PATH:$(go env GOPATH)/bin"
 ```
+
+<!-- x-release-please-end -->
 
 ### Running Locally
 
@@ -45,58 +49,39 @@ nimble [resource] <command> [flags...]
 
 ```sh
 nimble extract \
-  --debug-options '{collect_har: true, no_retry_mode: true, record_screen: true, redact: true, show_cursor: true, solve_captcha: true, trace: true, upload_engine_logs: true, verbose: true, with_proxy_usage: true}' \
-  --url https://example.com \
+  --url url \
   --browser chrome \
+  --browser-action '{goto: https://example.com/login}' \
+  --browser-action "{wait_for_element: '#login-form'}" \
+  --browser-action "{fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}" \
+  --browser-action "{fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}" \
+  --browser-action "{click: '#submit'}" \
+  --browser-action "{screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}" \
   --city 'Los Angeles' \
-  --client-timeout 25000 \
   --consent-header \
   --cookies '{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}' \
   --country US \
   --device desktop \
-  --disable-ip-check \
   --driver vx8 \
-  --dynamic-parser '{myParser: bar}' \
   --expected-status-code 200 \
   --expected-status-code 201 \
-  --export-userbrowser \
-  --format json \
+  --format html \
   --headers '{User-Agent: CustomBot/1.0, Accept-Language: en-US}' \
   --http2 \
-  --ip6 \
   --is-xhr \
   --locale en-US \
-  --markdown \
-  --metadata '{account_name: acme-corp, definition_id: 456, definition_name: product-scraper, endpoint: /api/v2/scrape, execution_id: exec-abc123, flowit_task_id: task-xyz789, input_id: input-123, pipeline_execution_id: 12345, query_template_id: template-qry-001, source: web-app, template_id: 789, template_name: e-commerce-template}' \
   --method GET \
-  --native-mode requester \
   --network-capture '{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}' \
-  --no-html \
-  --no-userbrowser \
   --os windows \
   --parse \
-  --parse-options '{merge_dynamic: true}' \
   --parser '{myParser: bar}' \
-  --proxy-provider brightdata \
-  --proxy-providers '{brightdata: 70, oxylabs: 30}' \
-  --query-template '{id: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e, api_type: WEB, pagination: {next_page_params: {foo: bar}}, params: {foo: bar}}' \
-  --raw-headers \
   --referrer-type random \
   --render \
-  --render-flow '{wait: bar}' \
-  --render-flow '{click: bar}' \
-  --render-options '{adblock: true, blocked_domains: [ads.example.com, tracker.com], browser_engine: chrome, cache: false, connector_type: webit-cdp, disabled_resources: [image, stylesheet], enable_2captcha: true, extensions: [extension-id-1, extension-id-2], fingerprint_id: fp-abc123, hackium_configuration: {collect_logs: true, do_not_fix_math_salt: true, enable_document_element_spoof: true, enable_document_has_focus: true, enable_fake_navigation_history: true, enable_key_ordering: true, enable_sniffer: true, enable_verbose_logs: true}, headless: true, include_iframes: true, load_local_storage: true, local_storage_keys_to_load: [authToken, userId], mouse_strategy: linear, no_accept_encoding: true, override_permissions: true, random_header_order: true, render_type: load, store_local_storage: true, timeout: 30000, typing_interval: 100, typing_strategy: simple, userbrowser: true, wait_until: networkidle2, with_performance_metrics: true}' \
   --request-timeout 30000 \
-  --return-response-headers-as-header \
-  --save-userbrowser \
   --session '{id: id, prefetch_userbrowser: true, retry: true, timeout: 1}' \
   --skill dynamic-content \
-  --skip-ubct \
   --state CA \
-  --tag campaign-2024-q1 \
-  --template '{name: x, params: {foo: bar}}' \
-  --type generic \
-  --userbrowser-creation-template-rendered '{id: id, allowed_parameter_names: [x], render_flow_rendered: [{foo: bar}]}'
+  --tag campaign-2024-q1
 ```
 
 For details about specific commands, use the `--help` flag.
