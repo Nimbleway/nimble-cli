@@ -15,11 +15,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/stainless-sdks/nimbleway-cli/internal/apiform"
-	"github.com/stainless-sdks/nimbleway-cli/internal/apiquery"
-	"github.com/stainless-sdks/nimbleway-cli/internal/debugmiddleware"
-	"github.com/stainless-sdks/nimbleway-cli/internal/requestflag"
-	"github.com/stainless-sdks/nimbleway-go/option"
+	"github.com/Nimbleway/nimble-cli/internal/apiform"
+	"github.com/Nimbleway/nimble-cli/internal/apiquery"
+	"github.com/Nimbleway/nimble-cli/internal/debugmiddleware"
+	"github.com/Nimbleway/nimble-cli/internal/requestflag"
+	"github.com/Nimbleway/nimble-go/option"
 
 	"github.com/goccy/go-yaml"
 	"github.com/urfave/cli/v3"
