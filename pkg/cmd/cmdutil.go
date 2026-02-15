@@ -14,8 +14,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/stainless-sdks/nimbleway-cli/internal/jsonview"
-	"github.com/stainless-sdks/nimbleway-go/option"
+	"github.com/Nimbleway/nimble-cli/internal/jsonview"
+	"github.com/Nimbleway/nimble-go/option"
 
 	"github.com/charmbracelet/x/term"
 	"github.com/itchyny/json2yaml"
@@ -29,7 +29,7 @@ var OutputFormats = []string{"auto", "explore", "json", "jsonl", "pretty", "raw"
 
 func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 	opts := []option.RequestOption{
-		option.WithHeader("User-Agent", fmt.Sprintf("Nimbleway/CLI %s", Version)),
+		option.WithHeader("User-Agent", fmt.Sprintf("Nimble/CLI %s", Version)),
 		option.WithHeader("X-Stainless-Lang", "cli"),
 		option.WithHeader("X-Stainless-Package-Version", Version),
 		option.WithHeader("X-Stainless-Runtime", "cli"),
@@ -39,18 +39,6 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 	// Override base URL if the --base-url flag is provided
 	if baseURL := cmd.String("base-url"); baseURL != "" {
 		opts = append(opts, option.WithBaseURL(baseURL))
-	}
-
-	// Set environment if the --environment flag is provided
-	if environment := cmd.String("environment"); environment != "" {
-		switch environment {
-		case "staging":
-			opts = append(opts, option.WithEnvironmentStaging())
-		case "production":
-			opts = append(opts, option.WithEnvironmentProduction())
-		default:
-			log.Fatalf("Unknown environment: %s. Valid environments are %s", environment, "staging, production")
-		}
 	}
 
 	return opts

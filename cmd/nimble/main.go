@@ -10,8 +10,8 @@ import (
 	"os"
 	"slices"
 
-	"github.com/stainless-sdks/nimbleway-cli/pkg/cmd"
-	"github.com/stainless-sdks/nimbleway-go"
+	"github.com/Nimbleway/nimble-cli/pkg/cmd"
+	"github.com/Nimbleway/nimble-go"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )
@@ -31,7 +31,7 @@ func main() {
 			exitCode = exitErr.ExitCode()
 		}
 
-		var apierr *nimblego.Error
+		var apierr *githubcomnimblewaynimblego.Error
 		if errors.As(err, &apierr) {
 			fmt.Fprintf(os.Stderr, "%s %q: %d %s\n", apierr.Request.Method, apierr.Request.URL, apierr.Response.StatusCode, http.StatusText(apierr.Response.StatusCode))
 			format := app.String("format-error")
