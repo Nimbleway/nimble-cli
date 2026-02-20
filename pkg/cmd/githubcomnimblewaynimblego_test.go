@@ -10,7 +10,7 @@ import (
 )
 
 func TestExtract(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"extract",
@@ -102,7 +102,7 @@ func TestExtract(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"map",
@@ -116,7 +116,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestSearch(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"search",

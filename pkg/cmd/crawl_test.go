@@ -9,7 +9,7 @@ import (
 )
 
 func TestCrawlList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"crawl", "list",
@@ -20,7 +20,7 @@ func TestCrawlList(t *testing.T) {
 }
 
 func TestCrawlStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"crawl", "status",
@@ -29,7 +29,7 @@ func TestCrawlStatus(t *testing.T) {
 }
 
 func TestCrawlTerminate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"crawl", "terminate",
