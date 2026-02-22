@@ -8,22 +8,50 @@ import (
 	"github.com/Nimbleway/nimble-cli/internal/mocktest"
 )
 
-func TestAgentsList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+func TestAgentList(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
-		"agents", "list",
+		"agent", "list",
 		"--limit", "1",
+		"--managed-by", "nimble",
 		"--offset", "0",
 		"--privacy", "public",
 	)
 }
 
-func TestAgentsGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+func TestAgentGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
-		"agents", "get",
+		"agent", "get",
 		"--template-name", "template_name",
+	)
+}
+
+func TestAgentRun(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	mocktest.TestRunMockTestWithFlags(
+		t,
+		"agent", "run",
+		"--agent", "agent",
+		"--params", "{foo: bar}",
+		"--localization=true",
+	)
+}
+
+func TestAgentRunAsync(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	mocktest.TestRunMockTestWithFlags(
+		t,
+		"agent", "run-async",
+		"--agent", "agent",
+		"--params", "{foo: bar}",
+		"--callback-url", "https://example.com/webhook/callback",
+		"--localization=true",
+		"--storage-compress=true",
+		"--storage-object-name", "result-2024-01-15.json",
+		"--storage-type", "s3",
+		"--storage-url", "s3://bucket-name/path/to/object",
 	)
 }
