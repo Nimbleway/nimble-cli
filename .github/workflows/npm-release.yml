@@ -32,6 +32,6 @@ jobs:
             npm/nimble-cli/package.json > tmp.json \
             && mv tmp.json npm/nimble-cli/package.json
 
-          npm publish npm/nimble-cli --access public
+          npm publish ./npm/nimble-cli --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
