@@ -1,0 +1,13 @@
+{
+  "name": "@nimble-way/nimble-cli",
+  "version": "0.5.0",
+  "description": "Nimble CLI - official command-line tool",
+  "bin": { "nimble": "./bin/nimble.js" },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "files": [
+    "bin/nimble.js",
+    "install.js"
+  ]
+}
