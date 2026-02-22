@@ -1,0 +1,12 @@
+{
+  "name": "nimble-cli",
+  "version": "0.1.0",
+  "description": "Nimble CLI - official command-line tool",
+  "bin": { "nimble": "./bin/nimble.js" },
+  "optionalDependencies": {
+    "nimble-cli-linux-x64":    "0.1.0",
+    "nimble-cli-darwin-x64":   "0.1.0",
+    "nimble-cli-darwin-arm64": "0.1.0",
+    "nimble-cli-win32-x64":    "0.1.0"
+  }
+}
