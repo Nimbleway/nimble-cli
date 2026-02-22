@@ -48,7 +48,7 @@ nimble [resource] <command> [flags...]
 ```
 
 ```sh
-nimble extract run \
+nimble extract \
   --url https://exapmle.com \
   --browser chrome \
   --browser-action '{goto: https://example.com/login}' \
