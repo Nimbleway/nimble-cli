@@ -1,7 +1,0 @@
-{
-  "name": "nimble-cli-darwin-arm64",
-  "version": "0.1.0",
-  "description": "Nimble CLI binary for macOS Apple Silicon (arm64)",
-  "os": ["darwin"],
-  "cpu": ["arm64"]
-}
