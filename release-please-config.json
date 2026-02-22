@@ -62,6 +62,11 @@
   "release-type": "simple",
   "extra-files": [
     "pkg/cmd/version.go",
-    "README.md"
+    "README.md",
+    {
+      "type": "json",
+      "path": "npm/nimble-cli/package.json",
+      "jsonpath": "$.version"
+    }
   ]
 }
