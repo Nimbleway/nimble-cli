@@ -14,6 +14,7 @@ func TestAgentsList(t *testing.T) {
 		t,
 		"agents", "list",
 		"--limit", "1",
+		"--managed-by", "nimble",
 		"--offset", "0",
 		"--privacy", "public",
 	)

@@ -26,6 +26,11 @@ var agentsList = cli.Command{
 			Default:   100,
 			QueryPath: "limit",
 		},
+		&requestflag.Flag[any]{
+			Name:      "managed-by",
+			Usage:     "Filter public templates by attribution",
+			QueryPath: "managed_by",
+		},
 		&requestflag.Flag[int64]{
 			Name:      "offset",
 			Usage:     "Pagination offset",
