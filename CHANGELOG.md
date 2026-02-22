@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.2.0 (2026-02-22)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/Nimbleway/nimble-cli/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* add workflow_dispatch support for npm release ([a495f66](https://github.com/Nimbleway/nimble-cli/commit/a495f66d7b03bfcc7fafcc95baf1db34f6f69305))
+* **api:** align `extract_async` ([25b589a](https://github.com/Nimbleway/nimble-cli/commit/25b589ab5885dc008dea13a05770f6b25fc11046))
+* **api:** Align new endpoints ([c9c8c64](https://github.com/Nimbleway/nimble-cli/commit/c9c8c647fe5252a488e0ed3fa3cc82b47fb6fd3e))
+* **api:** api update ([ee584dc](https://github.com/Nimbleway/nimble-cli/commit/ee584dc3c918ea04b7cd84a3e42f2969c17e59d1))
+* **api:** manual test ([7b32d10](https://github.com/Nimbleway/nimble-cli/commit/7b32d106aa00b314d42ad4bea7e7daff15ae1be9))
+* **api:** manual updates ([9aa65d0](https://github.com/Nimbleway/nimble-cli/commit/9aa65d08eaf75e8f26d862757cdcd8931d42fdf0))
+* **api:** manual updates ([33ac975](https://github.com/Nimbleway/nimble-cli/commit/33ac975e4be57ab83f29482de4ccb40059b9eb66))
+* **api:** Move /agent to /agents/run ([1670467](https://github.com/Nimbleway/nimble-cli/commit/1670467ba4ccf28101471a8e680326012328a322))
+* **api:** re-add extract ([a87a614](https://github.com/Nimbleway/nimble-cli/commit/a87a614ea89599d008f28d36f0ededf1cb6e6ffe))
+
+
+### Chores
+
+* **internal:** codegen related update ([b6fdf17](https://github.com/Nimbleway/nimble-cli/commit/b6fdf175780b024401bc87d6346044992998a3ea))
+* **internal:** remove mock server code ([9960d8d](https://github.com/Nimbleway/nimble-cli/commit/9960d8d4c82416733b15e815976c70ba11a3963a))
+* update mock server docs ([19b48bc](https://github.com/Nimbleway/nimble-cli/commit/19b48bc7e9a38cedb3e1c47a17e77eb783c5b7f0))
+
 ## 0.1.0 (2026-02-15)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/Nimbleway/nimble-cli/compare/v0.0.1...v0.1.0)
