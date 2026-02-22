@@ -49,7 +49,7 @@ nimble [resource] <command> [flags...]
 
 ```sh
 nimble extract \
-  --url url \
+  --url https://exapmle.com \
   --browser chrome \
   --browser-action '{goto: https://example.com/login}' \
   --browser-action "{wait_for_element: '#login-form'}" \
