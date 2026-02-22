@@ -76,6 +76,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&extractAsync,
+					&extractRun,
 				},
 			},
 			{
@@ -95,6 +96,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&crawlList,
+					&crawlRun,
 					&crawlStatus,
 					&crawlTerminate,
 				},
