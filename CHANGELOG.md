@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1 (2026-02-22)
+
+Full Changelog: [v0.4.0...v0.4.1](https://github.com/Nimbleway/nimble-cli/compare/v0.4.0...v0.4.1)
+
+### Chores
+
+* bump npm version ([6053477](https://github.com/Nimbleway/nimble-cli/commit/60534777966ca361466c7ba75f7c75958c26db50))
+* remove custom code ([ad01a20](https://github.com/Nimbleway/nimble-cli/commit/ad01a20f59bf892af667e60392c4970db6fb3b8b))
+
 ## 0.4.0 (2026-02-22)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/Nimbleway/nimble-cli/compare/v0.3.0...v0.4.0)
