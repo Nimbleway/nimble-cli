@@ -1,17 +1,16 @@
 #!/usr/bin/env node
 // Downloads the nimble binary from GitHub Releases on npm install.
-const https = require("https");
-const fs = require("fs");
+const fs = require("fs/promises");
 const path = require("path");
 const os = require("os");
 const { spawnSync } = require("child_process");
 
 const PLATFORM_MAP = {
-  "linux-x64":    { target: "linux_amd64",   ext: ".tar.gz" },
-  "linux-arm64":  { target: "linux_arm64",   ext: ".tar.gz" },
-  "darwin-x64":   { target: "macos_amd64",   ext: ".zip" },
-  "darwin-arm64": { target: "macos_arm64",   ext: ".zip" },
-  "win32-x64":    { target: "windows_amd64", ext: ".zip" },
+  "linux-x64": { target: "linux_amd64", ext: ".tar.gz" },
+  "linux-arm64": { target: "linux_arm64", ext: ".tar.gz" },
+  "darwin-x64": { target: "macos_amd64", ext: ".zip" },
+  "darwin-arm64": { target: "macos_arm64", ext: ".zip" },
+  "win32-x64": { target: "windows_amd64", ext: ".zip" },
 };
 
 const platform = os.platform();
@@ -33,33 +32,42 @@ const url = `https://github.com/Nimbleway/nimble-cli/releases/download/v${versio
 const binDir = path.join(__dirname, "bin");
 const binaryDest = path.join(binDir, binaryName);
 
-function download(url, dest) {
-  return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(dest);
-    const get = (url) =>
-      https.get(url, (res) => {
-        if (res.statusCode === 301 || res.statusCode === 302) {
-          file.close();
-          return get(res.headers.location);
-        }
-        if (res.statusCode !== 200) {
-          return reject(new Error(`HTTP ${res.statusCode} downloading ${url}`));
-        }
-        res.pipe(file);
-        file.on("finish", () => file.close(resolve));
-      }).on("error", (err) => {
-        fs.unlink(dest, () => {});
-        reject(err);
-      });
-    get(url);
-  });
+async function download(url, dest) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} downloading ${url}`);
+  }
+
+  return fs.writeFile(dest, Buffer.from(await response.arrayBuffer()));
+  // console.log(`nimble-cli: downloaded ${url} to ${dest}`);
+
+  // return new Promise((resolve, reject) => {
+
+    // const file = fs.createWriteStream(dest);
+    // fetch(url)
+    //   .then((res) => {
+    //     if (!res.ok) {
+    //       throw new Error(`HTTP ${res.status} downloading ${url}`);
+    //     }
+    //     return res.body.pipe(file);
+    //   })
+    //   .then(() => {
+    //     console.log(`nimble-cli: downloaded ${url} to ${dest}`);
+    //     resolve();
+    //   })
+    //   .catch((err) => {
+    //     fs.unlink(dest, () => {});
+    //     console.error(`nimble-cli: error downloading ${url} — ${err.message}`);
+    //     reject(err);
+    //   });
+  // });
 }
 
-function findBinary(dir, name) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+async function findBinary(dir, name) {
+  for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      const found = findBinary(full, name);
+      const found = await findBinary(full, name);
       if (found) return found;
     } else if (entry.name === name) {
       return full;
@@ -69,15 +77,15 @@ function findBinary(dir, name) {
 }
 
 async function main() {
-  fs.mkdirSync(binDir, { recursive: true });
+  await fs.mkdir(binDir, { recursive: true });
 
   const tmpArchive = path.join(os.tmpdir(), archive);
   const tmpExtract = path.join(os.tmpdir(), `nimble-extract-${Date.now()}`);
-  fs.mkdirSync(tmpExtract, { recursive: true });
+  await fs.mkdir(tmpExtract, { recursive: true });
 
-  console.log(`nimble-cli: downloading ${archive}...`);
+  console.log(`nimble-cli: downloading ${url}...`);
   await download(url, tmpArchive);
-
+  console.log(`nimble-cli: download complete, extracting...`);
   if (ext === ".tar.gz") {
     const r = spawnSync("tar", ["-xzf", tmpArchive, "-C", tmpExtract], { stdio: "inherit" });
     if (r.status !== 0) throw new Error("tar extraction failed");
@@ -95,19 +103,20 @@ async function main() {
     }
   }
 
-  const found = findBinary(tmpExtract, binaryName);
+  const found = await findBinary(tmpExtract, binaryName);
   if (!found) throw new Error(`binary ${binaryName} not found in archive`);
 
-  fs.copyFileSync(found, binaryDest);
-  if (!isWindows) fs.chmodSync(binaryDest, 0o755);
+  await fs.copyFile(found, binaryDest);
+  if (!isWindows) await fs.chmod(binaryDest, 0o755);
 
-  fs.rmSync(tmpArchive, { force: true });
-  fs.rmSync(tmpExtract, { recursive: true, force: true });
+  await fs.rm(tmpArchive, { force: true });
+  await fs.rm(tmpExtract, { recursive: true, force: true });
 
-  console.log(`nimble-cli: ${binaryName} installed successfully`);
+  console.log(`nimble-cli: ${binaryName} installed successfully at ${binaryDest}`);
 }
 
 main().catch((err) => {
   console.error(`nimble-cli: installation failed — ${err.message}`);
+  console.log(`nimble-cli: installation failed — ${err.message}`);
   process.exit(1);
 });
