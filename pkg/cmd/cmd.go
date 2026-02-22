@@ -68,6 +68,7 @@ func init() {
 			},
 		},
 		Commands: []*cli.Command{
+			&extract,
 			&map_,
 			&search,
 			{
@@ -76,7 +77,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&extractAsync,
-					&extractRun,
 				},
 			},
 			{
