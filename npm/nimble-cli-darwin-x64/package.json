@@ -1,0 +1,7 @@
+{
+  "name": "nimble-cli-darwin-x64",
+  "version": "0.1.0",
+  "description": "Nimble CLI binary for macOS Intel (x64)",
+  "os": ["darwin"],
+  "cpu": ["x64"]
+}
