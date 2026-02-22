@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.2 (2026-02-22)
+
+Full Changelog: [v0.4.1...v0.4.2](https://github.com/Nimbleway/nimble-cli/compare/v0.4.1...v0.4.2)
+
+### Bug Fixes
+
+* reset package version to 0.0.0 and update release-please config for versioning ([eac05be](https://github.com/Nimbleway/nimble-cli/commit/eac05bede8ae639c96c4a4a72087554114fa141f))
+
 ## 0.4.1 (2026-02-22)
 
 Full Changelog: [v0.4.0...v0.4.1](https://github.com/Nimbleway/nimble-cli/compare/v0.4.0...v0.4.1)
