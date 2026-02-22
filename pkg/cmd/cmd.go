@@ -68,16 +68,25 @@ func init() {
 			},
 		},
 		Commands: []*cli.Command{
-			&extract,
 			&map_,
 			&search,
+			{
+				Name:     "extract",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&extractAsync,
+				},
+			},
 			{
 				Name:     "agents",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&agentsList,
+					&agentsAsync,
 					&agentsGet,
+					&agentsRun,
 				},
 			},
 			{
