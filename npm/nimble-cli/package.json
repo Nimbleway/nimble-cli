@@ -1,5 +1,5 @@
 {
-  "name": "@nimbleway/nimble-cli",
+  "name": "@nimble-way/nimble-cli",
   "version": "0.1.0",
   "description": "Nimble CLI - official command-line tool",
   "bin": { "nimble": "./bin/nimble.js" },
