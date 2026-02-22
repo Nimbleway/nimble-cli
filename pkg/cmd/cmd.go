@@ -68,7 +68,6 @@ func init() {
 			},
 		},
 		Commands: []*cli.Command{
-			&crawl,
 			&map_,
 			&search,
 			{
