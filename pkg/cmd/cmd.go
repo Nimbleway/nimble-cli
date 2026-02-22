@@ -72,22 +72,22 @@ func init() {
 			&map_,
 			&search,
 			{
+				Name:     "agent",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&agentList,
+					&agentGet,
+					&agentRun,
+					&agentRunAsync,
+				},
+			},
+			{
 				Name:     "extract",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&extractAsync,
-				},
-			},
-			{
-				Name:     "agents",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&agentsList,
-					&agentsAsync,
-					&agentsGet,
-					&agentsRun,
 				},
 			},
 			{
@@ -99,6 +99,16 @@ func init() {
 					&crawlRun,
 					&crawlStatus,
 					&crawlTerminate,
+				},
+			},
+			{
+				Name:     "tasks",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&tasksList,
+					&tasksGet,
+					&tasksResults,
 				},
 			},
 			{
