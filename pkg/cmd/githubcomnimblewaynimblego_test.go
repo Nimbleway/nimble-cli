@@ -228,15 +228,14 @@ func TestSearch(t *testing.T) {
 		"--deep-search=true",
 		"--end-date", "end_date",
 		"--exclude-domain", "[string]",
+		"--focus", "string",
 		"--include-answer=true",
 		"--include-domain", "[string]",
 		"--locale", "locale",
+		"--max-results", "1",
 		"--max-subagents", "1",
-		"--num-results", "1",
-		"--parsing-type", "plain_text",
-		"--search-engine", "google_search",
+		"--output-format", "plain_text",
 		"--start-date", "start_date",
 		"--time-range", "hour",
-		"--topic", "string",
 	)
 }
