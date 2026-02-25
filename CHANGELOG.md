@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0 (2026-02-25)
+
+Full Changelog: [v0.4.3...v0.5.0](https://github.com/Nimbleway/nimble-cli/compare/v0.4.3...v0.5.0)
+
+### Features
+
+* **api:** api update ([21b34a8](https://github.com/Nimbleway/nimble-cli/commit/21b34a84903730beb75e47592eef97104464cc8b))
+
+
+### Bug Fixes
+
+* pin formatting for headers to always use repeat/dot formats ([7217885](https://github.com/Nimbleway/nimble-cli/commit/7217885e1862c48dc38988793c079753e8a8791b))
+
 ## 0.4.3 (2026-02-22)
 
 Full Changelog: [v0.4.2...v0.4.3](https://github.com/Nimbleway/nimble-cli/compare/v0.4.2...v0.4.3)
