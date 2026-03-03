@@ -13,6 +13,7 @@ func TestAgentList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"agent", "list",
+		"--api-key", "string",
 		"--limit", "1",
 		"--managed-by", "nimble",
 		"--offset", "0",
@@ -25,6 +26,7 @@ func TestAgentGet(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"agent", "get",
+		"--api-key", "string",
 		"--template-name", "template_name",
 	)
 }
@@ -34,6 +36,7 @@ func TestAgentRun(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"agent", "run",
+		"--api-key", "string",
 		"--agent", "agent",
 		"--params", "{foo: bar}",
 		"--localization=true",
@@ -45,6 +48,7 @@ func TestAgentRunAsync(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"agent", "run-async",
+		"--api-key", "string",
 		"--agent", "agent",
 		"--params", "{foo: bar}",
 		"--callback-url", "https://example.com/webhook/callback",

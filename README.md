@@ -49,45 +49,21 @@ nimble [resource] <command> [flags...]
 
 ```sh
 nimble extract \
-  --url https://exapmle.com \
-  --browser chrome \
-  --browser-action '{goto: https://example.com/login}' \
-  --browser-action "{wait_for_element: '#login-form'}" \
-  --browser-action "{fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}" \
-  --browser-action "{fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}" \
-  --browser-action "{click: '#submit'}" \
-  --browser-action "{screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}" \
-  --city 'Los Angeles' \
-  --consent-header \
-  --cookies '{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}' \
-  --country US \
-  --device desktop \
-  --driver vx8 \
-  --expected-status-code 200 \
-  --expected-status-code 201 \
-  --format html \
-  --headers '{User-Agent: CustomBot/1.0, Accept-Language: en-US}' \
-  --http2 \
-  --is-xhr \
-  --locale en-US \
-  --method GET \
-  --network-capture '{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}' \
-  --os windows \
-  --parse \
-  --parser '{myParser: bar}' \
-  --referrer-type random \
-  --render \
-  --request-timeout 30000 \
-  --session '{id: id, prefetch_userbrowser: true, retry: true, timeout: 1}' \
-  --skill dynamic-content \
-  --state CA \
-  --tag campaign-2024-q1
+  --api-key 'My API Key' \
+  --url https://exapmle.com
 ```
 
 For details about specific commands, use the `--help` flag.
 
-### Global Flags
+### Environment variables
 
+| Environment variable | Required | Default value |
+| -------------------- | -------- | ------------- |
+| `NIMBLE_API_KEY`     | no       | `null`        |
+
+### Global flags
+
+- `--api-key` (can also be set with `NIMBLE_API_KEY` env var)
 - `--help` - Show command line usage
 - `--debug` - Enable debug logging (includes HTTP request/response details)
 - `--version`, `-v` - Show the CLI version
