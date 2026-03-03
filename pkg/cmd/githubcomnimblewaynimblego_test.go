@@ -14,6 +14,7 @@ func TestExtract(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"extract",
+		"--api-key", "string",
 		"--url", "url",
 		"--browser", "chrome",
 		"--browser-action", "{goto: https://example.com/login}",
@@ -106,6 +107,7 @@ func TestExtractAsync(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"extract-async",
+		"--api-key", "string",
 		"--url", "url",
 		"--browser", "chrome",
 		"--browser-action", "{goto: https://example.com/login}",
@@ -208,6 +210,7 @@ func TestMap(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"map",
+		"--api-key", "string",
 		"--url", "url",
 		"--country", "US",
 		"--domain-filter", "all",
@@ -222,6 +225,7 @@ func TestSearch(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"search",
+		"--api-key", "string",
 		"--query", "x",
 		"--content-type", "[string]",
 		"--country", "country",
