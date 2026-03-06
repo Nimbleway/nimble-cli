@@ -51,6 +51,7 @@ func TestCrawlRun(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"crawl", "run",
+		"--api-key", "string",
 		"--url", "url",
 		"--allow-external-links=false",
 		"--allow-subdomains=false",
