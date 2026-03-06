@@ -57,6 +57,7 @@ func TestExtract(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"extract",
+		"--api-key", "string",
 		"--url", "url",
 		"--browser", "chrome",
 		"--browser-action", "{goto: https://example.com/login}",
@@ -155,6 +156,7 @@ func TestExtractAsync(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"extract-async",
+		"--api-key", "string",
 		"--url", "url",
 		"--browser", "chrome",
 		"--browser-action", "{goto: https://example.com/login}",
