@@ -480,6 +480,7 @@ func TestSearch(t *testing.T) {
 			"--max-results", "1",
 			"--max-subagents", "1",
 			"--output-format", "plain_text",
+			"--search-depth", "lite",
 			"--start-date", "start_date",
 			"--time-range", "hour",
 		)
@@ -504,6 +505,7 @@ func TestSearch(t *testing.T) {
 			"max_results: 1\n" +
 			"max_subagents: 1\n" +
 			"output_format: plain_text\n" +
+			"search_depth: lite\n" +
 			"start_date: start_date\n" +
 			"time_range: hour\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(

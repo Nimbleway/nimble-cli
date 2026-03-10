@@ -28,7 +28,7 @@ var agentList = cli.Command{
 		},
 		&requestflag.Flag[any]{
 			Name:      "managed-by",
-			Usage:     "Filter public templates by attribution",
+			Usage:     "Filter templates by attribution",
 			QueryPath: "managed_by",
 		},
 		&requestflag.Flag[int64]{
@@ -37,11 +37,15 @@ var agentList = cli.Command{
 			Default:   0,
 			QueryPath: "offset",
 		},
-		&requestflag.Flag[string]{
+		&requestflag.Flag[any]{
 			Name:      "privacy",
 			Usage:     "Filter by privacy level",
-			Default:   "public",
 			QueryPath: "privacy",
+		},
+		&requestflag.Flag[any]{
+			Name:      "search",
+			Usage:     "Search templates by name, domain, or vertical",
+			QueryPath: "search",
 		},
 	},
 	Action:          handleAgentList,
