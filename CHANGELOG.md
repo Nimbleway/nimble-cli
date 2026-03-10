@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.6.0 (2026-03-10)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/Nimbleway/nimble-cli/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* add `--max-items` flag for paginated/streaming endpoints ([f227d2e](https://github.com/Nimbleway/nimble-cli/commit/f227d2e67b41b5afe3f4df4596a58c69975931f3))
+* add support for file downloads from binary response endpoints ([d52040c](https://github.com/Nimbleway/nimble-cli/commit/d52040cbb309d4d8e9ef5ac517f060677f28d513))
+* **api:** api update ([2939c8e](https://github.com/Nimbleway/nimble-cli/commit/2939c8e1fac755d5439f5c5cddb2b84411cbe8c6))
+* improved documentation and flags for client options ([9da30d3](https://github.com/Nimbleway/nimble-cli/commit/9da30d30bbded8a192f8652e0bd67f2df8752499))
+* support passing required body params through pipes ([a7b02a0](https://github.com/Nimbleway/nimble-cli/commit/a7b02a011d1d9b6827e10a62d2b53e6f3eae55b4))
+
+
+### Bug Fixes
+
+* avoid printing usage errors twice ([4030bc9](https://github.com/Nimbleway/nimble-cli/commit/4030bc9f4cdb7ce23a6ef12381cd640657076ecf))
+* fix for encoding arrays with `any` type items ([1561b57](https://github.com/Nimbleway/nimble-cli/commit/1561b5794ebffe66bcda053bca842359bdc6fa6c))
+* more gracefully handle empty stdin input ([b9e421a](https://github.com/Nimbleway/nimble-cli/commit/b9e421aab44a8deae8f120e5fd71e2c6e8ae0f1e))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([91e8ea8](https://github.com/Nimbleway/nimble-cli/commit/91e8ea89a329bd6cca606b4da47e0bb3ad06792b))
+* **internal:** codegen related update ([b5e5738](https://github.com/Nimbleway/nimble-cli/commit/b5e57383eaeb031077d594c785a89a254a44c22f))
+* **internal:** codegen related update ([15720ce](https://github.com/Nimbleway/nimble-cli/commit/15720cebc33274fd35cbfd825b4103d3dbd004e7))
+* **internal:** codegen related update ([26fecfd](https://github.com/Nimbleway/nimble-cli/commit/26fecfd207cb7507cdfa8a02936c48005aec3e51))
+* zip READMEs as part of build artifact ([08aef64](https://github.com/Nimbleway/nimble-cli/commit/08aef645e37003b01b45d4b3a3fc714ce790f8ee))
+
 ## 0.5.0 (2026-02-25)
 
 Full Changelog: [v0.4.3...v0.5.0](https://github.com/Nimbleway/nimble-cli/compare/v0.4.3...v0.5.0)
