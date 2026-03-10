@@ -18,6 +18,7 @@ func TestAgentList(t *testing.T) {
 			"--managed-by", "nimble",
 			"--offset", "0",
 			"--privacy", "public",
+			"--search", "search",
 		)
 	})
 }

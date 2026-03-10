@@ -514,10 +514,9 @@ var search = cli.Command{
 			Default:  "US",
 			BodyPath: "country",
 		},
-		&requestflag.Flag[bool]{
+		&requestflag.Flag[any]{
 			Name:     "deep-search",
-			Usage:    "Deep Mode (true, default): fetches full-page content for deeper analysis. Fast Mode (false): returns metadata only (title, snippet, URL) for quick, token-efficient results.",
-			Default:  true,
+			Usage:    "Deprecated. Use search_depth instead. true maps to 'deep', false maps to 'lite'.",
 			BodyPath: "deep_search",
 		},
 		&requestflag.Flag[any]{
@@ -570,6 +569,11 @@ var search = cli.Command{
 			Usage:    "Output format: plain_text, markdown, or simplified_html",
 			Default:  "markdown",
 			BodyPath: "output_format",
+		},
+		&requestflag.Flag[any]{
+			Name:     "search-depth",
+			Usage:    "Controls content richness and latency of search results.\n\n- lite: Token-efficient metadata for high-volume pipelines (title, URL, description only)\n- fast: Rich content (~2K chars) optimized for AI agents\n- deep: Full page content via Webit scraping for comprehensive analysis",
+			BodyPath: "search_depth",
 		},
 		&requestflag.Flag[any]{
 			Name:     "start-date",
