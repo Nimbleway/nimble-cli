@@ -12,8 +12,9 @@ func TestAgentList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "agent", "list",
+			t,
 			"--api-key", "string",
+			"agent", "list",
 			"--limit", "1",
 			"--managed-by", "nimble",
 			"--offset", "0",
@@ -27,8 +28,9 @@ func TestAgentGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "agent", "get",
+			t,
 			"--api-key", "string",
+			"agent", "get",
 			"--template-name", "template_name",
 		)
 	})
@@ -38,8 +40,9 @@ func TestAgentRun(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "agent", "run",
+			t,
 			"--api-key", "string",
+			"agent", "run",
 			"--agent", "agent",
 			"--params", "{foo: bar}",
 			"--localization=true",
@@ -54,8 +57,9 @@ func TestAgentRun(t *testing.T) {
 			"  foo: bar\n" +
 			"localization: true\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "agent", "run",
+			t, pipeData,
 			"--api-key", "string",
+			"agent", "run",
 		)
 	})
 }
@@ -64,8 +68,9 @@ func TestAgentRunAsync(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "agent", "run-async",
+			t,
 			"--api-key", "string",
+			"agent", "run-async",
 			"--agent", "agent",
 			"--params", "{foo: bar}",
 			"--callback-url", "https://example.com/webhook/callback",
@@ -90,8 +95,9 @@ func TestAgentRunAsync(t *testing.T) {
 			"storage_type: s3\n" +
 			"storage_url: s3://bucket-name/path/to/object\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "agent", "run-async",
+			t, pipeData,
 			"--api-key", "string",
+			"agent", "run-async",
 		)
 	})
 }

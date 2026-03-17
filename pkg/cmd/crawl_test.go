@@ -13,8 +13,9 @@ func TestCrawlList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "crawl", "list",
+			t,
 			"--api-key", "string",
+			"crawl", "list",
 			"--cursor", "cursor",
 			"--limit", "10",
 			"--status", "queued",
@@ -26,8 +27,9 @@ func TestCrawlRun(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "crawl", "run",
+			t,
 			"--api-key", "string",
+			"crawl", "run",
 			"--url", "url",
 			"--allow-external-links=false",
 			"--allow-subdomains=false",
@@ -52,8 +54,9 @@ func TestCrawlRun(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "crawl", "run",
+			t,
 			"--api-key", "string",
+			"crawl", "run",
 			"--url", "url",
 			"--allow-external-links=false",
 			"--allow-subdomains=false",
@@ -224,8 +227,9 @@ func TestCrawlRun(t *testing.T) {
 			"name: The best crawl ever\n" +
 			"sitemap: include\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "crawl", "run",
+			t, pipeData,
 			"--api-key", "string",
+			"crawl", "run",
 		)
 	})
 }
@@ -234,8 +238,9 @@ func TestCrawlStatus(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "crawl", "status",
+			t,
 			"--api-key", "string",
+			"crawl", "status",
 			"--id", "123e4567-e89b-12d3-a456-426614174000",
 		)
 	})
@@ -245,8 +250,9 @@ func TestCrawlTerminate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "crawl", "terminate",
+			t,
 			"--api-key", "string",
+			"crawl", "terminate",
 			"--id", "123e4567-e89b-12d3-a456-426614174000",
 		)
 	})
