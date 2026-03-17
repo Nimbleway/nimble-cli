@@ -13,8 +13,9 @@ func TestExtract(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "extract",
+			t,
 			"--api-key", "string",
+			"extract",
 			"--url", "url",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -57,8 +58,9 @@ func TestExtract(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "extract",
+			t,
 			"--api-key", "string",
+			"extract",
 			"--url", "url",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -206,8 +208,9 @@ func TestExtract(t *testing.T) {
 			"state: CA\n" +
 			"tag: campaign-2024-q1\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "extract",
+			t, pipeData,
 			"--api-key", "string",
+			"extract",
 		)
 	})
 }
@@ -216,8 +219,9 @@ func TestExtractAsync(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "extract-async",
+			t,
 			"--api-key", "string",
+			"extract-async",
 			"--url", "url",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -265,8 +269,9 @@ func TestExtractAsync(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "extract-async",
+			t,
 			"--api-key", "string",
+			"extract-async",
 			"--url", "url",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -424,8 +429,9 @@ func TestExtractAsync(t *testing.T) {
 			"storage_url: s3://bucket-name/path/to/object\n" +
 			"tag: campaign-2024-q1\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "extract-async",
+			t, pipeData,
 			"--api-key", "string",
+			"extract-async",
 		)
 	})
 }
@@ -434,8 +440,9 @@ func TestMap(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "map",
+			t,
 			"--api-key", "string",
+			"map",
 			"--url", "url",
 			"--country", "US",
 			"--domain-filter", "all",
@@ -455,8 +462,9 @@ func TestMap(t *testing.T) {
 			"locale: en-US\n" +
 			"sitemap: include\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "map",
+			t, pipeData,
 			"--api-key", "string",
+			"map",
 		)
 	})
 }
@@ -465,8 +473,9 @@ func TestSearch(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "search",
+			t,
 			"--api-key", "string",
+			"search",
 			"--query", "x",
 			"--content-type", "[string]",
 			"--country", "country",
@@ -509,8 +518,9 @@ func TestSearch(t *testing.T) {
 			"start_date: start_date\n" +
 			"time_range: hour\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "search",
+			t, pipeData,
 			"--api-key", "string",
+			"search",
 		)
 	})
 }
