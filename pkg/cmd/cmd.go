@@ -78,6 +78,7 @@ func init() {
 		Commands: []*cli.Command{
 			&extract,
 			&extractAsync,
+			&extractBatch,
 			&map_,
 			&search,
 			{
