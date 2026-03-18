@@ -448,6 +448,191 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
+var extractBatch = requestflag.WithInnerFlags(cli.Command{
+	Name:    "extract-batch",
+	Usage:   "Extract Batch Endpoint",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[[]map[string]any]{
+			Name:     "param",
+			Usage:    "Array of extraction requests. Each object represents one extraction with its own parameters.",
+			Required: true,
+			BodyPath: "params",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "shared-params",
+			Usage:    "Shared parameters applied to the entire batch, such as storage and callback configuration.",
+			BodyPath: "shared_params",
+		},
+	},
+	Action:          handleExtractBatch,
+	HideHelpCommand: true,
+}, map[string][]requestflag.HasOuterFlag{
+	"param": {
+		&requestflag.InnerFlag[string]{
+			Name:       "param.url",
+			Usage:      "Target URL to scrape",
+			InnerField: "url",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "param.browser",
+			Usage:      "Browser type to emulate",
+			InnerField: "browser",
+		},
+		&requestflag.InnerFlag[[]any]{
+			Name:       "param.browser-actions",
+			Usage:      "Array of browser automation actions to execute sequentially",
+			InnerField: "browser_actions",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.city",
+			Usage:      "City for geolocation",
+			InnerField: "city",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "param.consent-header",
+			Usage:      "Whether to automatically handle cookie consent headers",
+			InnerField: "consent_header",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "param.cookies",
+			Usage:      "Browser cookies as array of cookie objects",
+			InnerField: "cookies",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.country",
+			Usage:      "Country code for geolocation and proxy selection",
+			InnerField: "country",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.device",
+			Usage:      "Device type for browser emulation",
+			InnerField: "device",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.driver",
+			Usage:      "Browser driver to use",
+			InnerField: "driver",
+		},
+		&requestflag.InnerFlag[[]int64]{
+			Name:       "param.expected-status-codes",
+			Usage:      "Expected HTTP status codes for successful requests",
+			InnerField: "expected_status_codes",
+		},
+		&requestflag.InnerFlag[[]string]{
+			Name:       "param.formats",
+			Usage:      "List of acceptable response formats in order of preference",
+			InnerField: "formats",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "param.headers",
+			Usage:      "Custom HTTP headers to include in the request",
+			InnerField: "headers",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "param.http2",
+			Usage:      "Whether to use HTTP/2 protocol",
+			InnerField: "http2",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "param.is-xhr",
+			Usage:      "Whether to emulate XMLHttpRequest behavior",
+			InnerField: "is_xhr",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.locale",
+			Usage:      "Locale for browser language and region settings",
+			InnerField: "locale",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.method",
+			Usage:      "HTTP method for the request",
+			InnerField: "method",
+		},
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "param.network-capture",
+			Usage:      "Filters for capturing network traffic",
+			InnerField: "network_capture",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.os",
+			Usage:      "Operating system to emulate",
+			InnerField: "os",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "param.parse",
+			Usage:      "Whether to parse the response content",
+			InnerField: "parse",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "param.parser",
+			Usage:      "Custom parser configuration as a key-value map",
+			InnerField: "parser",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.referrer-type",
+			Usage:      "Referrer policy for the request",
+			InnerField: "referrer_type",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "param.render",
+			Usage:      "Whether to render JavaScript content using a browser",
+			InnerField: "render",
+		},
+		&requestflag.InnerFlag[float64]{
+			Name:       "param.request-timeout",
+			Usage:      "Request timeout in milliseconds",
+			InnerField: "request_timeout",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "param.session",
+			InnerField: "session",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "param.skill",
+			Usage:      "Skills or capabilities required for the request",
+			InnerField: "skill",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.state",
+			Usage:      "US state for geolocation (only valid when country is US)",
+			InnerField: "state",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "param.tag",
+			Usage:      "User-defined tag for request identification",
+			InnerField: "tag",
+		},
+	},
+	"shared-params": {
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-params.callback-url",
+			Usage:      "URL to call back when async operation completes",
+			InnerField: "callback_url",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-params.storage-compress",
+			Usage:      "Whether to compress stored data",
+			InnerField: "storage_compress",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-params.storage-object-name",
+			Usage:      "Custom name for the stored object",
+			InnerField: "storage_object_name",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-params.storage-type",
+			Usage:      "Type of storage to use for results",
+			InnerField: "storage_type",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-params.storage-url",
+			Usage:      "URL for storage location",
+			InnerField: "storage_url",
+		},
+	},
+})
+
 var map_ = cli.Command{
 	Name:    "map",
 	Usage:   "Create map task",
@@ -656,6 +841,40 @@ func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "extract-async", obj, format, transform)
+}
+
+func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := githubcomnimblewaynimblego.ExtractBatchParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.ExtractBatch(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "extract-batch", obj, format, transform)
 }
 
 func handleMap(ctx context.Context, cmd *cli.Command) error {
