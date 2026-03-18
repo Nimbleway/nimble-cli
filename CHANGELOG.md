@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.7.0 (2026-03-18)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/Nimbleway/nimble-cli/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** manual updates ([95cf9c6](https://github.com/Nimbleway/nimble-cli/commit/95cf9c682842315af7be18d4dcba8cd0d8a50fb9))
+
+
+### Bug Fixes
+
+* avoid reading from stdin unless request body is form encoded or json ([aa9fd7f](https://github.com/Nimbleway/nimble-cli/commit/aa9fd7fcadf028e07a6456855ef591998ec72e78))
+* better support passing client args in any position ([c10c7c9](https://github.com/Nimbleway/nimble-cli/commit/c10c7c923c776a5b056831bcc8d90cbcd8d5f072))
+* fix for test cases with newlines in YAML and better error reporting ([615aa31](https://github.com/Nimbleway/nimble-cli/commit/615aa316e34d33cb6edfe29b2587adde3f91e8c3))
+* improved workflow for developing on branches ([e0ff301](https://github.com/Nimbleway/nimble-cli/commit/e0ff301bbf3f55c7436a8f6df076756c7cdd1a04))
+* no longer require an API key when building on production repos ([5d78761](https://github.com/Nimbleway/nimble-cli/commit/5d78761a8c9375add3a13c707c2e313a8ac14e80))
+* only set client options when the corresponding CLI flag or env var is explicitly set ([8e2d940](https://github.com/Nimbleway/nimble-cli/commit/8e2d94006048dc6fed9884840a5bcb7812fd9a4f))
+
+
+### Chores
+
+* **internal:** codegen related update ([433e269](https://github.com/Nimbleway/nimble-cli/commit/433e269d3b19f915785ec4b773301605c14a95b1))
+* **internal:** tweak CI branches ([a7ee466](https://github.com/Nimbleway/nimble-cli/commit/a7ee466453f85944128c389e92f737b06db839cb))
+
 ## 0.6.0 (2026-03-10)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/Nimbleway/nimble-cli/compare/v0.5.0...v0.6.0)
