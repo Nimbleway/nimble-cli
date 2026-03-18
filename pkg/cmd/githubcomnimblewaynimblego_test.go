@@ -436,6 +436,178 @@ func TestExtractAsync(t *testing.T) {
 	})
 }
 
+func TestExtractBatch(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"extract-batch",
+			"--param", "{url: url, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, tag: campaign-2024-q1}",
+			"--shared-params", "{callback_url: https://example.com/webhook/callback, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(extractBatch)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"extract-batch",
+			"--param.url", "url",
+			"--param.browser", "chrome",
+			"--param.browser-actions", "[{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}]",
+			"--param.city", "Los Angeles",
+			"--param.consent-header=true",
+			"--param.cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--param.country", "US",
+			"--param.device", "desktop",
+			"--param.driver", "vx8",
+			"--param.expected-status-codes", "[200, 201]",
+			"--param.formats", "[html]",
+			"--param.headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--param.http2=true",
+			"--param.is-xhr=true",
+			"--param.locale", "en-US",
+			"--param.method", "GET",
+			"--param.network-capture", "[{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
+			"--param.os", "windows",
+			"--param.parse=true",
+			"--param.parser", "{myParser: bar}",
+			"--param.referrer-type", "random",
+			"--param.render=true",
+			"--param.request-timeout", "30000",
+			"--param.session", "{id: id, prefetch_userbrowser: true, retry: true, timeout: 1}",
+			"--param.skill", "dynamic-content",
+			"--param.state", "CA",
+			"--param.tag", "campaign-2024-q1",
+			"--shared-params.callback-url", "https://example.com/webhook/callback",
+			"--shared-params.storage-compress=true",
+			"--shared-params.storage-object-name", "result-2024-01-15.json",
+			"--shared-params.storage-type", "s3",
+			"--shared-params.storage-url", "s3://bucket-name/path/to/object",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"params:\n" +
+			"  - url: url\n" +
+			"    browser: chrome\n" +
+			"    browser_actions:\n" +
+			"      - goto: https://example.com/login\n" +
+			"      - wait_for_element: '#login-form'\n" +
+			"      - fill:\n" +
+			"          selector: '#username'\n" +
+			"          value: user@example.com\n" +
+			"          click_on_element: true\n" +
+			"          delay: 1000\n" +
+			"          mode: type\n" +
+			"          mouse_movement_strategy: linear\n" +
+			"          required: 'true'\n" +
+			"          scroll: true\n" +
+			"          skip: 'true'\n" +
+			"          timeout: 0\n" +
+			"          typing_interval: 1000\n" +
+			"          typing_strategy: simple\n" +
+			"          visible: true\n" +
+			"      - fill:\n" +
+			"          selector: '#password'\n" +
+			"          value: password123\n" +
+			"          click_on_element: true\n" +
+			"          delay: 1000\n" +
+			"          mode: type\n" +
+			"          mouse_movement_strategy: linear\n" +
+			"          required: 'true'\n" +
+			"          scroll: true\n" +
+			"          skip: 'true'\n" +
+			"          timeout: 0\n" +
+			"          typing_interval: 1000\n" +
+			"          typing_strategy: simple\n" +
+			"          visible: true\n" +
+			"      - click: '#submit'\n" +
+			"      - screenshot:\n" +
+			"          format: png\n" +
+			"          full_page: true\n" +
+			"          quality: 0\n" +
+			"          required: 'true'\n" +
+			"          skip: 'true'\n" +
+			"    city: Los Angeles\n" +
+			"    consent_header: true\n" +
+			"    cookies:\n" +
+			"      - creation: creation\n" +
+			"        domain: domain\n" +
+			"        expires: expires\n" +
+			"        extensions:\n" +
+			"          - string\n" +
+			"        hostOnly: true\n" +
+			"        httpOnly: true\n" +
+			"        lastAccessed: lastAccessed\n" +
+			"        maxAge: Infinity\n" +
+			"        name: name\n" +
+			"        path: path\n" +
+			"        pathIsDefault: true\n" +
+			"        sameSite: strict\n" +
+			"        secure: true\n" +
+			"        value: value\n" +
+			"    country: US\n" +
+			"    device: desktop\n" +
+			"    driver: vx8\n" +
+			"    expected_status_codes:\n" +
+			"      - 200\n" +
+			"      - 201\n" +
+			"    formats:\n" +
+			"      - html\n" +
+			"    headers:\n" +
+			"      User-Agent: CustomBot/1.0\n" +
+			"      Accept-Language: en-US\n" +
+			"    http2: true\n" +
+			"    is_xhr: true\n" +
+			"    locale: en-US\n" +
+			"    method: GET\n" +
+			"    network_capture:\n" +
+			"      - method: GET\n" +
+			"        resource_type: document\n" +
+			"        status_code: 100\n" +
+			"        url:\n" +
+			"          value: value\n" +
+			"          type: exact\n" +
+			"        validation: true\n" +
+			"        wait_for_requests_count: 0\n" +
+			"        wait_for_requests_count_timeout: 1\n" +
+			"    os: windows\n" +
+			"    parse: true\n" +
+			"    parser:\n" +
+			"      myParser: bar\n" +
+			"    referrer_type: random\n" +
+			"    render: true\n" +
+			"    request_timeout: 30000\n" +
+			"    session:\n" +
+			"      id: id\n" +
+			"      prefetch_userbrowser: true\n" +
+			"      retry: true\n" +
+			"      timeout: 1\n" +
+			"    skill: dynamic-content\n" +
+			"    state: CA\n" +
+			"    tag: campaign-2024-q1\n" +
+			"shared_params:\n" +
+			"  callback_url: https://example.com/webhook/callback\n" +
+			"  storage_compress: true\n" +
+			"  storage_object_name: result-2024-01-15.json\n" +
+			"  storage_type: s3\n" +
+			"  storage_url: s3://bucket-name/path/to/object\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"extract-batch",
+		)
+	})
+}
+
 func TestMap(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
