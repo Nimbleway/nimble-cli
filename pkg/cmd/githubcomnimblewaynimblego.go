@@ -171,6 +171,7 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 	"network-capture": {
 		&requestflag.InnerFlag[string]{
 			Name:       "network-capture.method",
+			Usage:      `Allowed values: "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH".`,
 			InnerField: "method",
 		},
 		&requestflag.InnerFlag[any]{
@@ -400,6 +401,7 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 	"network-capture": {
 		&requestflag.InnerFlag[string]{
 			Name:       "network-capture.method",
+			Usage:      `Allowed values: "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH".`,
 			InnerField: "method",
 		},
 		&requestflag.InnerFlag[any]{
