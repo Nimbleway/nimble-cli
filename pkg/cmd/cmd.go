@@ -114,6 +114,16 @@ func init() {
 				},
 			},
 			{
+				Name:     "batches",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&batchesList,
+					&batchesGet,
+					&batchesProgress,
+				},
+			},
+			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
 				UsageText:       "nimble @manpages [-o nimble.1] [--gzip]",
