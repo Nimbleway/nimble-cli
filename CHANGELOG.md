@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.8.0 (2026-03-24)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/Nimbleway/nimble-cli/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* add default description for enum CLI flags without an explicit description ([c175105](https://github.com/Nimbleway/nimble-cli/commit/c1751051f538856b25ca4df9c26912af89300c23))
+* **api:** manual updates ([1047e40](https://github.com/Nimbleway/nimble-cli/commit/1047e4046f3ba2f0145a643f2ff1498e06ba0db4))
+
+
+### Bug Fixes
+
+* cli no longer hangs when stdin is attached to a pipe with empty input ([c887be7](https://github.com/Nimbleway/nimble-cli/commit/c887be730c5d184084df3e2a43c1f8541a8fdd5f))
+* improve linking behavior when developing on a branch not in the Go SDK ([4ba2d72](https://github.com/Nimbleway/nimble-cli/commit/4ba2d72445fa7076186f59495aec56c6723512f9))
+
+
+### Chores
+
+* **internal:** update gitignore ([ff0db9d](https://github.com/Nimbleway/nimble-cli/commit/ff0db9d15a6c9a27effc45ff1420c77351d6f0ee))
+
 ## 0.7.0 (2026-03-18)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/Nimbleway/nimble-cli/compare/v0.6.0...v0.7.0)
