@@ -76,7 +76,6 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.Flag[[]string]{
 			Name:     "format",
 			Usage:    "List of acceptable response formats in order of preference",
-			Default:  []string{"html"},
 			BodyPath: "formats",
 		},
 		&requestflag.Flag[map[string]any]{
@@ -286,7 +285,6 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.Flag[[]string]{
 			Name:     "format",
 			Usage:    "List of acceptable response formats in order of preference",
-			Default:  []string{"html"},
 			BodyPath: "formats",
 		},
 		&requestflag.Flag[map[string]any]{
@@ -456,181 +454,340 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[[]map[string]any]{
-			Name:     "param",
-			Usage:    "Array of extraction requests. Each object represents one extraction with its own parameters.",
+			Name:     "input",
+			Usage:    "Array of extraction requests. Each object can include extraction parameters and async/storage settings.",
 			Required: true,
-			BodyPath: "params",
+			BodyPath: "inputs",
 		},
 		&requestflag.Flag[map[string]any]{
-			Name:     "shared-params",
-			Usage:    "Shared parameters applied to the entire batch, such as storage and callback configuration.",
-			BodyPath: "shared_params",
+			Name:     "shared-inputs",
+			Usage:    "Shared parameters applied to the entire batch. Can include extraction parameters and async/storage settings.",
+			BodyPath: "shared_inputs",
 		},
 	},
 	Action:          handleExtractBatch,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
-	"param": {
-		&requestflag.InnerFlag[string]{
-			Name:       "param.url",
-			Usage:      "Target URL to scrape",
-			InnerField: "url",
-		},
+	"input": {
 		&requestflag.InnerFlag[any]{
-			Name:       "param.browser",
+			Name:       "input.browser",
 			Usage:      "Browser type to emulate",
 			InnerField: "browser",
 		},
 		&requestflag.InnerFlag[[]any]{
-			Name:       "param.browser-actions",
+			Name:       "input.browser-actions",
 			Usage:      "Array of browser automation actions to execute sequentially",
 			InnerField: "browser_actions",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.city",
+			Name:       "input.callback-url",
+			Usage:      "URL to call back when async operation completes",
+			InnerField: "callback_url",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "input.city",
 			Usage:      "City for geolocation",
 			InnerField: "city",
 		},
 		&requestflag.InnerFlag[bool]{
-			Name:       "param.consent-header",
+			Name:       "input.consent-header",
 			Usage:      "Whether to automatically handle cookie consent headers",
 			InnerField: "consent_header",
 		},
 		&requestflag.InnerFlag[any]{
-			Name:       "param.cookies",
+			Name:       "input.cookies",
 			Usage:      "Browser cookies as array of cookie objects",
 			InnerField: "cookies",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.country",
+			Name:       "input.country",
 			Usage:      "Country code for geolocation and proxy selection",
 			InnerField: "country",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.device",
+			Name:       "input.device",
 			Usage:      "Device type for browser emulation",
 			InnerField: "device",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.driver",
+			Name:       "input.driver",
 			Usage:      "Browser driver to use",
 			InnerField: "driver",
 		},
 		&requestflag.InnerFlag[[]int64]{
-			Name:       "param.expected-status-codes",
+			Name:       "input.expected-status-codes",
 			Usage:      "Expected HTTP status codes for successful requests",
 			InnerField: "expected_status_codes",
 		},
 		&requestflag.InnerFlag[[]string]{
-			Name:       "param.formats",
+			Name:       "input.formats",
 			Usage:      "List of acceptable response formats in order of preference",
 			InnerField: "formats",
 		},
 		&requestflag.InnerFlag[map[string]any]{
-			Name:       "param.headers",
+			Name:       "input.headers",
 			Usage:      "Custom HTTP headers to include in the request",
 			InnerField: "headers",
 		},
 		&requestflag.InnerFlag[bool]{
-			Name:       "param.http2",
+			Name:       "input.http2",
 			Usage:      "Whether to use HTTP/2 protocol",
 			InnerField: "http2",
 		},
 		&requestflag.InnerFlag[bool]{
-			Name:       "param.is-xhr",
+			Name:       "input.is-xhr",
 			Usage:      "Whether to emulate XMLHttpRequest behavior",
 			InnerField: "is_xhr",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.locale",
+			Name:       "input.locale",
 			Usage:      "Locale for browser language and region settings",
 			InnerField: "locale",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.method",
+			Name:       "input.method",
 			Usage:      "HTTP method for the request",
 			InnerField: "method",
 		},
 		&requestflag.InnerFlag[[]map[string]any]{
-			Name:       "param.network-capture",
+			Name:       "input.network-capture",
 			Usage:      "Filters for capturing network traffic",
 			InnerField: "network_capture",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.os",
+			Name:       "input.os",
 			Usage:      "Operating system to emulate",
 			InnerField: "os",
 		},
 		&requestflag.InnerFlag[bool]{
-			Name:       "param.parse",
+			Name:       "input.parse",
 			Usage:      "Whether to parse the response content",
 			InnerField: "parse",
 		},
 		&requestflag.InnerFlag[any]{
-			Name:       "param.parser",
+			Name:       "input.parser",
 			Usage:      "Custom parser configuration as a key-value map",
 			InnerField: "parser",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.referrer-type",
+			Name:       "input.referrer-type",
 			Usage:      "Referrer policy for the request",
 			InnerField: "referrer_type",
 		},
 		&requestflag.InnerFlag[bool]{
-			Name:       "param.render",
+			Name:       "input.render",
 			Usage:      "Whether to render JavaScript content using a browser",
 			InnerField: "render",
 		},
 		&requestflag.InnerFlag[float64]{
-			Name:       "param.request-timeout",
+			Name:       "input.request-timeout",
 			Usage:      "Request timeout in milliseconds",
 			InnerField: "request_timeout",
 		},
 		&requestflag.InnerFlag[map[string]any]{
-			Name:       "param.session",
+			Name:       "input.session",
 			InnerField: "session",
 		},
 		&requestflag.InnerFlag[any]{
-			Name:       "param.skill",
+			Name:       "input.skill",
 			Usage:      "Skills or capabilities required for the request",
 			InnerField: "skill",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "param.state",
+			Name:       "input.state",
 			Usage:      "US state for geolocation (only valid when country is US)",
 			InnerField: "state",
 		},
-		&requestflag.InnerFlag[string]{
-			Name:       "param.tag",
-			Usage:      "User-defined tag for request identification",
-			InnerField: "tag",
-		},
-	},
-	"shared-params": {
-		&requestflag.InnerFlag[string]{
-			Name:       "shared-params.callback-url",
-			Usage:      "URL to call back when async operation completes",
-			InnerField: "callback_url",
-		},
 		&requestflag.InnerFlag[bool]{
-			Name:       "shared-params.storage-compress",
+			Name:       "input.storage-compress",
 			Usage:      "Whether to compress stored data",
 			InnerField: "storage_compress",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "shared-params.storage-object-name",
+			Name:       "input.storage-object-name",
 			Usage:      "Custom name for the stored object",
 			InnerField: "storage_object_name",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "shared-params.storage-type",
+			Name:       "input.storage-type",
 			Usage:      "Type of storage to use for results",
 			InnerField: "storage_type",
 		},
 		&requestflag.InnerFlag[string]{
-			Name:       "shared-params.storage-url",
+			Name:       "input.storage-url",
 			Usage:      "URL for storage location",
 			InnerField: "storage_url",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "input.tag",
+			Usage:      "User-defined tag for request identification",
+			InnerField: "tag",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "input.url",
+			Usage:      "Target URL to scrape",
+			InnerField: "url",
+		},
+	},
+	"shared-inputs": {
+		&requestflag.InnerFlag[any]{
+			Name:       "shared-inputs.browser",
+			Usage:      "Browser type to emulate",
+			InnerField: "browser",
+		},
+		&requestflag.InnerFlag[[]any]{
+			Name:       "shared-inputs.browser-actions",
+			Usage:      "Array of browser automation actions to execute sequentially",
+			InnerField: "browser_actions",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.callback-url",
+			Usage:      "URL to call back when async operation completes",
+			InnerField: "callback_url",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.city",
+			Usage:      "City for geolocation",
+			InnerField: "city",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.consent-header",
+			Usage:      "Whether to automatically handle cookie consent headers",
+			InnerField: "consent_header",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "shared-inputs.cookies",
+			Usage:      "Browser cookies as array of cookie objects",
+			InnerField: "cookies",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.country",
+			Usage:      "Country code for geolocation and proxy selection",
+			InnerField: "country",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.device",
+			Usage:      "Device type for browser emulation",
+			InnerField: "device",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.driver",
+			Usage:      "Browser driver to use",
+			InnerField: "driver",
+		},
+		&requestflag.InnerFlag[[]int64]{
+			Name:       "shared-inputs.expected-status-codes",
+			Usage:      "Expected HTTP status codes for successful requests",
+			InnerField: "expected_status_codes",
+		},
+		&requestflag.InnerFlag[[]string]{
+			Name:       "shared-inputs.formats",
+			Usage:      "List of acceptable response formats in order of preference",
+			InnerField: "formats",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "shared-inputs.headers",
+			Usage:      "Custom HTTP headers to include in the request",
+			InnerField: "headers",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.http2",
+			Usage:      "Whether to use HTTP/2 protocol",
+			InnerField: "http2",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.is-xhr",
+			Usage:      "Whether to emulate XMLHttpRequest behavior",
+			InnerField: "is_xhr",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.locale",
+			Usage:      "Locale for browser language and region settings",
+			InnerField: "locale",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.method",
+			Usage:      "HTTP method for the request",
+			InnerField: "method",
+		},
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "shared-inputs.network-capture",
+			Usage:      "Filters for capturing network traffic",
+			InnerField: "network_capture",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.os",
+			Usage:      "Operating system to emulate",
+			InnerField: "os",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.parse",
+			Usage:      "Whether to parse the response content",
+			InnerField: "parse",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "shared-inputs.parser",
+			Usage:      "Custom parser configuration as a key-value map",
+			InnerField: "parser",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.referrer-type",
+			Usage:      "Referrer policy for the request",
+			InnerField: "referrer_type",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.render",
+			Usage:      "Whether to render JavaScript content using a browser",
+			InnerField: "render",
+		},
+		&requestflag.InnerFlag[float64]{
+			Name:       "shared-inputs.request-timeout",
+			Usage:      "Request timeout in milliseconds",
+			InnerField: "request_timeout",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "shared-inputs.session",
+			InnerField: "session",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "shared-inputs.skill",
+			Usage:      "Skills or capabilities required for the request",
+			InnerField: "skill",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.state",
+			Usage:      "US state for geolocation (only valid when country is US)",
+			InnerField: "state",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.storage-compress",
+			Usage:      "Whether to compress stored data",
+			InnerField: "storage_compress",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.storage-object-name",
+			Usage:      "Custom name for the stored object",
+			InnerField: "storage_object_name",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.storage-type",
+			Usage:      "Type of storage to use for results",
+			InnerField: "storage_type",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.storage-url",
+			Usage:      "URL for storage location",
+			InnerField: "storage_url",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.tag",
+			Usage:      "User-defined tag for request identification",
+			InnerField: "tag",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.url",
+			Usage:      "Target URL to scrape",
+			InnerField: "url",
 		},
 	},
 })
