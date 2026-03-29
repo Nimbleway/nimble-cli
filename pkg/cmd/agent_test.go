@@ -45,6 +45,8 @@ func TestAgentRun(t *testing.T) {
 			"agent", "run",
 			"--agent", "agent",
 			"--params", "{foo: bar}",
+			"--format", "html",
+			"--format", "markdown",
 			"--localization=true",
 		)
 	})
@@ -55,6 +57,9 @@ func TestAgentRun(t *testing.T) {
 			"agent: agent\n" +
 			"params:\n" +
 			"  foo: bar\n" +
+			"formats:\n" +
+			"  - html\n" +
+			"  - markdown\n" +
 			"localization: true\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
@@ -74,6 +79,8 @@ func TestAgentRunAsync(t *testing.T) {
 			"--agent", "agent",
 			"--params", "{foo: bar}",
 			"--callback-url", "https://example.com/webhook/callback",
+			"--format", "html",
+			"--format", "markdown",
 			"--localization=true",
 			"--storage-compress=true",
 			"--storage-object-name", "result-2024-01-15.json",
@@ -89,6 +96,9 @@ func TestAgentRunAsync(t *testing.T) {
 			"params:\n" +
 			"  foo: bar\n" +
 			"callback_url: https://example.com/webhook/callback\n" +
+			"formats:\n" +
+			"  - html\n" +
+			"  - markdown\n" +
 			"localization: true\n" +
 			"storage_compress: true\n" +
 			"storage_object_name: result-2024-01-15.json\n" +
