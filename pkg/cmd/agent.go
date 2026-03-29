@@ -81,6 +81,11 @@ var agentRun = cli.Command{
 			Required: true,
 			BodyPath: "params",
 		},
+		&requestflag.Flag[[]string]{
+			Name:     "format",
+			Usage:    "Response formats to include. All disabled by default.",
+			BodyPath: "formats",
+		},
 		&requestflag.Flag[bool]{
 			Name:     "localization",
 			Default:  false,
@@ -110,6 +115,11 @@ var agentRunAsync = cli.Command{
 			Name:     "callback-url",
 			Usage:    "URL to call back when async operation completes",
 			BodyPath: "callback_url",
+		},
+		&requestflag.Flag[[]string]{
+			Name:     "format",
+			Usage:    "Response formats to include. All disabled by default.",
+			BodyPath: "formats",
 		},
 		&requestflag.Flag[bool]{
 			Name:     "localization",
