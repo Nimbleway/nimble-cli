@@ -90,6 +90,7 @@ func init() {
 					&agentGet,
 					&agentRun,
 					&agentRunAsync,
+					&agentRunBatch,
 				},
 			},
 			{
