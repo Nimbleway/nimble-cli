@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Nimbleway/nimble-cli/internal/mocktest"
+	"github.com/Nimbleway/nimble-cli/internal/requestflag"
 )
 
 func TestAgentList(t *testing.T) {
@@ -108,6 +109,63 @@ func TestAgentRunAsync(t *testing.T) {
 			t, pipeData,
 			"--api-key", "string",
 			"agent", "run-async",
+		)
+	})
+}
+
+func TestAgentRunBatch(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agent", "run-batch",
+			"--input", "{formats: [html, markdown], localization: true, params: {foo: bar}}",
+			"--shared-inputs", "{agent: agent, formats: [html, markdown], localization: true, params: {foo: bar}}",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(agentRunBatch)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agent", "run-batch",
+			"--input.formats", "[html, markdown]",
+			"--input.localization=true",
+			"--input.params", "{foo: bar}",
+			"--shared-inputs.agent", "agent",
+			"--shared-inputs.formats", "[html, markdown]",
+			"--shared-inputs.localization=true",
+			"--shared-inputs.params", "{foo: bar}",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"inputs:\n" +
+			"  - formats:\n" +
+			"      - html\n" +
+			"      - markdown\n" +
+			"    localization: true\n" +
+			"    params:\n" +
+			"      foo: bar\n" +
+			"shared_inputs:\n" +
+			"  agent: agent\n" +
+			"  formats:\n" +
+			"    - html\n" +
+			"    - markdown\n" +
+			"  localization: true\n" +
+			"  params:\n" +
+			"    foo: bar\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"agent", "run-batch",
 		)
 	})
 }
