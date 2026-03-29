@@ -151,6 +151,61 @@ var agentRunAsync = cli.Command{
 	HideHelpCommand: true,
 }
 
+var agentRunBatch = requestflag.WithInnerFlags(cli.Command{
+	Name:    "run-batch",
+	Usage:   "Execute WSA Batch Endpoint",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[[]map[string]any]{
+			Name:     "input",
+			Required: true,
+			BodyPath: "inputs",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "shared-inputs",
+			Required: true,
+			BodyPath: "shared_inputs",
+		},
+	},
+	Action:          handleAgentRunBatch,
+	HideHelpCommand: true,
+}, map[string][]requestflag.HasOuterFlag{
+	"input": {
+		&requestflag.InnerFlag[[]string]{
+			Name:       "input.formats",
+			Usage:      "Response formats to include. All disabled by default.",
+			InnerField: "formats",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "input.localization",
+			InnerField: "localization",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "input.params",
+			InnerField: "params",
+		},
+	},
+	"shared-inputs": {
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.agent",
+			InnerField: "agent",
+		},
+		&requestflag.InnerFlag[[]string]{
+			Name:       "shared-inputs.formats",
+			Usage:      "Response formats to include. All disabled by default.",
+			InnerField: "formats",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.localization",
+			InnerField: "localization",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "shared-inputs.params",
+			InnerField: "params",
+		},
+	},
+})
+
 func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -286,4 +341,38 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "agent run-async", obj, format, transform)
+}
+
+func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := githubcomnimblewaynimblego.AgentRunBatchParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agent.RunBatch(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "agent run-batch", obj, format, transform)
 }
