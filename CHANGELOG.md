@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.9.0 (2026-03-29)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/Nimbleway/nimble-cli/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** api update ([ec48bc8](https://github.com/Nimbleway/nimble-cli/commit/ec48bc8f077f60fa86f08bdae82ff48ccada4c08))
+* **api:** api update ([38f3d80](https://github.com/Nimbleway/nimble-cli/commit/38f3d80e0d68ec5dfadb7194c15788544e626386))
+* **api:** manual updates ([20e1bcf](https://github.com/Nimbleway/nimble-cli/commit/20e1bcfa447b3333ce234a702d26efa2b79817bb))
+* set CLI flag constant values automatically where `x-stainless-const` is set ([7a9161c](https://github.com/Nimbleway/nimble-cli/commit/7a9161ccffc7562dafa0fbb225a20733f1e69ef1))
+
+
+### Bug Fixes
+
+* fix for off-by-one error in pagination logic ([0bd270c](https://github.com/Nimbleway/nimble-cli/commit/0bd270cd50a6a3c9b6e920d737de839c45094e15))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([c31626b](https://github.com/Nimbleway/nimble-cli/commit/c31626bb47e30b37ffd433cb0c6960a78a85008f))
+* **internal:** codegen related update ([6193015](https://github.com/Nimbleway/nimble-cli/commit/6193015a604fb09368ddccebb793582b88016866))
+* omit full usage information when missing required CLI parameters ([3516aa9](https://github.com/Nimbleway/nimble-cli/commit/3516aa96b9314254cbf70d6ae1283ea15889c0af))
+
 ## 0.8.0 (2026-03-24)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/Nimbleway/nimble-cli/compare/v0.7.0...v0.8.0)
