@@ -66,6 +66,25 @@ var agentGet = cli.Command{
 	HideHelpCommand: true,
 }
 
+var agentPublish = cli.Command{
+	Name:    "publish",
+	Usage:   "Publish Agent Version",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "agent-name",
+			Required: true,
+		},
+		&requestflag.Flag[string]{
+			Name:     "version-id",
+			Required: true,
+			BodyPath: "version_id",
+		},
+	},
+	Action:          handleAgentPublish,
+	HideHelpCommand: true,
+}
+
 var agentRun = cli.Command{
 	Name:    "run",
 	Usage:   "Execute WSA Realtime Endpoint",
@@ -273,6 +292,48 @@ func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "agent get", obj, format, transform)
+}
+
+func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("agent-name") && len(unusedArgs) > 0 {
+		cmd.Set("agent-name", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := githubcomnimblewaynimblego.AgentPublishParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agent.Publish(
+		ctx,
+		cmd.Value("agent-name").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "agent publish", obj, format, transform)
 }
 
 func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
