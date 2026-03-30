@@ -37,6 +37,30 @@ func TestAgentGet(t *testing.T) {
 	})
 }
 
+func TestAgentPublish(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agent", "publish",
+			"--agent-name", "agent_name",
+			"--version-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("version_id: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"agent", "publish",
+			"--agent-name", "agent_name",
+		)
+	})
+}
+
 func TestAgentRun(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
