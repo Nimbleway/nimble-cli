@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var agentList = cli.Command{
+var agentsList = cli.Command{
 	Name:    "list",
 	Usage:   "List Agent Templates",
 	Suggest: true,
@@ -48,11 +48,11 @@ var agentList = cli.Command{
 			QueryPath: "search",
 		},
 	},
-	Action:          handleAgentList,
+	Action:          handleAgentsList,
 	HideHelpCommand: true,
 }
 
-var agentGet = cli.Command{
+var agentsGet = cli.Command{
 	Name:    "get",
 	Usage:   "Get Agent Template",
 	Suggest: true,
@@ -62,11 +62,11 @@ var agentGet = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAgentGet,
+	Action:          handleAgentsGet,
 	HideHelpCommand: true,
 }
 
-var agentPublish = cli.Command{
+var agentsPublish = cli.Command{
 	Name:    "publish",
 	Usage:   "Publish Agent Version",
 	Suggest: true,
@@ -81,11 +81,11 @@ var agentPublish = cli.Command{
 			BodyPath: "version_id",
 		},
 	},
-	Action:          handleAgentPublish,
+	Action:          handleAgentsPublish,
 	HideHelpCommand: true,
 }
 
-var agentRun = cli.Command{
+var agentsRun = cli.Command{
 	Name:    "run",
 	Usage:   "Execute WSA Realtime Endpoint",
 	Suggest: true,
@@ -111,11 +111,11 @@ var agentRun = cli.Command{
 			BodyPath: "localization",
 		},
 	},
-	Action:          handleAgentRun,
+	Action:          handleAgentsRun,
 	HideHelpCommand: true,
 }
 
-var agentRunAsync = cli.Command{
+var agentsRunAsync = cli.Command{
 	Name:    "run-async",
 	Usage:   "Execute WSA Async Endpoint",
 	Suggest: true,
@@ -166,11 +166,11 @@ var agentRunAsync = cli.Command{
 			BodyPath: "storage_url",
 		},
 	},
-	Action:          handleAgentRunAsync,
+	Action:          handleAgentsRunAsync,
 	HideHelpCommand: true,
 }
 
-var agentRunBatch = requestflag.WithInnerFlags(cli.Command{
+var agentsRunBatch = requestflag.WithInnerFlags(cli.Command{
 	Name:    "run-batch",
 	Usage:   "Execute WSA Batch Endpoint",
 	Suggest: true,
@@ -186,7 +186,7 @@ var agentRunBatch = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "shared_inputs",
 		},
 	},
-	Action:          handleAgentRunBatch,
+	Action:          handleAgentsRunBatch,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"input": {
@@ -225,7 +225,7 @@ var agentRunBatch = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-func handleAgentList(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsList(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -248,7 +248,7 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.List(ctx, params, options...)
+	_, err = client.Agents.List(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -256,10 +256,10 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent list", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents list", obj, format, transform)
 }
 
-func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsGet(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("template-name") && len(unusedArgs) > 0 {
@@ -283,7 +283,7 @@ func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.Get(ctx, cmd.Value("template-name").(string), options...)
+	_, err = client.Agents.Get(ctx, cmd.Value("template-name").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -291,10 +291,10 @@ func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent get", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents get", obj, format, transform)
 }
 
-func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsPublish(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("agent-name") && len(unusedArgs) > 0 {
@@ -320,7 +320,7 @@ func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.Publish(
+	_, err = client.Agents.Publish(
 		ctx,
 		cmd.Value("agent-name").(string),
 		params,
@@ -333,10 +333,10 @@ func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent publish", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents publish", obj, format, transform)
 }
 
-func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsRun(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -359,7 +359,7 @@ func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.Run(ctx, params, options...)
+	_, err = client.Agents.Run(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -367,10 +367,10 @@ func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent run", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents run", obj, format, transform)
 }
 
-func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsRunAsync(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -393,7 +393,7 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.RunAsync(ctx, params, options...)
+	_, err = client.Agents.RunAsync(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -401,10 +401,10 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent run-async", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents run-async", obj, format, transform)
 }
 
-func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsRunBatch(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -427,7 +427,7 @@ func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.RunBatch(ctx, params, options...)
+	_, err = client.Agents.RunBatch(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -435,5 +435,5 @@ func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent run-batch", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents run-batch", obj, format, transform)
 }

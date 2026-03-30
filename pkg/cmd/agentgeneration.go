@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var agentGenerationsCreate = cli.Command{
+var agentsGenerationsCreate = cli.Command{
 	Name:    "create",
 	Usage:   "Create Agent Generation",
 	Suggest: true,
@@ -53,11 +53,11 @@ var agentGenerationsCreate = cli.Command{
 			BodyPath: "from_agent",
 		},
 	},
-	Action:          handleAgentGenerationsCreate,
+	Action:          handleAgentsGenerationsCreate,
 	HideHelpCommand: true,
 }
 
-var agentGenerationsGet = cli.Command{
+var agentsGenerationsGet = cli.Command{
 	Name:    "get",
 	Usage:   "Get Agent Generation",
 	Suggest: true,
@@ -67,11 +67,11 @@ var agentGenerationsGet = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAgentGenerationsGet,
+	Action:          handleAgentsGenerationsGet,
 	HideHelpCommand: true,
 }
 
-func handleAgentGenerationsCreate(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsGenerationsCreate(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -94,7 +94,7 @@ func handleAgentGenerationsCreate(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.Generations.New(ctx, params, options...)
+	_, err = client.Agents.Generations.New(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -102,10 +102,10 @@ func handleAgentGenerationsCreate(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent:generations create", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents:generations create", obj, format, transform)
 }
 
-func handleAgentGenerationsGet(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsGenerationsGet(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("generation-id") && len(unusedArgs) > 0 {
@@ -129,7 +129,7 @@ func handleAgentGenerationsGet(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.Generations.Get(ctx, cmd.Value("generation-id").(string), options...)
+	_, err = client.Agents.Generations.Get(ctx, cmd.Value("generation-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -137,5 +137,5 @@ func handleAgentGenerationsGet(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent:generations get", obj, format, transform)
+	return ShowJSON(os.Stdout, "agents:generations get", obj, format, transform)
 }
