@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.0 (2026-03-30)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/Nimbleway/nimble-cli/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* **api:** api update ([3853f10](https://github.com/Nimbleway/nimble-cli/commit/3853f10c43158cf7bbcc1232ac04e7441b19b438))
+* **api:** manual updates ([3451260](https://github.com/Nimbleway/nimble-cli/commit/34512601014966c7f5cbef8935f58e597e84138f))
+* **api:** manual updates ([a60bd86](https://github.com/Nimbleway/nimble-cli/commit/a60bd86a2a818b4472388c3d0820638ee47f2ae1))
+* **api:** manual updates ([c4ef450](https://github.com/Nimbleway/nimble-cli/commit/c4ef45062cc3cd12a05f979650cf03e552991019))
+* **api:** rename agent resource -&gt; agents ([a2abcba](https://github.com/Nimbleway/nimble-cli/commit/a2abcbaf793632ca040601472d440c79872e6977))
+
 ## 0.9.0 (2026-03-29)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/Nimbleway/nimble-cli/compare/v0.8.0...v0.9.0)
