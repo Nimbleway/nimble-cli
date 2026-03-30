@@ -17,7 +17,7 @@ import (
 
 var agentList = cli.Command{
 	Name:    "list",
-	Usage:   "List Templates",
+	Usage:   "List Agent Templates",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[int64]{
@@ -54,7 +54,7 @@ var agentList = cli.Command{
 
 var agentGet = cli.Command{
 	Name:    "get",
-	Usage:   "Get Template",
+	Usage:   "Get Agent Template",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
