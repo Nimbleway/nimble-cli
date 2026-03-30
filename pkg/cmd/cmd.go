@@ -87,20 +87,13 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&agentList,
+					&agentGenerate,
 					&agentGet,
+					&agentGetGeneration,
 					&agentPublish,
 					&agentRun,
 					&agentRunAsync,
 					&agentRunBatch,
-				},
-			},
-			{
-				Name:     "agent:generations",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&agentGenerationsCreate,
-					&agentGenerationsGet,
 				},
 			},
 			{
