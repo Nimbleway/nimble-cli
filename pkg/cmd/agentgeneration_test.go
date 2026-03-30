@@ -8,13 +8,13 @@ import (
 	"github.com/Nimbleway/nimble-cli/internal/mocktest"
 )
 
-func TestAgentsGenerationsCreate(t *testing.T) {
+func TestAgentGenerationsCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agents:generations", "create",
+			"agent:generations", "create",
 			"--agent-name", "agent_name",
 			"--prompt", "prompt",
 			"--url", "url",
@@ -38,18 +38,18 @@ func TestAgentsGenerationsCreate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agents:generations", "create",
+			"agent:generations", "create",
 		)
 	})
 }
 
-func TestAgentsGenerationsGet(t *testing.T) {
+func TestAgentGenerationsGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agents:generations", "get",
+			"agent:generations", "get",
 			"--generation-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
