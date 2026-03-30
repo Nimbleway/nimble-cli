@@ -9,13 +9,13 @@ import (
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
 )
 
-func TestAgentList(t *testing.T) {
+func TestAgentsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "list",
+			"agents", "list",
 			"--limit", "1",
 			"--managed-by", "nimble",
 			"--offset", "0",
@@ -25,25 +25,25 @@ func TestAgentList(t *testing.T) {
 	})
 }
 
-func TestAgentGet(t *testing.T) {
+func TestAgentsGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "get",
+			"agents", "get",
 			"--template-name", "template_name",
 		)
 	})
 }
 
-func TestAgentPublish(t *testing.T) {
+func TestAgentsPublish(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "publish",
+			"agents", "publish",
 			"--agent-name", "agent_name",
 			"--version-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
@@ -55,19 +55,19 @@ func TestAgentPublish(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agent", "publish",
+			"agents", "publish",
 			"--agent-name", "agent_name",
 		)
 	})
 }
 
-func TestAgentRun(t *testing.T) {
+func TestAgentsRun(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "run",
+			"agents", "run",
 			"--agent", "agent",
 			"--params", "{foo: bar}",
 			"--format", "html",
@@ -89,18 +89,18 @@ func TestAgentRun(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agent", "run",
+			"agents", "run",
 		)
 	})
 }
 
-func TestAgentRunAsync(t *testing.T) {
+func TestAgentsRunAsync(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "run-async",
+			"agents", "run-async",
 			"--agent", "agent",
 			"--params", "{foo: bar}",
 			"--callback-url", "https://example.com/webhook/callback",
@@ -132,18 +132,18 @@ func TestAgentRunAsync(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agent", "run-async",
+			"agents", "run-async",
 		)
 	})
 }
 
-func TestAgentRunBatch(t *testing.T) {
+func TestAgentsRunBatch(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "run-batch",
+			"agents", "run-batch",
 			"--input", "{formats: [html, markdown], localization: true, params: {foo: bar}}",
 			"--shared-inputs", "{agent: agent, formats: [html, markdown], localization: true, params: {foo: bar}}",
 		)
@@ -151,13 +151,13 @@ func TestAgentRunBatch(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(agentRunBatch)
+		requestflag.CheckInnerFlags(agentsRunBatch)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "run-batch",
+			"agents", "run-batch",
 			"--input.formats", "[html, markdown]",
 			"--input.localization=true",
 			"--input.params", "{foo: bar}",
@@ -189,7 +189,7 @@ func TestAgentRunBatch(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agent", "run-batch",
+			"agents", "run-batch",
 		)
 	})
 }
