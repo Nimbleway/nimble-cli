@@ -52,6 +52,48 @@ var agentList = cli.Command{
 	HideHelpCommand: true,
 }
 
+var agentGenerate = cli.Command{
+	Name:    "generate",
+	Usage:   "Create Agent Generation",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "agent-name",
+			Required: true,
+			BodyPath: "agent_name",
+		},
+		&requestflag.Flag[string]{
+			Name:     "prompt",
+			Required: true,
+			BodyPath: "prompt",
+		},
+		&requestflag.Flag[string]{
+			Name:     "url",
+			Required: true,
+			BodyPath: "url",
+		},
+		&requestflag.Flag[any]{
+			Name:     "input-schema",
+			BodyPath: "input_schema",
+		},
+		&requestflag.Flag[any]{
+			Name:     "metadata",
+			BodyPath: "metadata",
+		},
+		&requestflag.Flag[any]{
+			Name:     "output-schema",
+			BodyPath: "output_schema",
+		},
+		&requestflag.Flag[string]{
+			Name:     "from-agent",
+			Required: true,
+			BodyPath: "from_agent",
+		},
+	},
+	Action:          handleAgentGenerate,
+	HideHelpCommand: true,
+}
+
 var agentGet = cli.Command{
 	Name:    "get",
 	Usage:   "Get Agent Template",
@@ -63,6 +105,20 @@ var agentGet = cli.Command{
 		},
 	},
 	Action:          handleAgentGet,
+	HideHelpCommand: true,
+}
+
+var agentGetGeneration = cli.Command{
+	Name:    "get-generation",
+	Usage:   "Get Agent Generation",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "generation-id",
+			Required: true,
+		},
+	},
+	Action:          handleAgentGetGeneration,
 	HideHelpCommand: true,
 }
 
@@ -259,6 +315,40 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(os.Stdout, "agent list", obj, format, transform)
 }
 
+func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := githubcomnimblewaynimblego.AgentGenerateParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agent.Generate(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "agent generate", obj, format, transform)
+}
+
 func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -292,6 +382,41 @@ func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "agent get", obj, format, transform)
+}
+
+func handleAgentGetGeneration(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("generation-id") && len(unusedArgs) > 0 {
+		cmd.Set("generation-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agent.GetGeneration(ctx, cmd.Value("generation-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "agent get-generation", obj, format, transform)
 }
 
 func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
