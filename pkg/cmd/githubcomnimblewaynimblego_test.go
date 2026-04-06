@@ -38,7 +38,7 @@ func TestExtract(t *testing.T) {
 			"--is-xhr=true",
 			"--locale", "en-US",
 			"--method", "GET",
-			"--network-capture", "{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}",
+			"--network-capture", "{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}",
 			"--os", "windows",
 			"--parse=true",
 			"--parser", "{myParser: bar}",
@@ -86,6 +86,7 @@ func TestExtract(t *testing.T) {
 			"--network-capture.method", "GET",
 			"--network-capture.resource-type", "document",
 			"--network-capture.status-code", "100",
+			"--network-capture.stop-on-render-flow-failure=true",
 			"--network-capture.url", "{value: value, type: exact}",
 			"--network-capture.validation=true",
 			"--network-capture.wait-for-requests-count", "0",
@@ -186,6 +187,7 @@ func TestExtract(t *testing.T) {
 			"  - method: GET\n" +
 			"    resource_type: document\n" +
 			"    status_code: 100\n" +
+			"    stop_on_render_flow_failure: true\n" +
 			"    url:\n" +
 			"      value: value\n" +
 			"      type: exact\n" +
@@ -245,7 +247,7 @@ func TestExtractAsync(t *testing.T) {
 			"--is-xhr=true",
 			"--locale", "en-US",
 			"--method", "GET",
-			"--network-capture", "{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}",
+			"--network-capture", "{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}",
 			"--os", "windows",
 			"--parse=true",
 			"--parser", "{myParser: bar}",
@@ -298,6 +300,7 @@ func TestExtractAsync(t *testing.T) {
 			"--network-capture.method", "GET",
 			"--network-capture.resource-type", "document",
 			"--network-capture.status-code", "100",
+			"--network-capture.stop-on-render-flow-failure=true",
 			"--network-capture.url", "{value: value, type: exact}",
 			"--network-capture.validation=true",
 			"--network-capture.wait-for-requests-count", "0",
@@ -403,6 +406,7 @@ func TestExtractAsync(t *testing.T) {
 			"  - method: GET\n" +
 			"    resource_type: document\n" +
 			"    status_code: 100\n" +
+			"    stop_on_render_flow_failure: true\n" +
 			"    url:\n" +
 			"      value: value\n" +
 			"      type: exact\n" +
@@ -443,8 +447,8 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
-			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
-			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
 		)
 	})
 
@@ -473,7 +477,7 @@ func TestExtractBatch(t *testing.T) {
 			"--input.is-xhr=true",
 			"--input.locale", "en-US",
 			"--input.method", "GET",
-			"--input.network-capture", "[{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
+			"--input.network-capture", "[{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
 			"--input.os", "windows",
 			"--input.parse=true",
 			"--input.parser", "{myParser: bar}",
@@ -505,7 +509,7 @@ func TestExtractBatch(t *testing.T) {
 			"--shared-inputs.is-xhr=true",
 			"--shared-inputs.locale", "en-US",
 			"--shared-inputs.method", "GET",
-			"--shared-inputs.network-capture", "[{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
+			"--shared-inputs.network-capture", "[{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
 			"--shared-inputs.os", "windows",
 			"--shared-inputs.parse=true",
 			"--shared-inputs.parser", "{myParser: bar}",
@@ -605,6 +609,7 @@ func TestExtractBatch(t *testing.T) {
 			"      - method: GET\n" +
 			"        resource_type: document\n" +
 			"        status_code: 100\n" +
+			"        stop_on_render_flow_failure: true\n" +
 			"        url:\n" +
 			"          value: value\n" +
 			"          type: exact\n" +
@@ -709,6 +714,7 @@ func TestExtractBatch(t *testing.T) {
 			"    - method: GET\n" +
 			"      resource_type: document\n" +
 			"      status_code: 100\n" +
+			"      stop_on_render_flow_failure: true\n" +
 			"      url:\n" +
 			"        value: value\n" +
 			"        type: exact\n" +
