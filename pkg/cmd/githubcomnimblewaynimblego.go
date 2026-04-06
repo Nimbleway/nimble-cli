@@ -182,6 +182,10 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			Name:       "network-capture.status-code",
 			InnerField: "status_code",
 		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "network-capture.stop-on-render-flow-failure",
+			InnerField: "stop_on_render_flow_failure",
+		},
 		&requestflag.InnerFlag[map[string]any]{
 			Name:       "network-capture.url",
 			InnerField: "url",
@@ -410,6 +414,10 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.InnerFlag[any]{
 			Name:       "network-capture.status-code",
 			InnerField: "status_code",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "network-capture.stop-on-render-flow-failure",
+			InnerField: "stop_on_render_flow_failure",
 		},
 		&requestflag.InnerFlag[map[string]any]{
 			Name:       "network-capture.url",
