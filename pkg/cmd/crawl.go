@@ -130,7 +130,7 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Browser type to emulate",
 			InnerField: "browser",
 		},
-		&requestflag.InnerFlag[[]any]{
+		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "extract-options.browser-actions",
 			Usage:      "Array of browser automation actions to execute sequentially",
 			InnerField: "browser_actions",
