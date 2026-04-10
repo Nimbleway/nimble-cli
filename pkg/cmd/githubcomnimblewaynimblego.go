@@ -31,7 +31,7 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Browser type to emulate",
 			BodyPath: "browser",
 		},
-		&requestflag.Flag[[]any]{
+		&requestflag.Flag[[]map[string]any]{
 			Name:     "browser-action",
 			Usage:    "Array of browser automation actions to execute sequentially",
 			BodyPath: "browser_actions",
@@ -239,7 +239,7 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Browser type to emulate",
 			BodyPath: "browser",
 		},
-		&requestflag.Flag[[]any]{
+		&requestflag.Flag[[]map[string]any]{
 			Name:     "browser-action",
 			Usage:    "Array of browser automation actions to execute sequentially",
 			BodyPath: "browser_actions",
@@ -482,7 +482,7 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Browser type to emulate",
 			InnerField: "browser",
 		},
-		&requestflag.InnerFlag[[]any]{
+		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "input.browser-actions",
 			Usage:      "Array of browser automation actions to execute sequentially",
 			InnerField: "browser_actions",
@@ -643,7 +643,7 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Browser type to emulate",
 			InnerField: "browser",
 		},
-		&requestflag.InnerFlag[[]any]{
+		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "shared-inputs.browser-actions",
 			Usage:      "Array of browser automation actions to execute sequentially",
 			InnerField: "browser_actions",
