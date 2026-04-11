@@ -26,7 +26,7 @@ func TestExtract(t *testing.T) {
 			"--browser-action", "{screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}",
 			"--city", "Los Angeles",
 			"--consent-header=true",
-			"--cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--cookies", "sessionId=abc123; userId=user456",
 			"--country", "US",
 			"--device", "desktop",
 			"--driver", "vx8",
@@ -71,7 +71,7 @@ func TestExtract(t *testing.T) {
 			"--browser-action", "{screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}",
 			"--city", "Los Angeles",
 			"--consent-header=true",
-			"--cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--cookies", "sessionId=abc123; userId=user456",
 			"--country", "US",
 			"--device", "desktop",
 			"--driver", "vx8",
@@ -152,22 +152,7 @@ func TestExtract(t *testing.T) {
 			"      skip: 'true'\n" +
 			"city: Los Angeles\n" +
 			"consent_header: true\n" +
-			"cookies:\n" +
-			"  - creation: creation\n" +
-			"    domain: domain\n" +
-			"    expires: expires\n" +
-			"    extensions:\n" +
-			"      - string\n" +
-			"    hostOnly: true\n" +
-			"    httpOnly: true\n" +
-			"    lastAccessed: lastAccessed\n" +
-			"    maxAge: Infinity\n" +
-			"    name: name\n" +
-			"    path: path\n" +
-			"    pathIsDefault: true\n" +
-			"    sameSite: strict\n" +
-			"    secure: true\n" +
-			"    value: value\n" +
+			"cookies: sessionId=abc123; userId=user456\n" +
 			"country: US\n" +
 			"device: desktop\n" +
 			"driver: vx8\n" +
@@ -235,7 +220,7 @@ func TestExtractAsync(t *testing.T) {
 			"--callback-url", "https://example.com/webhook/callback",
 			"--city", "Los Angeles",
 			"--consent-header=true",
-			"--cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--cookies", "sessionId=abc123; userId=user456",
 			"--country", "US",
 			"--device", "desktop",
 			"--driver", "vx8",
@@ -285,7 +270,7 @@ func TestExtractAsync(t *testing.T) {
 			"--callback-url", "https://example.com/webhook/callback",
 			"--city", "Los Angeles",
 			"--consent-header=true",
-			"--cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--cookies", "sessionId=abc123; userId=user456",
 			"--country", "US",
 			"--device", "desktop",
 			"--driver", "vx8",
@@ -371,22 +356,7 @@ func TestExtractAsync(t *testing.T) {
 			"callback_url: https://example.com/webhook/callback\n" +
 			"city: Los Angeles\n" +
 			"consent_header: true\n" +
-			"cookies:\n" +
-			"  - creation: creation\n" +
-			"    domain: domain\n" +
-			"    expires: expires\n" +
-			"    extensions:\n" +
-			"      - string\n" +
-			"    hostOnly: true\n" +
-			"    httpOnly: true\n" +
-			"    lastAccessed: lastAccessed\n" +
-			"    maxAge: Infinity\n" +
-			"    name: name\n" +
-			"    path: path\n" +
-			"    pathIsDefault: true\n" +
-			"    sameSite: strict\n" +
-			"    secure: true\n" +
-			"    value: value\n" +
+			"cookies: sessionId=abc123; userId=user456\n" +
 			"country: US\n" +
 			"device: desktop\n" +
 			"driver: vx8\n" +
@@ -447,8 +417,8 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
-			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
-			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: [{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}], country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
 		)
 	})
 
@@ -466,7 +436,7 @@ func TestExtractBatch(t *testing.T) {
 			"--input.callback-url", "https://example.com/webhook/callback",
 			"--input.city", "Los Angeles",
 			"--input.consent-header=true",
-			"--input.cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--input.cookies", "sessionId=abc123; userId=user456",
 			"--input.country", "US",
 			"--input.device", "desktop",
 			"--input.driver", "vx8",
@@ -498,7 +468,7 @@ func TestExtractBatch(t *testing.T) {
 			"--shared-inputs.callback-url", "https://example.com/webhook/callback",
 			"--shared-inputs.city", "Los Angeles",
 			"--shared-inputs.consent-header=true",
-			"--shared-inputs.cookies", "[{creation: creation, domain: domain, expires: expires, extensions: [string], hostOnly: true, httpOnly: true, lastAccessed: lastAccessed, maxAge: Infinity, name: name, path: path, pathIsDefault: true, sameSite: strict, secure: true, value: value}]",
+			"--shared-inputs.cookies", "sessionId=abc123; userId=user456",
 			"--shared-inputs.country", "US",
 			"--shared-inputs.device", "desktop",
 			"--shared-inputs.driver", "vx8",
@@ -574,22 +544,7 @@ func TestExtractBatch(t *testing.T) {
 			"    callback_url: https://example.com/webhook/callback\n" +
 			"    city: Los Angeles\n" +
 			"    consent_header: true\n" +
-			"    cookies:\n" +
-			"      - creation: creation\n" +
-			"        domain: domain\n" +
-			"        expires: expires\n" +
-			"        extensions:\n" +
-			"          - string\n" +
-			"        hostOnly: true\n" +
-			"        httpOnly: true\n" +
-			"        lastAccessed: lastAccessed\n" +
-			"        maxAge: Infinity\n" +
-			"        name: name\n" +
-			"        path: path\n" +
-			"        pathIsDefault: true\n" +
-			"        sameSite: strict\n" +
-			"        secure: true\n" +
-			"        value: value\n" +
+			"    cookies: sessionId=abc123; userId=user456\n" +
 			"    country: US\n" +
 			"    device: desktop\n" +
 			"    driver: vx8\n" +
@@ -679,22 +634,7 @@ func TestExtractBatch(t *testing.T) {
 			"  callback_url: https://example.com/webhook/callback\n" +
 			"  city: Los Angeles\n" +
 			"  consent_header: true\n" +
-			"  cookies:\n" +
-			"    - creation: creation\n" +
-			"      domain: domain\n" +
-			"      expires: expires\n" +
-			"      extensions:\n" +
-			"        - string\n" +
-			"      hostOnly: true\n" +
-			"      httpOnly: true\n" +
-			"      lastAccessed: lastAccessed\n" +
-			"      maxAge: Infinity\n" +
-			"      name: name\n" +
-			"      path: path\n" +
-			"      pathIsDefault: true\n" +
-			"      sameSite: strict\n" +
-			"      secure: true\n" +
-			"      value: value\n" +
+			"  cookies: sessionId=abc123; userId=user456\n" +
 			"  country: US\n" +
 			"  device: desktop\n" +
 			"  driver: vx8\n" +
