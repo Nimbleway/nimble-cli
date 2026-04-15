@@ -103,6 +103,12 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "locale",
 		},
 		&requestflag.Flag[string]{
+			Name:     "markdown-backend",
+			Usage:    `Selects which markdown conversion strategy to use. "full_page" converts the entire HTML page. "main_content" uses Mozilla Readability to extract the main article content before converting.`,
+			Default:  "full_page",
+			BodyPath: "markdown_backend",
+		},
+		&requestflag.Flag[string]{
 			Name:     "method",
 			Usage:    "HTTP method for the request",
 			Default:  "GET",
@@ -314,6 +320,12 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Locale for browser language and region settings",
 			Default:  "en",
 			BodyPath: "locale",
+		},
+		&requestflag.Flag[string]{
+			Name:     "markdown-backend",
+			Usage:    `Selects which markdown conversion strategy to use. "full_page" converts the entire HTML page. "main_content" uses Mozilla Readability to extract the main article content before converting.`,
+			Default:  "full_page",
+			BodyPath: "markdown_backend",
 		},
 		&requestflag.Flag[string]{
 			Name:     "method",
@@ -553,6 +565,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "locale",
 		},
 		&requestflag.InnerFlag[string]{
+			Name:       "input.markdown-backend",
+			Usage:      `Selects which markdown conversion strategy to use. "full_page" converts the entire HTML page. "main_content" uses Mozilla Readability to extract the main article content before converting.`,
+			InnerField: "markdown_backend",
+		},
+		&requestflag.InnerFlag[string]{
 			Name:       "input.method",
 			Usage:      "HTTP method for the request",
 			InnerField: "method",
@@ -712,6 +729,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Name:       "shared-inputs.locale",
 			Usage:      "Locale for browser language and region settings",
 			InnerField: "locale",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "shared-inputs.markdown-backend",
+			Usage:      `Selects which markdown conversion strategy to use. "full_page" converts the entire HTML page. "main_content" uses Mozilla Readability to extract the main article content before converting.`,
+			InnerField: "markdown_backend",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "shared-inputs.method",

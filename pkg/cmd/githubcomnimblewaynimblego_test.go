@@ -33,10 +33,11 @@ func TestExtract(t *testing.T) {
 			"--expected-status-code", "200",
 			"--expected-status-code", "201",
 			"--format", "html",
-			"--headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--http2=true",
 			"--is-xhr=true",
 			"--locale", "en-US",
+			"--markdown-backend", "full_page",
 			"--method", "GET",
 			"--network-capture", "{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}",
 			"--os", "windows",
@@ -78,10 +79,11 @@ func TestExtract(t *testing.T) {
 			"--expected-status-code", "200",
 			"--expected-status-code", "201",
 			"--format", "html",
-			"--headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--http2=true",
 			"--is-xhr=true",
 			"--locale", "en-US",
+			"--markdown-backend", "full_page",
 			"--method", "GET",
 			"--network-capture.method", "GET",
 			"--network-capture.resource-type", "document",
@@ -162,11 +164,12 @@ func TestExtract(t *testing.T) {
 			"formats:\n" +
 			"  - html\n" +
 			"headers:\n" +
-			"  User-Agent: CustomBot/1.0\n" +
 			"  Accept-Language: en-US\n" +
+			"  User-Agent: CustomBot/1.0\n" +
 			"http2: true\n" +
 			"is_xhr: true\n" +
 			"locale: en-US\n" +
+			"markdown_backend: full_page\n" +
 			"method: GET\n" +
 			"network_capture:\n" +
 			"  - method: GET\n" +
@@ -227,10 +230,11 @@ func TestExtractAsync(t *testing.T) {
 			"--expected-status-code", "200",
 			"--expected-status-code", "201",
 			"--format", "html",
-			"--headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--http2=true",
 			"--is-xhr=true",
 			"--locale", "en-US",
+			"--markdown-backend", "full_page",
 			"--method", "GET",
 			"--network-capture", "{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}",
 			"--os", "windows",
@@ -277,10 +281,11 @@ func TestExtractAsync(t *testing.T) {
 			"--expected-status-code", "200",
 			"--expected-status-code", "201",
 			"--format", "html",
-			"--headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--http2=true",
 			"--is-xhr=true",
 			"--locale", "en-US",
+			"--markdown-backend", "full_page",
 			"--method", "GET",
 			"--network-capture.method", "GET",
 			"--network-capture.resource-type", "document",
@@ -366,11 +371,12 @@ func TestExtractAsync(t *testing.T) {
 			"formats:\n" +
 			"  - html\n" +
 			"headers:\n" +
-			"  User-Agent: CustomBot/1.0\n" +
 			"  Accept-Language: en-US\n" +
+			"  User-Agent: CustomBot/1.0\n" +
 			"http2: true\n" +
 			"is_xhr: true\n" +
 			"locale: en-US\n" +
+			"markdown_backend: full_page\n" +
 			"method: GET\n" +
 			"network_capture:\n" +
 			"  - method: GET\n" +
@@ -417,8 +423,8 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
-			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
-			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
 		)
 	})
 
@@ -442,10 +448,11 @@ func TestExtractBatch(t *testing.T) {
 			"--input.driver", "vx8",
 			"--input.expected-status-codes", "[200, 201]",
 			"--input.formats", "[html]",
-			"--input.headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--input.headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--input.http2=true",
 			"--input.is-xhr=true",
 			"--input.locale", "en-US",
+			"--input.markdown-backend", "full_page",
 			"--input.method", "GET",
 			"--input.network-capture", "[{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
 			"--input.os", "windows",
@@ -474,10 +481,11 @@ func TestExtractBatch(t *testing.T) {
 			"--shared-inputs.driver", "vx8",
 			"--shared-inputs.expected-status-codes", "[200, 201]",
 			"--shared-inputs.formats", "[html]",
-			"--shared-inputs.headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--shared-inputs.headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--shared-inputs.http2=true",
 			"--shared-inputs.is-xhr=true",
 			"--shared-inputs.locale", "en-US",
+			"--shared-inputs.markdown-backend", "full_page",
 			"--shared-inputs.method", "GET",
 			"--shared-inputs.network-capture", "[{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
 			"--shared-inputs.os", "windows",
@@ -554,11 +562,12 @@ func TestExtractBatch(t *testing.T) {
 			"    formats:\n" +
 			"      - html\n" +
 			"    headers:\n" +
-			"      User-Agent: CustomBot/1.0\n" +
 			"      Accept-Language: en-US\n" +
+			"      User-Agent: CustomBot/1.0\n" +
 			"    http2: true\n" +
 			"    is_xhr: true\n" +
 			"    locale: en-US\n" +
+			"    markdown_backend: full_page\n" +
 			"    method: GET\n" +
 			"    network_capture:\n" +
 			"      - method: GET\n" +
@@ -644,11 +653,12 @@ func TestExtractBatch(t *testing.T) {
 			"  formats:\n" +
 			"    - html\n" +
 			"  headers:\n" +
-			"    User-Agent: CustomBot/1.0\n" +
 			"    Accept-Language: en-US\n" +
+			"    User-Agent: CustomBot/1.0\n" +
 			"  http2: true\n" +
 			"  is_xhr: true\n" +
 			"  locale: en-US\n" +
+			"  markdown_backend: full_page\n" +
 			"  method: GET\n" +
 			"  network_capture:\n" +
 			"    - method: GET\n" +

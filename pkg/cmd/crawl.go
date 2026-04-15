@@ -196,6 +196,11 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "locale",
 		},
 		&requestflag.InnerFlag[string]{
+			Name:       "extract-options.markdown-backend",
+			Usage:      `Selects which markdown conversion strategy to use. "full_page" converts the entire HTML page. "main_content" uses Mozilla Readability to extract the main article content before converting.`,
+			InnerField: "markdown_backend",
+		},
+		&requestflag.InnerFlag[string]{
 			Name:       "extract-options.method",
 			Usage:      "HTTP method for the request",
 			InnerField: "method",

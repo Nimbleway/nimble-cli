@@ -52,16 +52,11 @@ var agentList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var agentGenerate = cli.Command{
+var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "generate",
 	Usage:   "Create Agent Generation",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "agent-name",
-			Required: true,
-			BodyPath: "agent_name",
-		},
 		&requestflag.Flag[string]{
 			Name:     "prompt",
 			Required: true,
@@ -73,10 +68,14 @@ var agentGenerate = cli.Command{
 			BodyPath: "url",
 		},
 		&requestflag.Flag[any]{
+			Name:     "agent-name",
+			BodyPath: "agent_name",
+		},
+		&requestflag.Flag[any]{
 			Name:     "input-schema",
 			BodyPath: "input_schema",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[map[string]any]{
 			Name:     "metadata",
 			BodyPath: "metadata",
 		},
@@ -92,7 +91,22 @@ var agentGenerate = cli.Command{
 	},
 	Action:          handleAgentGenerate,
 	HideHelpCommand: true,
-}
+}, map[string][]requestflag.HasOuterFlag{
+	"metadata": {
+		&requestflag.InnerFlag[any]{
+			Name:       "metadata.description",
+			InnerField: "description",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "metadata.display-name",
+			InnerField: "display_name",
+		},
+		&requestflag.InnerFlag[[]string]{
+			Name:       "metadata.tags",
+			InnerField: "tags",
+		},
+	},
+})
 
 var agentGet = cli.Command{
 	Name:    "get",
