@@ -32,11 +32,32 @@ func TestAgentGenerate(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"agent", "generate",
-			"--agent-name", "agent_name",
 			"--prompt", "prompt",
 			"--url", "url",
+			"--agent-name", "agent_name",
 			"--input-schema", "{}",
-			"--metadata", "{}",
+			"--metadata", "{description: description, display_name: display_name, tags: [string]}",
+			"--output-schema", "{}",
+			"--from-agent", "from_agent",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(agentGenerate)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agent", "generate",
+			"--prompt", "prompt",
+			"--url", "url",
+			"--agent-name", "agent_name",
+			"--input-schema", "{}",
+			"--metadata.description", "description",
+			"--metadata.display-name", "display_name",
+			"--metadata.tags", "[string]",
 			"--output-schema", "{}",
 			"--from-agent", "from_agent",
 		)
@@ -45,11 +66,15 @@ func TestAgentGenerate(t *testing.T) {
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
-			"agent_name: agent_name\n" +
 			"prompt: prompt\n" +
 			"url: url\n" +
+			"agent_name: agent_name\n" +
 			"input_schema: {}\n" +
-			"metadata: {}\n" +
+			"metadata:\n" +
+			"  description: description\n" +
+			"  display_name: display_name\n" +
+			"  tags:\n" +
+			"    - string\n" +
 			"output_schema: {}\n" +
 			"from_agent: from_agent\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
