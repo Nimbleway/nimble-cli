@@ -311,8 +311,9 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent list", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent list", obj, format, explicitFormat, transform)
 }
 
 func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
@@ -345,8 +346,9 @@ func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent generate", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent generate", obj, format, explicitFormat, transform)
 }
 
 func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
@@ -380,8 +382,9 @@ func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent get", obj, format, explicitFormat, transform)
 }
 
 func handleAgentGetGeneration(ctx context.Context, cmd *cli.Command) error {
@@ -415,8 +418,9 @@ func handleAgentGetGeneration(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent get-generation", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent get-generation", obj, format, explicitFormat, transform)
 }
 
 func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
@@ -457,8 +461,9 @@ func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent publish", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent publish", obj, format, explicitFormat, transform)
 }
 
 func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
@@ -491,8 +496,9 @@ func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent run", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent run", obj, format, explicitFormat, transform)
 }
 
 func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
@@ -525,8 +531,9 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent run-async", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent run-async", obj, format, explicitFormat, transform)
 }
 
 func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
@@ -559,6 +566,7 @@ func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "agent run-batch", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "agent run-batch", obj, format, explicitFormat, transform)
 }

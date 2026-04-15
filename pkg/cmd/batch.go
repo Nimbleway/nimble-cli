@@ -107,8 +107,9 @@ func handleBatchesGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "batches get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "batches get", obj, format, explicitFormat, transform)
 }
 
 func handleBatchesProgress(ctx context.Context, cmd *cli.Command) error {
@@ -142,6 +143,7 @@ func handleBatchesProgress(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "batches progress", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "batches progress", obj, format, explicitFormat, transform)
 }

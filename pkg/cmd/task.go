@@ -96,8 +96,9 @@ func handleTasksList(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "tasks list", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "tasks list", obj, format, explicitFormat, transform)
 }
 
 func handleTasksGet(ctx context.Context, cmd *cli.Command) error {
@@ -131,8 +132,9 @@ func handleTasksGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "tasks get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "tasks get", obj, format, explicitFormat, transform)
 }
 
 func handleTasksResults(ctx context.Context, cmd *cli.Command) error {
@@ -166,6 +168,7 @@ func handleTasksResults(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "tasks results", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "tasks results", obj, format, explicitFormat, transform)
 }

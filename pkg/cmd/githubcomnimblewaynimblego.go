@@ -972,8 +972,9 @@ func handleExtract(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "extract", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "extract", obj, format, explicitFormat, transform)
 }
 
 func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
@@ -1006,8 +1007,9 @@ func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "extract-async", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "extract-async", obj, format, explicitFormat, transform)
 }
 
 func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
@@ -1040,8 +1042,9 @@ func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "extract-batch", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "extract-batch", obj, format, explicitFormat, transform)
 }
 
 func handleMap(ctx context.Context, cmd *cli.Command) error {
@@ -1074,8 +1077,9 @@ func handleMap(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "map", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "map", obj, format, explicitFormat, transform)
 }
 
 func handleSearch(ctx context.Context, cmd *cli.Command) error {
@@ -1108,6 +1112,7 @@ func handleSearch(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "search", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "search", obj, format, explicitFormat, transform)
 }

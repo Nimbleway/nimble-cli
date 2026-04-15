@@ -322,8 +322,9 @@ func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "crawl list", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "crawl list", obj, format, explicitFormat, transform)
 }
 
 func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
@@ -356,8 +357,9 @@ func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "crawl run", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "crawl run", obj, format, explicitFormat, transform)
 }
 
 func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
@@ -391,8 +393,9 @@ func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "crawl status", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "crawl status", obj, format, explicitFormat, transform)
 }
 
 func handleCrawlTerminate(ctx context.Context, cmd *cli.Command) error {
@@ -426,6 +429,7 @@ func handleCrawlTerminate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "crawl terminate", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "crawl terminate", obj, format, explicitFormat, transform)
 }
