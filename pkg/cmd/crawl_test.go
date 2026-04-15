@@ -37,7 +37,7 @@ func TestCrawlRun(t *testing.T) {
 			"--crawl-entire-domain=false",
 			"--exclude-path", "/exclude-this-path",
 			"--exclude-path", "/and-this-path",
-			"--extract-options", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {User-Agent: CustomBot/1.0, Accept-Language: en-US}, http2: true, is_xhr: true, locale: en-US, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, tag: campaign-2024-q1, url: url}",
+			"--extract-options", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, tag: campaign-2024-q1, url: url}",
 			"--ignore-query-parameters=false",
 			"--include-path", "/include-this-path",
 			"--include-path", "/and-this-path",
@@ -74,10 +74,11 @@ func TestCrawlRun(t *testing.T) {
 			"--extract-options.driver", "vx8",
 			"--extract-options.expected-status-codes", "[200, 201]",
 			"--extract-options.formats", "[html]",
-			"--extract-options.headers", "{User-Agent: CustomBot/1.0, Accept-Language: en-US}",
+			"--extract-options.headers", "{Accept-Language: en-US, User-Agent: CustomBot/1.0}",
 			"--extract-options.http2=true",
 			"--extract-options.is-xhr=true",
 			"--extract-options.locale", "en-US",
+			"--extract-options.markdown-backend", "full_page",
 			"--extract-options.method", "GET",
 			"--extract-options.network-capture", "[{method: GET, resource_type: document, status_code: 100, stop_on_render_flow_failure: true, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}]",
 			"--extract-options.os", "windows",
@@ -171,11 +172,12 @@ func TestCrawlRun(t *testing.T) {
 			"  formats:\n" +
 			"    - html\n" +
 			"  headers:\n" +
-			"    User-Agent: CustomBot/1.0\n" +
 			"    Accept-Language: en-US\n" +
+			"    User-Agent: CustomBot/1.0\n" +
 			"  http2: true\n" +
 			"  is_xhr: true\n" +
 			"  locale: en-US\n" +
+			"  markdown_backend: full_page\n" +
 			"  method: GET\n" +
 			"  network_capture:\n" +
 			"    - method: GET\n" +
