@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/Nimbleway/nimble-cli/internal/apiquery"
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
@@ -98,7 +97,12 @@ func handleTasksList(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "tasks list", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "tasks list",
+		Transform:      transform,
+	})
 }
 
 func handleTasksGet(ctx context.Context, cmd *cli.Command) error {
@@ -134,7 +138,12 @@ func handleTasksGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "tasks get", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "tasks get",
+		Transform:      transform,
+	})
 }
 
 func handleTasksResults(ctx context.Context, cmd *cli.Command) error {
@@ -170,5 +179,10 @@ func handleTasksResults(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "tasks results", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "tasks results",
+		Transform:      transform,
+	})
 }

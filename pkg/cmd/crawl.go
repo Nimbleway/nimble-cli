@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/Nimbleway/nimble-cli/internal/apiquery"
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
@@ -329,7 +328,12 @@ func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "crawl list", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "crawl list",
+		Transform:      transform,
+	})
 }
 
 func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
@@ -364,7 +368,12 @@ func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "crawl run", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "crawl run",
+		Transform:      transform,
+	})
 }
 
 func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
@@ -400,7 +409,12 @@ func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "crawl status", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "crawl status",
+		Transform:      transform,
+	})
 }
 
 func handleCrawlTerminate(ctx context.Context, cmd *cli.Command) error {
@@ -436,5 +450,10 @@ func handleCrawlTerminate(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "crawl terminate", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "crawl terminate",
+		Transform:      transform,
+	})
 }

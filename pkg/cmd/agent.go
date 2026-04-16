@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/Nimbleway/nimble-cli/internal/apiquery"
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
@@ -327,7 +326,12 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent list", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent list",
+		Transform:      transform,
+	})
 }
 
 func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
@@ -362,7 +366,12 @@ func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent generate", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent generate",
+		Transform:      transform,
+	})
 }
 
 func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
@@ -398,7 +407,12 @@ func handleAgentGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent get", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent get",
+		Transform:      transform,
+	})
 }
 
 func handleAgentGetGeneration(ctx context.Context, cmd *cli.Command) error {
@@ -434,7 +448,12 @@ func handleAgentGetGeneration(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent get-generation", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent get-generation",
+		Transform:      transform,
+	})
 }
 
 func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
@@ -477,7 +496,12 @@ func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent publish", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent publish",
+		Transform:      transform,
+	})
 }
 
 func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
@@ -512,7 +536,12 @@ func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent run", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent run",
+		Transform:      transform,
+	})
 }
 
 func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
@@ -547,7 +576,12 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent run-async", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent run-async",
+		Transform:      transform,
+	})
 }
 
 func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
@@ -582,5 +616,10 @@ func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "agent run-batch", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "agent run-batch",
+		Transform:      transform,
+	})
 }
