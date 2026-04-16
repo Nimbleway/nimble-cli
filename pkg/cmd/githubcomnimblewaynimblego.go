@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/Nimbleway/nimble-cli/internal/apiquery"
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
@@ -996,7 +995,12 @@ func handleExtract(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "extract", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "extract",
+		Transform:      transform,
+	})
 }
 
 func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
@@ -1031,7 +1035,12 @@ func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "extract-async", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "extract-async",
+		Transform:      transform,
+	})
 }
 
 func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
@@ -1066,7 +1075,12 @@ func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "extract-batch", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "extract-batch",
+		Transform:      transform,
+	})
 }
 
 func handleMap(ctx context.Context, cmd *cli.Command) error {
@@ -1101,7 +1115,12 @@ func handleMap(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "map", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "map",
+		Transform:      transform,
+	})
 }
 
 func handleSearch(ctx context.Context, cmd *cli.Command) error {
@@ -1136,5 +1155,10 @@ func handleSearch(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "search", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "search",
+		Transform:      transform,
+	})
 }

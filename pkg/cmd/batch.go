@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/Nimbleway/nimble-cli/internal/apiquery"
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
@@ -109,7 +108,12 @@ func handleBatchesGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "batches get", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "batches get",
+		Transform:      transform,
+	})
 }
 
 func handleBatchesProgress(ctx context.Context, cmd *cli.Command) error {
@@ -145,5 +149,10 @@ func handleBatchesProgress(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, os.Stderr, "batches progress", obj, format, explicitFormat, transform)
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		Title:          "batches progress",
+		Transform:      transform,
+	})
 }
