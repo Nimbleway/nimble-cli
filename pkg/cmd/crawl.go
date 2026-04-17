@@ -331,6 +331,7 @@ func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "crawl list",
 		Transform:      transform,
 	})
@@ -371,6 +372,7 @@ func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "crawl run",
 		Transform:      transform,
 	})
@@ -412,6 +414,7 @@ func handleCrawlStatus(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "crawl status",
 		Transform:      transform,
 	})
@@ -453,6 +456,7 @@ func handleCrawlTerminate(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "crawl terminate",
 		Transform:      transform,
 	})
