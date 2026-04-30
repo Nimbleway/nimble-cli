@@ -963,8 +963,6 @@ func handleExtract(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.ExtractParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -975,6 +973,8 @@ func handleExtract(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.ExtractParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -1004,8 +1004,6 @@ func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.ExtractAsyncParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -1016,6 +1014,8 @@ func handleExtractAsync(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.ExtractAsyncParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -1045,8 +1045,6 @@ func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.ExtractBatchParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -1057,6 +1055,8 @@ func handleExtractBatch(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.ExtractBatchParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -1086,8 +1086,6 @@ func handleMap(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.MapParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -1098,6 +1096,8 @@ func handleMap(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.MapParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -1127,8 +1127,6 @@ func handleSearch(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.SearchParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -1139,6 +1137,8 @@ func handleSearch(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.SearchParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

@@ -272,9 +272,10 @@ var crawlStatus = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "id",
-			Usage:    "The unique identifier of the crawl task.",
-			Required: true,
+			Name:      "id",
+			Usage:     "The unique identifier of the crawl task.",
+			Required:  true,
+			PathParam: "id",
 		},
 	},
 	Action:          handleCrawlStatus,
@@ -287,9 +288,10 @@ var crawlTerminate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "id",
-			Usage:    "The unique identifier of the crawl task.",
-			Required: true,
+			Name:      "id",
+			Usage:     "The unique identifier of the crawl task.",
+			Required:  true,
+			PathParam: "id",
 		},
 	},
 	Action:          handleCrawlTerminate,
@@ -304,8 +306,6 @@ func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.CrawlListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -316,6 +316,8 @@ func handleCrawlList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.CrawlListParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -345,8 +347,6 @@ func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.CrawlRunParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -357,6 +357,8 @@ func handleCrawlRun(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.CrawlRunParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

@@ -113,8 +113,9 @@ var agentGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "template-name",
-			Required: true,
+			Name:      "template-name",
+			Required:  true,
+			PathParam: "template_name",
 		},
 	},
 	Action:          handleAgentGet,
@@ -127,8 +128,9 @@ var agentGetGeneration = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "generation-id",
-			Required: true,
+			Name:      "generation-id",
+			Required:  true,
+			PathParam: "generation_id",
 		},
 	},
 	Action:          handleAgentGetGeneration,
@@ -141,8 +143,9 @@ var agentPublish = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "agent-name",
-			Required: true,
+			Name:      "agent-name",
+			Required:  true,
+			PathParam: "agent_name",
 		},
 		&requestflag.Flag[string]{
 			Name:     "version-id",
@@ -302,8 +305,6 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.AgentListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -314,6 +315,8 @@ func handleAgentList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.AgentListParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -343,8 +346,6 @@ func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.AgentGenerateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -355,6 +356,8 @@ func handleAgentGenerate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.AgentGenerateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -471,8 +474,6 @@ func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.AgentPublishParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -483,6 +484,8 @@ func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.AgentPublishParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -517,8 +520,6 @@ func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.AgentRunParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -529,6 +530,8 @@ func handleAgentRun(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.AgentRunParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -558,8 +561,6 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.AgentRunAsyncParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -570,6 +571,8 @@ func handleAgentRunAsync(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.AgentRunAsyncParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -599,8 +602,6 @@ func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.AgentRunBatchParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -611,6 +612,8 @@ func handleAgentRunBatch(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.AgentRunBatchParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
