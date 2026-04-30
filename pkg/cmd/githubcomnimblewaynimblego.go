@@ -879,12 +879,12 @@ var search = cli.Command{
 			Default:  "US",
 			BodyPath: "country",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*bool]{
 			Name:     "deep-search",
 			Usage:    "Deprecated. Use search_depth instead. true maps to 'deep', false maps to 'lite'.",
 			BodyPath: "deep_search",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "end-date",
 			Usage:    "Filter results before this date (format: YYYY-MM-DD or YYYY)",
 			BodyPath: "end_date",
@@ -935,17 +935,17 @@ var search = cli.Command{
 			Default:  "markdown",
 			BodyPath: "output_format",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "search-depth",
 			Usage:    "Controls content richness and latency of search results.\n\n- lite: Token-efficient metadata for high-volume pipelines (title, URL, description only)\n- fast: Rich content (~2K chars) optimized for AI agents\n- deep: Full page content via Webit scraping for comprehensive analysis",
 			BodyPath: "search_depth",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "start-date",
 			Usage:    "Filter results after this date (format: YYYY-MM-DD or YYYY)",
 			BodyPath: "start_date",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "time-range",
 			Usage:    "Time range filters passed to Webit SERP API as 'time' parameter.",
 			BodyPath: "time_range",
