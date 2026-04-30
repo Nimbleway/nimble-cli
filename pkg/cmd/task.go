@@ -41,9 +41,10 @@ var tasksGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "task-id",
-			Usage:    "The unique identifier of the task.",
-			Required: true,
+			Name:      "task-id",
+			Usage:     "The unique identifier of the task.",
+			Required:  true,
+			PathParam: "task_id",
 		},
 	},
 	Action:          handleTasksGet,
@@ -56,9 +57,10 @@ var tasksResults = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "task-id",
-			Usage:    "The unique identifier of the task.",
-			Required: true,
+			Name:      "task-id",
+			Usage:     "The unique identifier of the task.",
+			Required:  true,
+			PathParam: "task_id",
 		},
 	},
 	Action:          handleTasksResults,
@@ -73,8 +75,6 @@ func handleTasksList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := githubcomnimblewaynimblego.TaskListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -85,6 +85,8 @@ func handleTasksList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := githubcomnimblewaynimblego.TaskListParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
