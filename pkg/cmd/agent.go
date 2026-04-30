@@ -25,7 +25,7 @@ var agentList = cli.Command{
 			Default:   100,
 			QueryPath: "limit",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "managed-by",
 			Usage:     "Filter templates by attribution",
 			QueryPath: "managed_by",
@@ -36,12 +36,12 @@ var agentList = cli.Command{
 			Default:   0,
 			QueryPath: "offset",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "privacy",
 			Usage:     "Filter by privacy level",
 			QueryPath: "privacy",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "search",
 			Usage:     "Search templates by name, domain, or vertical",
 			QueryPath: "search",
@@ -66,7 +66,7 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 			Required: true,
 			BodyPath: "url",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "agent-name",
 			BodyPath: "agent_name",
 		},
@@ -92,11 +92,11 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"metadata": {
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "metadata.description",
 			InnerField: "description",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "metadata.display-name",
 			InnerField: "display_name",
 		},

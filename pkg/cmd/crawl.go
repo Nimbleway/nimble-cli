@@ -19,7 +19,7 @@ var crawlList = cli.Command{
 	Usage:   "Crawl by Filter",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:      "cursor",
 			Usage:     "Cursor for pagination.",
 			Default:   nil,
