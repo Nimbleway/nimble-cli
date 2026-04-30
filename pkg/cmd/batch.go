@@ -29,9 +29,10 @@ var batchesGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "batch-id",
-			Usage:    "The unique identifier of the batch.",
-			Required: true,
+			Name:      "batch-id",
+			Usage:     "The unique identifier of the batch.",
+			Required:  true,
+			PathParam: "batch_id",
 		},
 	},
 	Action:          handleBatchesGet,
@@ -44,9 +45,10 @@ var batchesProgress = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "batch-id",
-			Usage:    "The unique identifier of the batch.",
-			Required: true,
+			Name:      "batch-id",
+			Usage:     "The unique identifier of the batch.",
+			Required:  true,
+			PathParam: "batch_id",
 		},
 	},
 	Action:          handleBatchesProgress,
