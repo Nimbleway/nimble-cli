@@ -60,10 +60,12 @@ For details about specific commands, use the `--help` flag.
 | Environment variable | Required | Default value |
 | -------------------- | -------- | ------------- |
 | `NIMBLE_API_KEY`     | no       | `null`        |
+| `CLIENT_SOURCE`      | no       | `"sdk"`       |
 
 ### Global flags
 
 - `--api-key` (can also be set with `NIMBLE_API_KEY` env var)
+- `--client-source` (can also be set with `CLIENT_SOURCE` env var)
 - `--help` - Show command line usage
 - `--debug` - Enable debug logging (includes HTTP request/response details)
 - `--version`, `-v` - Show the CLI version
