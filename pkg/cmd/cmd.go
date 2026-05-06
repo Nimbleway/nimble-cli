@@ -82,6 +82,10 @@ func init() {
 				Name:    "api-key",
 				Sources: cli.EnvVars("NIMBLE_API_KEY"),
 			},
+			&requestflag.Flag[string]{
+				Name:    "client-source",
+				Sources: cli.EnvVars("CLIENT_SOURCE"),
+			},
 		},
 		Commands: []*cli.Command{
 			&extract,
