@@ -1,5 +1,56 @@
 # Changelog
 
+## 0.11.0 (2026-05-06)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/Nimbleway/nimble-cli/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* allow `-` as value representing stdin to binary-only file parameters in CLIs ([948c073](https://github.com/Nimbleway/nimble-cli/commit/948c0730a137295bbd571e68ab9c5b4bb5ae067d))
+* **api:** add client-source/FileInput params, base URL validation, remove npm packaging ([d87a6bb](https://github.com/Nimbleway/nimble-cli/commit/d87a6bb87e56dc3d4b4f75ff1b5b4bd20a636cdf))
+* **api:** api update ([7a8ca4f](https://github.com/Nimbleway/nimble-cli/commit/7a8ca4fa1b0cca2daa6b7b6c2d7337dac5bcf450))
+* **api:** api update ([5217aed](https://github.com/Nimbleway/nimble-cli/commit/5217aed5e2991d9b5cba57c4dfe9cf245049a778))
+* **api:** api update ([e4ea036](https://github.com/Nimbleway/nimble-cli/commit/e4ea036448daf768bd9742b5d148273f01632779))
+* **api:** api update ([7e68a7e](https://github.com/Nimbleway/nimble-cli/commit/7e68a7e359d5f58e673a9980a4f78200dc4c9422))
+* better error message if scheme forgotten in CLI `*_BASE_URL`/`--base-url` ([5a9fe42](https://github.com/Nimbleway/nimble-cli/commit/5a9fe42ec4646123e94c8ff68c4a4209324f883d))
+* binary-only parameters become CLI flags that take filenames only ([3325ed0](https://github.com/Nimbleway/nimble-cli/commit/3325ed037dd83b3d936f778e148a846e9b673e29))
+* **cli:** add `--raw-output`/`-r` option to print raw (non-JSON) strings ([a5da1f1](https://github.com/Nimbleway/nimble-cli/commit/a5da1f1f73c9100c788cf57ffa500f369d9b5fe3))
+* **cli:** alias parameters in data with `x-stainless-cli-data-alias` ([13abd47](https://github.com/Nimbleway/nimble-cli/commit/13abd47a9444ff51f88bcb2d33e15ad37498bda5))
+* **cli:** send filename and content type when reading input from files ([de52976](https://github.com/Nimbleway/nimble-cli/commit/de52976d505b7f57e12b2fbc457b1bab192f862a))
+* support passing path and query params over stdin ([c09ce9c](https://github.com/Nimbleway/nimble-cli/commit/c09ce9cbbfda60f54791fbec42a697e0dd6b1fbb))
+
+
+### Bug Fixes
+
+* **cli:** correctly load zsh autocompletion ([0639155](https://github.com/Nimbleway/nimble-cli/commit/0639155aa512ef0aff69671517b9370722ca0a84))
+* **cli:** fix incompatible Go types for flag generated as array of maps ([586c83c](https://github.com/Nimbleway/nimble-cli/commit/586c83cd5463815c163c18b867b9848c468ef6bd))
+* fall back to main branch if linking fails in CI ([931cd09](https://github.com/Nimbleway/nimble-cli/commit/931cd096320383928a7b2ea139caa19a569bb605))
+* fix for failing to drop invalid module replace in link script ([b11366c](https://github.com/Nimbleway/nimble-cli/commit/b11366c187001aa38629f54c8a56a5bb1b4c6437))
+* fix quoting typo ([f74d3aa](https://github.com/Nimbleway/nimble-cli/commit/f74d3aa0520c1f45874317dadb90714b9925ed55))
+* flags for nullable body scalar fields are strictly typed ([1240867](https://github.com/Nimbleway/nimble-cli/commit/1240867c4feef6e272a7700ee4d66b7f3f529bf1))
+* handle empty data set using `--format explore` ([8b27aed](https://github.com/Nimbleway/nimble-cli/commit/8b27aed2080198a36026ec6a3b9ef95958db1aea))
+* use `RawJSON` when iterating items with `--format explore` in the CLI ([ee0ee93](https://github.com/Nimbleway/nimble-cli/commit/ee0ee93a20b646d87845b559f38e04c7eafc01a3))
+
+
+### Chores
+
+* add documentation for ./scripts/link ([06d8b9b](https://github.com/Nimbleway/nimble-cli/commit/06d8b9b607a0baa31efa3e7767d6333e4ad88033))
+* **ci:** support manually triggering release workflow ([8bf74b9](https://github.com/Nimbleway/nimble-cli/commit/8bf74b90e6f29c0d3811a79d6b45c7b8cd956ea7))
+* **cli:** additional test cases for `ShowJSONIterator` ([454e8a5](https://github.com/Nimbleway/nimble-cli/commit/454e8a52c5b6afc1adf888c02a6ac9e31da34ed3))
+* **cli:** fall back to JSON when using default "explore" with non-TTY ([514ace9](https://github.com/Nimbleway/nimble-cli/commit/514ace9b60c92a48fd1aafbebe3544a63a1c882e))
+* **cli:** let `--format raw` be used in conjunction with `--transform` ([a19a3ce](https://github.com/Nimbleway/nimble-cli/commit/a19a3ce63db8f2623fa77ff5f4624523f126e62b))
+* **cli:** switch long lists of positional args over to param structs ([9d5c596](https://github.com/Nimbleway/nimble-cli/commit/9d5c596745a7167dac6d819dd825fcbe1ea72cf3))
+* **cli:** use `ShowJSONOpts` as argument to `formatJSON` instead of many positionals ([86b29c5](https://github.com/Nimbleway/nimble-cli/commit/86b29c56402d82c2e682657953c828160bba2fc8))
+* **internal:** more robust bootstrap script ([468f6b4](https://github.com/Nimbleway/nimble-cli/commit/468f6b41868b5255eae9f71d90244c10a8c9cf0c))
+* mark all CLI-related tests in Go with `t.Parallel()` ([6f6aec0](https://github.com/Nimbleway/nimble-cli/commit/6f6aec0fa8bc971e2544df02ed144458c12e1b80))
+* modify CLI tests to inject stdout so mutating `os.Stdout` isn't necessary ([e1792f8](https://github.com/Nimbleway/nimble-cli/commit/e1792f8342d4572ab972343927444ecc8d485a69))
+* switch some CLI Go tests from `os.Chdir` to `t.Chdir` ([1937191](https://github.com/Nimbleway/nimble-cli/commit/1937191a2b506e804f707098ae075e8e802f346f))
+
+
+### Documentation
+
+* improve examples ([2809339](https://github.com/Nimbleway/nimble-cli/commit/28093397213052e4cc1c6ec5323fec0bcbb619f9))
+
 ## 0.10.0 (2026-03-30)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/Nimbleway/nimble-cli/compare/v0.9.0...v0.10.0)
