@@ -38,7 +38,6 @@ func TestAgentGenerate(t *testing.T) {
 			"--input-schema", "{}",
 			"--metadata", "{description: description, display_name: display_name, tags: [string]}",
 			"--output-schema", "{}",
-			"--from-agent", "from_agent",
 		)
 	})
 
@@ -59,7 +58,6 @@ func TestAgentGenerate(t *testing.T) {
 			"--metadata.display-name", "display_name",
 			"--metadata.tags", "[string]",
 			"--output-schema", "{}",
-			"--from-agent", "from_agent",
 		)
 	})
 
@@ -75,8 +73,7 @@ func TestAgentGenerate(t *testing.T) {
 			"  display_name: display_name\n" +
 			"  tags:\n" +
 			"    - string\n" +
-			"output_schema: {}\n" +
-			"from_agent: from_agent\n")
+			"output_schema: {}\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",

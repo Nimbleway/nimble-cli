@@ -63,7 +63,6 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "url",
-			Required: true,
 			BodyPath: "url",
 		},
 		&requestflag.Flag[*string]{
@@ -84,7 +83,6 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "from-agent",
-			Required: true,
 			BodyPath: "from_agent",
 		},
 	},
