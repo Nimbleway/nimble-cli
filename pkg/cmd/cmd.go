@@ -140,6 +140,33 @@ func init() {
 				},
 			},
 			{
+				Name:     "domain-knowledge",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&domainKnowledgeGetDriver,
+				},
+			},
+			{
+				Name:     "media",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&mediaRun,
+					&mediaRunAsync,
+				},
+			},
+			{
+				Name:     "serp",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&serpRun,
+					&serpRunAsync,
+					&serpRunBatch,
+				},
+			},
+			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
 				UsageText:       "nimble @manpages [-o nimble.1] [--gzip]",
