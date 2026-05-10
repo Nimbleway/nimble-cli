@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.12.0 (2026-05-10)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/Nimbleway/nimble-cli/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** Add media, serp and domain_knowledge ([c89cd69](https://github.com/Nimbleway/nimble-cli/commit/c89cd69547c488b70c25dfe4e26af10d07a827d7))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([b9ad508](https://github.com/Nimbleway/nimble-cli/commit/b9ad5087d15ea17e2f08fe2e335da9f1a4a25d35))
+* **test:** scope body requests to a single variant ([0992f16](https://github.com/Nimbleway/nimble-cli/commit/0992f1655b412298aea24b2602ad2d91f48ba7cb))
+* update SDK settings ([586bfde](https://github.com/Nimbleway/nimble-cli/commit/586bfde274fd1dd12b59d3c236d2f458fd409594))
+
 ## 0.11.0 (2026-05-06)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/Nimbleway/nimble-cli/compare/v0.10.0...v0.11.0)
