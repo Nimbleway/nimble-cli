@@ -5,13 +5,10 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
-	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"html"
 	"io"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -31,26 +28,6 @@ func DefaultOAuthConfig() OAuthConfig {
 	return OAuthConfig{BaseURL: baseURL}
 }
 
-type asMetadata struct {
-	AuthorizationEndpoint string `json:"authorization_endpoint"`
-	TokenEndpoint         string `json:"token_endpoint"`
-	RegistrationEndpoint  string `json:"registration_endpoint"`
-}
-
-type dcrResponse struct {
-	ClientID string `json:"client_id"`
-}
-
-type tokenResponse struct {
-	AccessToken string `json:"access_token"`
-}
-
-type apiKeyEntry struct {
-	Key         string `json:"key"`
-	KeyName     string `json:"key_name"`
-	AccountName string `json:"account_name"`
-}
-
 func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 	meta, err := discoverEndpoints(ctx, cfg.BaseURL)
 	if err != nil {
@@ -67,70 +44,19 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 		return "", fmt.Errorf("failed to generate state: %w", err)
 	}
 
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	cb, err := newCallbackServer(state)
 	if err != nil {
 		return "", fmt.Errorf("failed to start callback server: %w", err)
 	}
+	defer cb.Close()
 
-	port := listener.Addr().(*net.TCPAddr).Port
-	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/callback", port)
-
-	clientID, err := registerClient(ctx, meta.RegistrationEndpoint, redirectURI)
+	clientID, err := registerClient(ctx, meta.registrationEndpoint, cb.RedirectURI())
 	if err != nil {
-		listener.Close()
 		return "", fmt.Errorf("failed to register OAuth client: %w", err)
 	}
 
-	authURL := buildAuthorizeURL(meta.AuthorizationEndpoint, clientID, redirectURI, challenge, state)
-
-	codeCh := make(chan string, 1)
-	errCh := make(chan error, 1)
-	done := make(chan struct{})
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
-		s := r.URL.Query().Get("state")
-		if subtle.ConstantTimeCompare([]byte(s), []byte(state)) != 1 {
-			select {
-			case errCh <- fmt.Errorf("state mismatch"):
-			case <-done:
-			}
-			http.Error(w, "State mismatch", http.StatusBadRequest)
-			return
-		}
-		if errParam := r.URL.Query().Get("error"); errParam != "" {
-			desc := html.EscapeString(r.URL.Query().Get("error_description"))
-			select {
-			case errCh <- fmt.Errorf("authorization denied: %s (%s)", errParam, desc):
-			case <-done:
-			}
-			fmt.Fprintf(w, "<html><body><h1>Login failed</h1><p>%s</p></body></html>", desc)
-			return
-		}
-		code := r.URL.Query().Get("code")
-		if code == "" {
-			select {
-			case errCh <- fmt.Errorf("no authorization code received"):
-			case <-done:
-			}
-			http.Error(w, "No code received", http.StatusBadRequest)
-			return
-		}
-		select {
-		case codeCh <- code:
-		case <-done:
-		}
-		fmt.Fprint(w, "<html><body><h1>Login successful!</h1><p>You can close this tab.</p></body></html>")
-	})
-
-	srv := &http.Server{
-		Handler:           mux,
-		ReadHeaderTimeout: 10 * time.Second,
-		ReadTimeout:       15 * time.Second,
-		WriteTimeout:      15 * time.Second,
-	}
-	go srv.Serve(listener)
-	defer srv.Close()
+	authURL := buildAuthorizeURL(meta.authorizationEndpoint, clientID, cb.RedirectURI(), challenge, state)
+	cb.Start()
 
 	fmt.Println("Opening browser to authenticate...")
 	if err := OpenBrowser(authURL); err != nil {
@@ -138,22 +64,12 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 	}
 	fmt.Println("Waiting for authentication (press Ctrl+C to cancel)...")
 
-	var code string
-	select {
-	case code = <-codeCh:
-	case err := <-errCh:
-		close(done)
+	code, err := cb.WaitForCode(ctx, 5*time.Minute)
+	if err != nil {
 		return "", err
-	case <-ctx.Done():
-		close(done)
-		return "", ctx.Err()
-	case <-time.After(5 * time.Minute):
-		close(done)
-		return "", fmt.Errorf("authentication timed out after 5 minutes")
 	}
-	close(done)
 
-	accessToken, err := exchangeCode(ctx, meta.TokenEndpoint, clientID, code, verifier, redirectURI)
+	accessToken, err := exchangeCode(ctx, meta.tokenEndpoint, clientID, code, verifier, cb.RedirectURI())
 	if err != nil {
 		return "", fmt.Errorf("failed to exchange authorization code: %w", err)
 	}
@@ -163,33 +79,41 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 		return "", fmt.Errorf("failed to fetch API key: %w", err)
 	}
 
-	if apiKey == "" {
-		return "", fmt.Errorf("server returned empty API key")
-	}
-
 	return apiKey, nil
 }
 
-func discoverEndpoints(ctx context.Context, baseURL string) (*asMetadata, error) {
+// OAuth endpoint discovery
+
+type oauthEndpoints struct {
+	authorizationEndpoint string
+	tokenEndpoint         string
+	registrationEndpoint  string
+}
+
+func discoverEndpoints(ctx context.Context, baseURL string) (*oauthEndpoints, error) {
 	reqURL := baseURL + "/.well-known/oauth-authorization-server"
 	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := httpClient.Do(req)
-	if err != nil {
+
+	var raw struct {
+		AuthorizationEndpoint string `json:"authorization_endpoint"`
+		TokenEndpoint         string `json:"token_endpoint"`
+		RegistrationEndpoint  string `json:"registration_endpoint"`
+	}
+	if err := doJSON(req, &raw); err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("metadata endpoint returned status %d", resp.StatusCode)
-	}
-	var meta asMetadata
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&meta); err != nil {
-		return nil, err
-	}
-	return &meta, nil
+
+	return &oauthEndpoints{
+		authorizationEndpoint: raw.AuthorizationEndpoint,
+		tokenEndpoint:         raw.TokenEndpoint,
+		registrationEndpoint:  raw.RegistrationEndpoint,
+	}, nil
 }
+
+// PKCE (RFC 7636)
 
 func generatePKCE() (verifier, challenge string, err error) {
 	b := make([]byte, 32)
@@ -210,6 +134,8 @@ func randomString(n int) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
+// OAuth HTTP operations
+
 func registerClient(ctx context.Context, endpoint, redirectURI string) (string, error) {
 	body := map[string]interface{}{
 		"client_name":                "Nimble CLI",
@@ -222,24 +148,20 @@ func registerClient(ctx context.Context, endpoint, redirectURI string) (string, 
 	if err != nil {
 		return "", err
 	}
+
 	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(data))
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	resp, err := httpClient.Do(req)
-	if err != nil {
+
+	var resp struct {
+		ClientID string `json:"client_id"`
+	}
+	if err := doJSON(req, &resp); err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("client registration returned status %d", resp.StatusCode)
-	}
-	var dcr dcrResponse
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&dcr); err != nil {
-		return "", err
-	}
-	return dcr.ClientID, nil
+	return resp.ClientID, nil
 }
 
 func buildAuthorizeURL(endpoint, clientID, redirectURI, challenge, state string) string {
@@ -256,51 +178,46 @@ func buildAuthorizeURL(endpoint, clientID, redirectURI, challenge, state string)
 }
 
 func exchangeCode(ctx context.Context, endpoint, clientID, code, verifier, redirectURI string) (string, error) {
-	data := url.Values{
+	form := url.Values{
 		"grant_type":    {"authorization_code"},
 		"code":          {code},
 		"code_verifier": {verifier},
 		"client_id":     {clientID},
 		"redirect_uri":  {redirectURI},
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, strings.NewReader(data.Encode()))
+
+	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, strings.NewReader(form.Encode()))
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	resp, err := httpClient.Do(req)
-	if err != nil {
+
+	var resp struct {
+		AccessToken string `json:"access_token"`
+	}
+	if err := doJSON(req, &resp); err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("token endpoint returned status %d", resp.StatusCode)
-	}
-	var tok tokenResponse
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&tok); err != nil {
-		return "", err
-	}
-	return tok.AccessToken, nil
+	return resp.AccessToken, nil
+}
+
+// API key retrieval
+
+type apiKeyEntry struct {
+	Key         string `json:"key"`
+	KeyName     string `json:"key_name"`
+	AccountName string `json:"account_name"`
 }
 
 func fetchOrCreateAPIKey(ctx context.Context, baseURL, token string) (string, error) {
-	listURL := baseURL + "/api/v1/account/api-key"
-	req, err := http.NewRequestWithContext(ctx, "GET", listURL, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", baseURL+"/api/v1/account/api-key", nil)
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("API key list returned status %d", resp.StatusCode)
-	}
 
 	var keys []apiKeyEntry
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&keys); err != nil {
+	if err := doJSON(req, &keys); err != nil {
 		return "", err
 	}
 
@@ -315,28 +232,35 @@ func fetchOrCreateAPIKey(ctx context.Context, baseURL, token string) (string, er
 }
 
 func createAPIKey(ctx context.Context, baseURL, token string) (string, error) {
-	createURL := baseURL + "/api/v1/account/api-key"
-	body := `{"key_name":"Nimble CLI"}`
-	req, err := http.NewRequestWithContext(ctx, "POST", createURL, strings.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, "POST", baseURL+"/api/v1/account/api-key", strings.NewReader(`{"key_name":"Nimble CLI"}`))
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Content-Type", "application/json")
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("API key create returned status %d", resp.StatusCode)
-	}
+
 	var key apiKeyEntry
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&key); err != nil {
+	if err := doJSON(req, &key); err != nil {
 		return "", err
 	}
 	if key.Key == "" {
 		return "", fmt.Errorf("server returned empty API key")
 	}
 	return key.Key, nil
+}
+
+// doJSON executes an HTTP request and decodes the JSON response into dest.
+// Returns an error on non-2xx status codes.
+func doJSON(req *http.Request, dest interface{}) error {
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return fmt.Errorf("%s %s returned status %d", req.Method, req.URL.Path, resp.StatusCode)
+	}
+
+	return json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(dest)
 }

@@ -146,28 +146,7 @@ func handleBrowserLogin(ctx context.Context) error {
 		fmt.Printf("Browser login failed: %s\n", err)
 		return cli.Exit("", 1)
 	}
-
-	fmt.Println("Validating API key...")
-	info, err := auth.ValidateAPIKey(ctx, apiKey)
-	if err != nil {
-		fmt.Printf("Authentication failed: %s\n", err)
-		return cli.Exit("", 1)
-	}
-
-	creds := &auth.Credentials{
-		APIKey:      apiKey,
-		Source:      "oauth",
-		CreatedAt:   time.Now().UTC().Format(time.RFC3339),
-		Email:       info.Username,
-		AccountName: info.Account,
-	}
-
-	if err := auth.SaveCredentials(creds); err != nil {
-		return fmt.Errorf("failed to save credentials: %w", err)
-	}
-
-	fmt.Printf("Successfully logged in as %s (%s).\n", info.Account, info.Username)
-	return nil
+	return completeLogin(ctx, apiKey, "oauth")
 }
 
 func handleAPIKeyLogin(ctx context.Context, scanner *bufio.Scanner) error {
@@ -186,6 +165,10 @@ func handleAPIKeyLogin(ctx context.Context, scanner *bufio.Scanner) error {
 		return cli.Exit("", 1)
 	}
 
+	return completeLogin(ctx, apiKey, "manual")
+}
+
+func completeLogin(ctx context.Context, apiKey, source string) error {
 	fmt.Println("Validating API key...")
 	info, err := auth.ValidateAPIKey(ctx, apiKey)
 	if err != nil {
@@ -195,7 +178,7 @@ func handleAPIKeyLogin(ctx context.Context, scanner *bufio.Scanner) error {
 
 	creds := &auth.Credentials{
 		APIKey:      apiKey,
-		Source:      "manual",
+		Source:      source,
 		CreatedAt:   time.Now().UTC().Format(time.RFC3339),
 		Email:       info.Username,
 		AccountName: info.Account,
