@@ -1,16 +1,20 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
 type UserInfo struct {
 	Username string `json:"username"`
 	Account  string `json:"account"`
 }
+
+var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func whoamiBaseURL() string {
 	if u := os.Getenv("NIMBLE_AUTH_WHOAMI_URL"); u != "" {
@@ -19,16 +23,16 @@ func whoamiBaseURL() string {
 	return "https://api.webit.live"
 }
 
-func ValidateAPIKey(apiKey string) (*UserInfo, error) {
+func ValidateAPIKey(ctx context.Context, apiKey string) (*UserInfo, error) {
 	url := whoamiBaseURL() + "/api/v1/auth/whoami"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to reach authentication server: %w", err)
 	}

@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -15,20 +16,32 @@ type Credentials struct {
 	AccountName string `json:"account_name,omitempty"`
 }
 
-func credentialsDir() string {
+func credentialsDir() (string, error) {
 	if dir := os.Getenv("NIMBLE_CONFIG_DIR"); dir != "" {
-		return dir
+		return dir, nil
 	}
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".nimble")
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("cannot determine home directory: %w", err)
+	}
+	return filepath.Join(home, ".nimble"), nil
 }
 
-func CredentialsPath() string {
-	return filepath.Join(credentialsDir(), "credentials.json")
+func credentialsPath() (string, error) {
+	dir, err := credentialsDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, "credentials.json"), nil
 }
 
 func LoadCredentials() (*Credentials, error) {
-	data, err := os.ReadFile(CredentialsPath())
+	path, err := credentialsPath()
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return nil, nil
@@ -38,13 +51,16 @@ func LoadCredentials() (*Credentials, error) {
 
 	var creds Credentials
 	if err := json.Unmarshal(data, &creds); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("corrupt credentials file: %w", err)
 	}
 	return &creds, nil
 }
 
 func SaveCredentials(creds *Credentials) error {
-	dir := credentialsDir()
+	dir, err := credentialsDir()
+	if err != nil {
+		return err
+	}
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
@@ -54,16 +70,36 @@ func SaveCredentials(creds *Credentials) error {
 		return err
 	}
 
-	// Atomic write: write to temp file, then rename
-	tmp := CredentialsPath() + ".tmp"
-	if err := os.WriteFile(tmp, data, 0600); err != nil {
+	credPath := filepath.Join(dir, "credentials.json")
+
+	tmp, err := os.CreateTemp(dir, "credentials-*.tmp")
+	if err != nil {
+		return fmt.Errorf("failed to create temp file: %w", err)
+	}
+	tmpPath := tmp.Name()
+	defer os.Remove(tmpPath)
+
+	if err := tmp.Chmod(0600); err != nil {
+		tmp.Close()
 		return err
 	}
-	return os.Rename(tmp, CredentialsPath())
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+
+	return os.Rename(tmpPath, credPath)
 }
 
 func DeleteCredentials() error {
-	err := os.Remove(CredentialsPath())
+	path, err := credentialsPath()
+	if err != nil {
+		return err
+	}
+	err = os.Remove(path)
 	if errors.Is(err, os.ErrNotExist) {
 		return nil
 	}

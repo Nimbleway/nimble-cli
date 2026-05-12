@@ -49,7 +49,9 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 	}
 	if isAPIKeyFlag() {
 		opts = append(opts, option.WithAPIKey(cmd.String("api-key")))
-	} else if creds, err := auth.LoadCredentials(); err == nil && creds != nil {
+	} else if creds, err := auth.LoadCredentials(); err != nil {
+		log.Printf("Warning: failed to load stored credentials: %v", err)
+	} else if creds != nil {
 		opts = append(opts, option.WithAPIKey(creds.APIKey))
 	} else if envKey := os.Getenv("NIMBLE_API_KEY"); envKey != "" {
 		opts = append(opts, option.WithAPIKey(envKey))

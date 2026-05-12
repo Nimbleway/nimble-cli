@@ -51,8 +51,7 @@ var whoamiCommand = cli.Command{
 		}
 
 		fmt.Println("Not authenticated. Run 'nimble login' to authenticate.")
-		os.Exit(1)
-		return nil
+		return cli.Exit("", 1)
 	},
 }
 
@@ -94,7 +93,14 @@ var loginCommand = cli.Command{
 		if creds != nil {
 			fmt.Printf("You are already logged in as %s.\n", creds.AccountName)
 			fmt.Print("Re-authenticate? [y/N]: ")
-			if !scanner.Scan() || strings.ToLower(strings.TrimSpace(scanner.Text())) != "y" {
+			if !scanner.Scan() {
+				if scanErr := scanner.Err(); scanErr != nil {
+					return fmt.Errorf("failed to read input: %w", scanErr)
+				}
+				fmt.Println("Login cancelled.")
+				return nil
+			}
+			if strings.ToLower(strings.TrimSpace(scanner.Text())) != "y" {
 				fmt.Println("Login cancelled.")
 				return nil
 			}
@@ -106,43 +112,48 @@ var loginCommand = cli.Command{
 		fmt.Print("Enter choice [1-2]: ")
 
 		if !scanner.Scan() {
-			fmt.Println("\nLogin cancelled.")
-			os.Exit(1)
+			if scanErr := scanner.Err(); scanErr != nil {
+				return fmt.Errorf("failed to read input: %w", scanErr)
+			}
+			fmt.Println("Login cancelled.")
+			return cli.Exit("", 1)
 		}
 		choice := strings.TrimSpace(scanner.Text())
 
 		switch choice {
 		case "1":
 			fmt.Println("Browser login is not yet implemented. Please use option 2 to paste an API key.")
-			os.Exit(1)
+			return cli.Exit("", 1)
 		case "2":
-			return handleAPIKeyLogin(scanner)
+			return handleAPIKeyLogin(ctx, scanner)
 		default:
 			fmt.Printf("Invalid choice: %s\n", choice)
-			os.Exit(1)
+			return cli.Exit("", 1)
 		}
-		return nil
 	},
 }
 
-func handleAPIKeyLogin(scanner *bufio.Scanner) error {
+func handleAPIKeyLogin(ctx context.Context, scanner *bufio.Scanner) error {
 	fmt.Print("Enter your API key: ")
 	if !scanner.Scan() {
-		fmt.Println("\nLogin cancelled.")
-		os.Exit(1)
+		if scanErr := scanner.Err(); scanErr != nil {
+			return fmt.Errorf("failed to read input: %w", scanErr)
+		}
+		fmt.Println("Login cancelled.")
+		return cli.Exit("", 1)
 	}
 	apiKey := strings.TrimSpace(scanner.Text())
 
 	if apiKey == "" {
 		fmt.Println("API key cannot be empty.")
-		os.Exit(1)
+		return cli.Exit("", 1)
 	}
 
 	fmt.Println("Validating API key...")
-	info, err := auth.ValidateAPIKey(apiKey)
+	info, err := auth.ValidateAPIKey(ctx, apiKey)
 	if err != nil {
 		fmt.Printf("Authentication failed: %s\n", err)
-		os.Exit(1)
+		return cli.Exit("", 1)
 	}
 
 	creds := &auth.Credentials{
@@ -162,7 +173,7 @@ func handleAPIKeyLogin(scanner *bufio.Scanner) error {
 }
 
 func maskAPIKey(key string) string {
-	if len(key) <= 8 {
+	if len(key) <= 12 {
 		return "****"
 	}
 	return key[:4] + "..." + key[len(key)-4:]
