@@ -293,6 +293,113 @@ func TestLoginAPIKeyEmpty(t *testing.T) {
 	assert.True(t, os.IsNotExist(err))
 }
 
+func mockOAuthServer(t *testing.T, apiKey string) *httptest.Server {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/.well-known/oauth-authorization-server":
+			scheme := "http"
+			base := scheme + "://" + r.Host
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, `{
+				"authorization_endpoint": %q,
+				"token_endpoint": %q,
+				"registration_endpoint": %q
+			}`, base+"/authorize", base+"/oauth/token", base+"/oauth/register")
+
+		case "/oauth/register":
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, `{"client_id":"test_client_id"}`)
+
+		case "/authorize":
+			redirectURI := r.URL.Query().Get("redirect_uri")
+			state := r.URL.Query().Get("state")
+			http.Redirect(w, r, redirectURI+"?code=test_auth_code&state="+state, http.StatusFound)
+
+		case "/oauth/token":
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, `{"access_token":"test_jwt_token"}`)
+
+		case "/api/v1/account/api-key":
+			auth := r.Header.Get("Authorization")
+			if auth != "Bearer test_jwt_token" {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, `[{"key":%q,"key_name":"Test","account_name":"oauth-account"}]`, apiKey)
+
+		case "/api/v1/auth/whoami":
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, `{"username":"oauth-user@example.com","account":"oauth-account"}`)
+
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	t.Cleanup(srv.Close)
+	return srv
+}
+
+func TestLoginBrowser(t *testing.T) {
+	configDir := t.TempDir()
+
+	srv := mockOAuthServer(t, "nbl_oauth_test_key_12345")
+
+	browserScript := filepath.Join(configDir, "browser.sh")
+	err := os.WriteFile(browserScript, []byte("#!/bin/sh\ncurl -sLo /dev/null \"$1\"\n"), 0755)
+	require.NoError(t, err)
+
+	stdin := []byte("1\n")
+	stdout, _, exitCode := runCLIWithStdin(t, stdin, map[string]string{
+		"NIMBLE_CONFIG_DIR":      configDir,
+		"NIMBLE_AUTH_BASE_URL":   srv.URL,
+		"NIMBLE_AUTH_WHOAMI_URL": srv.URL,
+		"NIMBLE_BROWSER":         browserScript,
+	}, "login")
+
+	assert.Equal(t, 0, exitCode, "browser login should exit 0; stdout: %s", stdout)
+	assert.Contains(t, stdout, "Successfully logged in")
+	assert.Contains(t, stdout, "oauth-account")
+
+	data, err := os.ReadFile(filepath.Join(configDir, "credentials.json"))
+	require.NoError(t, err)
+
+	var creds map[string]string
+	require.NoError(t, json.Unmarshal(data, &creds))
+	assert.Equal(t, "nbl_oauth_test_key_12345", creds["api_key"])
+	assert.Equal(t, "oauth", creds["source"])
+	assert.Equal(t, "oauth-account", creds["account_name"])
+	assert.Equal(t, "oauth-user@example.com", creds["email"])
+}
+
+func TestLoginBrowserInvalid(t *testing.T) {
+	configDir := t.TempDir()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/.well-known/oauth-authorization-server":
+			w.WriteHeader(http.StatusInternalServerError)
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	t.Cleanup(srv.Close)
+
+	stdin := []byte("1\n")
+	stdout, _, exitCode := runCLIWithStdin(t, stdin, map[string]string{
+		"NIMBLE_CONFIG_DIR":    configDir,
+		"NIMBLE_AUTH_BASE_URL": srv.URL,
+		"NIMBLE_BROWSER":       "echo",
+	}, "login")
+
+	assert.Equal(t, 1, exitCode, "browser login with failing server should exit 1")
+	assert.Contains(t, stdout, "Browser login failed")
+
+	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
+	assert.True(t, os.IsNotExist(err))
+}
+
 func TestAuthScenario(t *testing.T) {
 	apiKey := os.Getenv("NIMBLE_TEST_API_KEY")
 	if apiKey == "" {

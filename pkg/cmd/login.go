@@ -122,8 +122,7 @@ var loginCommand = cli.Command{
 
 		switch choice {
 		case "1":
-			fmt.Println("Browser login is not yet implemented. Please use option 2 to paste an API key.")
-			return cli.Exit("", 1)
+			return handleBrowserLogin(ctx)
 		case "2":
 			return handleAPIKeyLogin(ctx, scanner)
 		default:
@@ -131,6 +130,37 @@ var loginCommand = cli.Command{
 			return cli.Exit("", 1)
 		}
 	},
+}
+
+func handleBrowserLogin(ctx context.Context) error {
+	cfg := auth.DefaultOAuthConfig()
+	apiKey, err := auth.RunOAuthFlow(ctx, cfg)
+	if err != nil {
+		fmt.Printf("Browser login failed: %s\n", err)
+		return cli.Exit("", 1)
+	}
+
+	fmt.Println("Validating API key...")
+	info, err := auth.ValidateAPIKey(ctx, apiKey)
+	if err != nil {
+		fmt.Printf("Authentication failed: %s\n", err)
+		return cli.Exit("", 1)
+	}
+
+	creds := &auth.Credentials{
+		APIKey:      apiKey,
+		Source:      "oauth",
+		CreatedAt:   time.Now().UTC().Format(time.RFC3339),
+		Email:       info.Username,
+		AccountName: info.Account,
+	}
+
+	if err := auth.SaveCredentials(creds); err != nil {
+		return fmt.Errorf("failed to save credentials: %w", err)
+	}
+
+	fmt.Printf("Successfully logged in as %s (%s).\n", info.Account, info.Username)
+	return nil
 }
 
 func handleAPIKeyLogin(ctx context.Context, scanner *bufio.Scanner) error {
