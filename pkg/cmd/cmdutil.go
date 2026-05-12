@@ -16,6 +16,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/Nimbleway/nimble-cli/internal/auth"
 	"github.com/Nimbleway/nimble-cli/internal/jsonview"
 	"github.com/Nimbleway/nimble-go/option"
 
@@ -48,6 +49,8 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 	}
 	if cmd.IsSet("api-key") {
 		opts = append(opts, option.WithAPIKey(cmd.String("api-key")))
+	} else if creds, err := auth.LoadCredentials(); err == nil && creds != nil {
+		opts = append(opts, option.WithAPIKey(creds.APIKey))
 	}
 	if cmd.IsSet("client-source") {
 		opts = append(opts, option.WithClientSource(cmd.String("client-source")))
