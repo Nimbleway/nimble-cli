@@ -101,7 +101,7 @@ func TestWhoamiWithStoredCredential(t *testing.T) {
 	assert.Contains(t, stdout, "nbl_")
 }
 
-func TestWhoamiEnvOverridesStored(t *testing.T) {
+func TestWhoamiStoredOverridesEnv(t *testing.T) {
 	configDir := t.TempDir()
 	writeCredentialsFile(t, configDir, map[string]string{
 		"api_key":      "nbl_stored_key_value",
@@ -115,10 +115,23 @@ func TestWhoamiEnvOverridesStored(t *testing.T) {
 		"NIMBLE_API_KEY":    "nbl_env_override_key",
 	}, "whoami")
 
-	assert.Equal(t, 0, exitCode, "whoami with env var should exit 0")
-	// Should show env var source, not the stored credential
+	assert.Equal(t, 0, exitCode, "whoami with stored creds should exit 0")
+	// Stored credential takes priority over env var per ticket
+	assert.Contains(t, stdout, "stored credential")
+	assert.Contains(t, stdout, "stored-account")
+	assert.NotContains(t, stdout, "NIMBLE_API_KEY")
+}
+
+func TestWhoamiEnvFallback(t *testing.T) {
+	configDir := t.TempDir()
+
+	stdout, _, exitCode := runCLI(t, map[string]string{
+		"NIMBLE_CONFIG_DIR": configDir,
+		"NIMBLE_API_KEY":    "nbl_env_fallback_key",
+	}, "whoami")
+
+	assert.Equal(t, 0, exitCode, "whoami with env var and no stored creds should exit 0")
 	assert.Contains(t, stdout, "NIMBLE_API_KEY")
-	assert.NotContains(t, stdout, "stored-account")
 }
 
 func TestLogoutWithCredentials(t *testing.T) {

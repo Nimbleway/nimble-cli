@@ -17,9 +17,9 @@ var whoamiCommand = cli.Command{
 	Usage:    "Show current authentication status",
 	Category: "AUTH",
 	Action: func(ctx context.Context, cmd *cli.Command) error {
-		if cmd.IsSet("api-key") {
+		if isAPIKeyFlag() {
 			key := cmd.String("api-key")
-			fmt.Printf("Authenticated via: NIMBLE_API_KEY environment variable\n")
+			fmt.Printf("Authenticated via: --api-key flag\n")
 			fmt.Printf("API key: %s\n", maskAPIKey(key))
 			return nil
 		}
@@ -29,22 +29,29 @@ var whoamiCommand = cli.Command{
 			return fmt.Errorf("failed to load credentials: %w", err)
 		}
 
-		if creds == nil {
-			fmt.Println("Not authenticated. Run 'nimble login' to authenticate.")
-			os.Exit(1)
+		if creds != nil {
+			fmt.Printf("Authenticated via: stored credential (%s)\n", creds.Source)
+			fmt.Printf("API key: %s\n", maskAPIKey(creds.APIKey))
+			if creds.AccountName != "" {
+				fmt.Printf("Account: %s\n", creds.AccountName)
+			}
+			if creds.Email != "" {
+				fmt.Printf("Email: %s\n", creds.Email)
+			}
+			if creds.CreatedAt != "" {
+				fmt.Printf("Logged in: %s\n", creds.CreatedAt)
+			}
+			return nil
 		}
 
-		fmt.Printf("Authenticated via: stored credential (%s)\n", creds.Source)
-		fmt.Printf("API key: %s\n", maskAPIKey(creds.APIKey))
-		if creds.AccountName != "" {
-			fmt.Printf("Account: %s\n", creds.AccountName)
+		if envKey := os.Getenv("NIMBLE_API_KEY"); envKey != "" {
+			fmt.Printf("Authenticated via: NIMBLE_API_KEY environment variable\n")
+			fmt.Printf("API key: %s\n", maskAPIKey(envKey))
+			return nil
 		}
-		if creds.Email != "" {
-			fmt.Printf("Email: %s\n", creds.Email)
-		}
-		if creds.CreatedAt != "" {
-			fmt.Printf("Logged in: %s\n", creds.CreatedAt)
-		}
+
+		fmt.Println("Not authenticated. Run 'nimble login' to authenticate.")
+		os.Exit(1)
 		return nil
 	},
 }
