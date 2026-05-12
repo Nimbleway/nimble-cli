@@ -292,3 +292,143 @@ func TestLoginAPIKeyEmpty(t *testing.T) {
 	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
 	assert.True(t, os.IsNotExist(err))
 }
+
+func TestAuthScenario(t *testing.T) {
+	apiKey := os.Getenv("NIMBLE_TEST_API_KEY")
+	if apiKey == "" {
+		t.Skip("NIMBLE_TEST_API_KEY not set; set it to run against staging")
+	}
+
+	configDir := t.TempDir()
+	credFile := filepath.Join(configDir, "credentials.json")
+
+	env := func(extra ...string) map[string]string {
+		m := map[string]string{
+			"NIMBLE_CONFIG_DIR": configDir,
+		}
+		for i := 0; i < len(extra); i += 2 {
+			m[extra[i]] = extra[i+1]
+		}
+		return m
+	}
+
+	t.Run("01_whoami_no_auth", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "whoami")
+		assert.Equal(t, 1, exitCode)
+		assert.Contains(t, stdout, "Not authenticated")
+	})
+
+	t.Run("02_logout_when_not_logged_in", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "logout")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "Not currently logged in")
+	})
+
+	t.Run("03_login_invalid_key", func(t *testing.T) {
+		stdin := []byte("2\nbad-key\n")
+		stdout, _, exitCode := runCLIWithStdin(t, stdin, env(), "login")
+		assert.Equal(t, 1, exitCode)
+		assert.Contains(t, stdout, "Authentication failed")
+
+		_, err := os.Stat(credFile)
+		assert.True(t, os.IsNotExist(err), "credentials.json should not exist after failed login")
+	})
+
+	t.Run("04_login_empty_key", func(t *testing.T) {
+		stdin := []byte("2\n\n")
+		stdout, _, exitCode := runCLIWithStdin(t, stdin, env(), "login")
+		assert.Equal(t, 1, exitCode)
+		assert.Contains(t, stdout, "API key cannot be empty")
+	})
+
+	t.Run("05_login", func(t *testing.T) {
+		stdin := []byte("2\n" + apiKey + "\n")
+		stdout, _, exitCode := runCLIWithStdin(t, stdin, env(), "login")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "Successfully logged in")
+
+		data, err := os.ReadFile(credFile)
+		require.NoError(t, err)
+
+		var creds map[string]string
+		require.NoError(t, json.Unmarshal(data, &creds))
+		assert.Equal(t, apiKey, creds["api_key"])
+		assert.Equal(t, "manual", creds["source"])
+		assert.NotEmpty(t, creds["account_name"])
+
+		info, err := os.Stat(credFile)
+		require.NoError(t, err)
+		assert.Equal(t, os.FileMode(0600), info.Mode().Perm())
+	})
+
+	t.Run("06_whoami_after_login", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "whoami")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "stored credential")
+		assert.Contains(t, stdout, "Account:")
+		assert.NotContains(t, stdout, apiKey)
+	})
+
+	t.Run("07_whoami_flag_overrides_stored", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "whoami", "--api-key", "override_key_xxx")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "--api-key flag")
+		assert.NotContains(t, stdout, "stored credential")
+	})
+
+	t.Run("08_whoami_env_fallback_not_used", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env("NIMBLE_API_KEY", "env_key_yyy"), "whoami")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "stored credential")
+		assert.NotContains(t, stdout, "NIMBLE_API_KEY")
+	})
+
+	t.Run("09_login_reauth_decline", func(t *testing.T) {
+		stdin := []byte("n\n")
+		stdout, _, exitCode := runCLIWithStdin(t, stdin, env(), "login")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "already logged in")
+		assert.Contains(t, stdout, "Login cancelled")
+
+		data, err := os.ReadFile(credFile)
+		require.NoError(t, err)
+		var creds map[string]string
+		require.NoError(t, json.Unmarshal(data, &creds))
+		assert.Equal(t, apiKey, creds["api_key"])
+	})
+
+	t.Run("10_login_reauth_accept", func(t *testing.T) {
+		stdin := []byte("y\n2\n" + apiKey + "\n")
+		stdout, _, exitCode := runCLIWithStdin(t, stdin, env(), "login")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "Successfully logged in")
+
+		data, err := os.ReadFile(credFile)
+		require.NoError(t, err)
+		var creds map[string]string
+		require.NoError(t, json.Unmarshal(data, &creds))
+		assert.Equal(t, apiKey, creds["api_key"])
+	})
+
+	t.Run("11_whoami_after_reauth", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "whoami")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "stored credential")
+		assert.Contains(t, stdout, "Account:")
+	})
+
+	t.Run("12_logout", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "logout")
+		assert.Equal(t, 0, exitCode)
+		assert.Contains(t, stdout, "logged out")
+
+		_, err := os.Stat(credFile)
+		assert.True(t, os.IsNotExist(err), "credentials.json should be deleted after logout")
+	})
+
+	t.Run("13_whoami_after_logout", func(t *testing.T) {
+		stdout, _, exitCode := runCLI(t, env(), "whoami")
+		assert.Equal(t, 1, exitCode)
+		assert.Contains(t, stdout, "Not authenticated")
+	})
+}
