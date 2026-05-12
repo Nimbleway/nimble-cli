@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -46,7 +47,7 @@ func ValidateAPIKey(ctx context.Context, apiKey string) (*UserInfo, error) {
 	}
 
 	var info UserInfo
-	if err := json.NewDecoder(resp.Body).Decode(&info); err != nil {
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&info); err != nil {
 		return nil, fmt.Errorf("failed to parse authentication response: %w", err)
 	}
 	return &info, nil

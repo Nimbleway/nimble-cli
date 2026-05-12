@@ -91,7 +91,14 @@ var loginCommand = cli.Command{
 			return fmt.Errorf("failed to load credentials: %w", err)
 		}
 		if creds != nil {
-			fmt.Printf("You are already logged in as %s.\n", creds.AccountName)
+			displayName := creds.AccountName
+			if displayName == "" {
+				displayName = creds.Email
+			}
+			if displayName == "" {
+				displayName = "(unknown account)"
+			}
+			fmt.Printf("You are already logged in as %s.\n", displayName)
 			fmt.Print("Re-authenticate? [y/N]: ")
 			if !scanner.Scan() {
 				if scanErr := scanner.Err(); scanErr != nil {

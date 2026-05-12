@@ -1,12 +1,16 @@
 package auth
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"html"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -67,13 +71,13 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to start callback server: %w", err)
 	}
-	defer listener.Close()
 
 	port := listener.Addr().(*net.TCPAddr).Port
 	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/callback", port)
 
 	clientID, err := registerClient(ctx, meta.RegistrationEndpoint, redirectURI)
 	if err != nil {
+		listener.Close()
 		return "", fmt.Errorf("failed to register OAuth client: %w", err)
 	}
 
@@ -81,31 +85,50 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 
 	codeCh := make(chan string, 1)
 	errCh := make(chan error, 1)
+	done := make(chan struct{})
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
-		if s := r.URL.Query().Get("state"); s != state {
-			errCh <- fmt.Errorf("state mismatch")
+		s := r.URL.Query().Get("state")
+		if subtle.ConstantTimeCompare([]byte(s), []byte(state)) != 1 {
+			select {
+			case errCh <- fmt.Errorf("state mismatch"):
+			case <-done:
+			}
 			http.Error(w, "State mismatch", http.StatusBadRequest)
 			return
 		}
 		if errParam := r.URL.Query().Get("error"); errParam != "" {
-			desc := r.URL.Query().Get("error_description")
-			errCh <- fmt.Errorf("authorization denied: %s (%s)", errParam, desc)
+			desc := html.EscapeString(r.URL.Query().Get("error_description"))
+			select {
+			case errCh <- fmt.Errorf("authorization denied: %s (%s)", errParam, desc):
+			case <-done:
+			}
 			fmt.Fprintf(w, "<html><body><h1>Login failed</h1><p>%s</p></body></html>", desc)
 			return
 		}
 		code := r.URL.Query().Get("code")
 		if code == "" {
-			errCh <- fmt.Errorf("no authorization code received")
+			select {
+			case errCh <- fmt.Errorf("no authorization code received"):
+			case <-done:
+			}
 			http.Error(w, "No code received", http.StatusBadRequest)
 			return
 		}
-		codeCh <- code
+		select {
+		case codeCh <- code:
+		case <-done:
+		}
 		fmt.Fprint(w, "<html><body><h1>Login successful!</h1><p>You can close this tab.</p></body></html>")
 	})
 
-	srv := &http.Server{Handler: mux}
+	srv := &http.Server{
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+	}
 	go srv.Serve(listener)
 	defer srv.Close()
 
@@ -119,12 +142,16 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 	select {
 	case code = <-codeCh:
 	case err := <-errCh:
+		close(done)
 		return "", err
 	case <-ctx.Done():
+		close(done)
 		return "", ctx.Err()
 	case <-time.After(5 * time.Minute):
+		close(done)
 		return "", fmt.Errorf("authentication timed out after 5 minutes")
 	}
+	close(done)
 
 	accessToken, err := exchangeCode(ctx, meta.TokenEndpoint, clientID, code, verifier, redirectURI)
 	if err != nil {
@@ -134,6 +161,10 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 	apiKey, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken)
 	if err != nil {
 		return "", fmt.Errorf("failed to fetch API key: %w", err)
+	}
+
+	if apiKey == "" {
+		return "", fmt.Errorf("server returned empty API key")
 	}
 
 	return apiKey, nil
@@ -154,7 +185,7 @@ func discoverEndpoints(ctx context.Context, baseURL string) (*asMetadata, error)
 		return nil, fmt.Errorf("metadata endpoint returned status %d", resp.StatusCode)
 	}
 	var meta asMetadata
-	if err := json.NewDecoder(resp.Body).Decode(&meta); err != nil {
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&meta); err != nil {
 		return nil, err
 	}
 	return &meta, nil
@@ -191,7 +222,7 @@ func registerClient(ctx context.Context, endpoint, redirectURI string) (string, 
 	if err != nil {
 		return "", err
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, strings.NewReader(string(data)))
+	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(data))
 	if err != nil {
 		return "", err
 	}
@@ -205,7 +236,7 @@ func registerClient(ctx context.Context, endpoint, redirectURI string) (string, 
 		return "", fmt.Errorf("client registration returned status %d", resp.StatusCode)
 	}
 	var dcr dcrResponse
-	if err := json.NewDecoder(resp.Body).Decode(&dcr); err != nil {
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&dcr); err != nil {
 		return "", err
 	}
 	return dcr.ClientID, nil
@@ -246,7 +277,7 @@ func exchangeCode(ctx context.Context, endpoint, clientID, code, verifier, redir
 		return "", fmt.Errorf("token endpoint returned status %d", resp.StatusCode)
 	}
 	var tok tokenResponse
-	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&tok); err != nil {
 		return "", err
 	}
 	return tok.AccessToken, nil
@@ -269,11 +300,14 @@ func fetchOrCreateAPIKey(ctx context.Context, baseURL, token string) (string, er
 	}
 
 	var keys []apiKeyEntry
-	if err := json.NewDecoder(resp.Body).Decode(&keys); err != nil {
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&keys); err != nil {
 		return "", err
 	}
 
 	if len(keys) > 0 {
+		if keys[0].Key == "" {
+			return "", fmt.Errorf("server returned empty API key")
+		}
 		return keys[0].Key, nil
 	}
 
@@ -298,8 +332,11 @@ func createAPIKey(ctx context.Context, baseURL, token string) (string, error) {
 		return "", fmt.Errorf("API key create returned status %d", resp.StatusCode)
 	}
 	var key apiKeyEntry
-	if err := json.NewDecoder(resp.Body).Decode(&key); err != nil {
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&key); err != nil {
 		return "", err
+	}
+	if key.Key == "" {
+		return "", fmt.Errorf("server returned empty API key")
 	}
 	return key.Key, nil
 }
