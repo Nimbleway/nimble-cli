@@ -134,7 +134,7 @@ func handleAPIKeyLogin(scanner *bufio.Scanner) error {
 	fmt.Println("Validating API key...")
 	info, err := auth.ValidateAPIKey(apiKey)
 	if err != nil {
-		fmt.Printf("Authentication failed: API key is invalid.\n")
+		fmt.Printf("Authentication failed: %s\n", err)
 		os.Exit(1)
 	}
 

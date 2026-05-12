@@ -223,7 +223,7 @@ func TestLoginAPIKeyInvalid(t *testing.T) {
 	}, "login")
 
 	assert.Equal(t, 1, exitCode, "login with invalid key should exit 1")
-	assert.Contains(t, stdout, "invalid")
+	assert.Contains(t, stdout, "Authentication failed")
 
 	// Verify no credentials file was created
 	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
