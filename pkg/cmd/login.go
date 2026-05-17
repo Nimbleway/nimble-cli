@@ -74,12 +74,29 @@ var loginCommand = cli.Command{
 
 func handleBrowserLogin(ctx context.Context) error {
 	cfg := auth.DefaultOAuthConfig()
-	apiKey, err := auth.RunOAuthFlow(ctx, cfg)
+	result, err := auth.RunOAuthFlow(ctx, cfg)
 	if err != nil {
 		fmt.Printf("Browser login failed: %s\n", err)
 		return cli.Exit("", 1)
 	}
-	return completeLogin(ctx, apiKey, "oauth")
+
+	creds := &auth.Credentials{
+		APIKey:      result.APIKey,
+		Source:      "oauth",
+		CreatedAt:   time.Now().UTC().Format(time.RFC3339),
+		AccountName: result.AccountName,
+	}
+
+	if err := auth.SaveCredentials(creds); err != nil {
+		return fmt.Errorf("failed to save credentials: %w", err)
+	}
+
+	displayName := result.AccountName
+	if displayName == "" {
+		displayName = "(unknown account)"
+	}
+	fmt.Printf("Successfully logged in as %s.\n", displayName)
+	return nil
 }
 
 func handleAPIKeyLogin(ctx context.Context, scanner *bufio.Scanner) error {

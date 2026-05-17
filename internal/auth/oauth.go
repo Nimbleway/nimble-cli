@@ -22,31 +22,36 @@ func DefaultOAuthConfig() OAuthConfig {
 	return OAuthConfig{BaseURL: baseURL}
 }
 
-func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
+type OAuthResult struct {
+	APIKey      string
+	AccountName string
+}
+
+func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (*OAuthResult, error) {
 	meta, err := discoverEndpoints(ctx, cfg.BaseURL)
 	if err != nil {
-		return "", fmt.Errorf("failed to discover OAuth endpoints: %w", err)
+		return nil, fmt.Errorf("failed to discover OAuth endpoints: %w", err)
 	}
 
 	verifier, challenge, err := generatePKCE()
 	if err != nil {
-		return "", fmt.Errorf("failed to generate PKCE: %w", err)
+		return nil, fmt.Errorf("failed to generate PKCE: %w", err)
 	}
 
 	state, err := randomString(32)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate state: %w", err)
+		return nil, fmt.Errorf("failed to generate state: %w", err)
 	}
 
 	cb, err := newCallbackServer(state)
 	if err != nil {
-		return "", fmt.Errorf("failed to start callback server: %w", err)
+		return nil, fmt.Errorf("failed to start callback server: %w", err)
 	}
 	defer cb.Close()
 
 	clientID, err := registerClient(ctx, meta.registrationEndpoint, cb.RedirectURI())
 	if err != nil {
-		return "", fmt.Errorf("failed to register OAuth client: %w", err)
+		return nil, fmt.Errorf("failed to register OAuth client: %w", err)
 	}
 
 	authURL := buildAuthorizeURL(meta.authorizationEndpoint, clientID, cb.RedirectURI(), challenge, state)
@@ -54,26 +59,29 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (string, error) {
 
 	fmt.Println("Opening browser to authenticate...")
 	if err := OpenBrowser(authURL); err != nil {
-		return "", fmt.Errorf("failed to open browser: %w", err)
+		return nil, fmt.Errorf("failed to open browser: %w", err)
 	}
 	fmt.Println("Waiting for authentication (press Ctrl+C to cancel)...")
 
 	code, err := cb.WaitForCode(ctx, 5*time.Minute)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	accessToken, err := exchangeCode(ctx, meta.tokenEndpoint, clientID, code, verifier, cb.RedirectURI())
 	if err != nil {
-		return "", fmt.Errorf("failed to exchange authorization code: %w", err)
+		return nil, fmt.Errorf("failed to exchange authorization code: %w", err)
 	}
 
-	apiKey, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken)
+	entry, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken)
 	if err != nil {
-		return "", fmt.Errorf("failed to fetch API key: %w", err)
+		return nil, fmt.Errorf("failed to fetch API key: %w", err)
 	}
 
-	return apiKey, nil
+	return &OAuthResult{
+		APIKey:      entry.Key,
+		AccountName: entry.AccountName,
+	}, nil
 }
 
 func generatePKCE() (verifier, challenge string, err error) {

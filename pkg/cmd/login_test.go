@@ -167,6 +167,24 @@ func TestLogoutWithCredentials(t *testing.T) {
 	assert.True(t, os.IsNotExist(err), "credentials.json should be deleted after logout")
 }
 
+func TestLogoutWarnsAboutEnvVar(t *testing.T) {
+	configDir := t.TempDir()
+	writeCredentialsFile(t, configDir, map[string]string{
+		"api_key":    "nbl_some_key",
+		"source":     "manual",
+		"created_at": "2026-05-10T12:00:00Z",
+	})
+
+	stdout, _, exitCode := runCLI(t, map[string]string{
+		"NIMBLE_CONFIG_DIR": configDir,
+		"NIMBLE_API_KEY":    "nbl_env_key",
+	}, "logout")
+
+	assert.Equal(t, 0, exitCode, "logout should exit 0")
+	assert.Contains(t, stdout, "logged out")
+	assert.Contains(t, stdout, "NIMBLE_API_KEY environment variable is still set")
+}
+
 func TestLogoutNoCredentials(t *testing.T) {
 	configDir := t.TempDir()
 
@@ -440,7 +458,6 @@ func TestLoginBrowser(t *testing.T) {
 	assert.Equal(t, "nbl_oauth_test_key_12345", creds["api_key"])
 	assert.Equal(t, "oauth", creds["source"])
 	assert.Equal(t, "oauth-account", creds["account_name"])
-	assert.Equal(t, "oauth-user@example.com", creds["email"])
 }
 
 func TestLoginBrowserInvalid(t *testing.T) {

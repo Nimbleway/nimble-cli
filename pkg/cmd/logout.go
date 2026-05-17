@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/Nimbleway/nimble-cli/internal/auth"
 	"github.com/urfave/cli/v3"
@@ -28,6 +29,11 @@ var logoutCommand = cli.Command{
 		}
 
 		fmt.Println("Successfully logged out.")
+
+		if envKey := os.Getenv("NIMBLE_API_KEY"); envKey != "" {
+			fmt.Println("Note: NIMBLE_API_KEY environment variable is still set and will be used for authentication.")
+		}
+
 		return nil
 	},
 }
