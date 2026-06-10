@@ -27,6 +27,7 @@ func TestSerpRun(t *testing.T) {
 			"--parse=true",
 			"--query", "nimble web data",
 			"--render=false",
+			"--show-hidden-results=false",
 		)
 	})
 
@@ -43,7 +44,8 @@ func TestSerpRun(t *testing.T) {
 			"page: 1\n" +
 			"parse: true\n" +
 			"query: nimble web data\n" +
-			"render: false\n")
+			"render: false\n" +
+			"show_hidden_results: false\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
@@ -71,6 +73,7 @@ func TestSerpRunAsync(t *testing.T) {
 			"--parse=true",
 			"--query", "nimble web data",
 			"--render=false",
+			"--show-hidden-results=false",
 			"--storage-compress=true",
 			"--storage-object-name", "result-2024-01-15.json",
 			"--storage-type", "s3",
@@ -93,6 +96,7 @@ func TestSerpRunAsync(t *testing.T) {
 			"parse: true\n" +
 			"query: nimble web data\n" +
 			"render: false\n" +
+			"show_hidden_results: false\n" +
 			"storage_compress: true\n" +
 			"storage_object_name: result-2024-01-15.json\n" +
 			"storage_type: s3\n" +
@@ -112,8 +116,8 @@ func TestSerpRunBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"serp", "run-batch",
-			"--input", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, search_engine: google_search, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
-			"--shared-inputs", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, search_engine: google_search, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
+			"--input", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, search_engine: google_search, show_hidden_results: false, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
+			"--shared-inputs", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, search_engine: google_search, show_hidden_results: false, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
 		)
 	})
 
@@ -138,6 +142,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"--input.query", "nimble web data",
 			"--input.render=false",
 			"--input.search-engine", "google_search",
+			"--input.show-hidden-results=false",
 			"--input.storage-compress=true",
 			"--input.storage-object-name", "result-2024-01-15.json",
 			"--input.storage-type", "s3",
@@ -154,6 +159,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"--shared-inputs.query", "nimble web data",
 			"--shared-inputs.render=false",
 			"--shared-inputs.search-engine", "google_search",
+			"--shared-inputs.show-hidden-results=false",
 			"--shared-inputs.storage-compress=true",
 			"--shared-inputs.storage-object-name", "result-2024-01-15.json",
 			"--shared-inputs.storage-type", "s3",
@@ -177,6 +183,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"    query: nimble web data\n" +
 			"    render: false\n" +
 			"    search_engine: google_search\n" +
+			"    show_hidden_results: false\n" +
 			"    storage_compress: true\n" +
 			"    storage_object_name: result-2024-01-15.json\n" +
 			"    storage_type: s3\n" +
@@ -194,6 +201,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"  query: nimble web data\n" +
 			"  render: false\n" +
 			"  search_engine: google_search\n" +
+			"  show_hidden_results: false\n" +
 			"  storage_compress: true\n" +
 			"  storage_object_name: result-2024-01-15.json\n" +
 			"  storage_type: s3\n" +

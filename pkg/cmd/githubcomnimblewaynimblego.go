@@ -26,6 +26,11 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "url",
 		},
 		&requestflag.Flag[any]{
+			Name:     "body",
+			Usage:    "Request body for POST, PUT, PATCH methods",
+			BodyPath: "body",
+		},
+		&requestflag.Flag[any]{
 			Name:     "browser",
 			Usage:    "Browser type to emulate",
 			BodyPath: "browser",
@@ -234,6 +239,11 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Target URL to scrape",
 			Required: true,
 			BodyPath: "url",
+		},
+		&requestflag.Flag[any]{
+			Name:     "body",
+			Usage:    "Request body for POST, PUT, PATCH methods",
+			BodyPath: "body",
 		},
 		&requestflag.Flag[any]{
 			Name:     "browser",
@@ -481,6 +491,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 }, map[string][]requestflag.HasOuterFlag{
 	"input": {
 		&requestflag.InnerFlag[any]{
+			Name:       "input.body",
+			Usage:      "Request body for POST, PUT, PATCH methods",
+			InnerField: "body",
+		},
+		&requestflag.InnerFlag[any]{
 			Name:       "input.browser",
 			Usage:      "Browser type to emulate",
 			InnerField: "browser",
@@ -646,6 +661,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 		},
 	},
 	"shared-inputs": {
+		&requestflag.InnerFlag[any]{
+			Name:       "shared-inputs.body",
+			Usage:      "Request body for POST, PUT, PATCH methods",
+			InnerField: "body",
+		},
 		&requestflag.InnerFlag[any]{
 			Name:       "shared-inputs.browser",
 			Usage:      "Browser type to emulate",
@@ -878,6 +898,11 @@ var search = cli.Command{
 			Usage:    "Country code for geo-targeted results (e.g., 'US', 'GB', 'IL')",
 			Default:  "US",
 			BodyPath: "country",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "debug-params",
+			Usage:    "Internal-only. Gated to allowlisted accounts; ignored otherwise.",
+			BodyPath: "debug_params",
 		},
 		&requestflag.Flag[*bool]{
 			Name:     "deep-search",
