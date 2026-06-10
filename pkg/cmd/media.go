@@ -55,7 +55,7 @@ var mediaRun = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "storage.type",
-			Usage:      `Allowed values: "s3", "gcs", "do".`,
+			Usage:      `Allowed values: "s3", "gcs", "do", "oci".`,
 			InnerField: "type",
 		},
 	},
@@ -127,7 +127,7 @@ var mediaRunAsync = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "storage.type",
-			Usage:      `Allowed values: "s3", "gcs", "do".`,
+			Usage:      `Allowed values: "s3", "gcs", "do", "oci".`,
 			InnerField: "type",
 		},
 	},

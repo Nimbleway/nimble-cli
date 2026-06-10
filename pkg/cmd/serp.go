@@ -78,6 +78,11 @@ var serpRun = cli.Command{
 			Default:  false,
 			BodyPath: "render",
 		},
+		&requestflag.Flag[bool]{
+			Name:     "show-hidden-results",
+			Usage:    "When true, disables Google result filtering (filter=0) so omitted/duplicate and highly similar pages are also returned. Applies to Google search engines.",
+			BodyPath: "show_hidden_results",
+		},
 	},
 	Action:          handleSerpRun,
 	HideHelpCommand: true,
@@ -151,6 +156,11 @@ var serpRunAsync = cli.Command{
 			Usage:    "Whether to render the page in a browser before extracting.",
 			Default:  false,
 			BodyPath: "render",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "show-hidden-results",
+			Usage:    "When true, disables Google result filtering (filter=0) so omitted/duplicate and highly similar pages are also returned. Applies to Google search engines.",
+			BodyPath: "show_hidden_results",
 		},
 		&requestflag.Flag[bool]{
 			Name:     "storage-compress",
@@ -259,6 +269,11 @@ var serpRunBatch = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "search_engine",
 		},
 		&requestflag.InnerFlag[bool]{
+			Name:       "input.show-hidden-results",
+			Usage:      "When true, disables Google result filtering (filter=0) so omitted/duplicate and highly similar pages are also returned. Applies to Google search engines.",
+			InnerField: "show_hidden_results",
+		},
+		&requestflag.InnerFlag[bool]{
 			Name:       "input.storage-compress",
 			Usage:      "Whether to compress stored data",
 			InnerField: "storage_compress",
@@ -339,6 +354,11 @@ var serpRunBatch = requestflag.WithInnerFlags(cli.Command{
 			Name:       "shared-inputs.search-engine",
 			Usage:      "The search engine to query.",
 			InnerField: "search_engine",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.show-hidden-results",
+			Usage:      "When true, disables Google result filtering (filter=0) so omitted/duplicate and highly similar pages are also returned. Applies to Google search engines.",
+			InnerField: "show_hidden_results",
 		},
 		&requestflag.InnerFlag[bool]{
 			Name:       "shared-inputs.storage-compress",

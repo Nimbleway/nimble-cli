@@ -35,9 +35,9 @@ func TestAgentGenerate(t *testing.T) {
 			"--prompt", "prompt",
 			"--url", "url",
 			"--agent-name", "agent_name",
-			"--input-schema", "{}",
+			"--input-schema", "{foo: bar}",
 			"--metadata", "{description: description, display_name: display_name, tags: [string]}",
-			"--output-schema", "{}",
+			"--output-schema", "{foo: bar}",
 		)
 	})
 
@@ -53,11 +53,11 @@ func TestAgentGenerate(t *testing.T) {
 			"--prompt", "prompt",
 			"--url", "url",
 			"--agent-name", "agent_name",
-			"--input-schema", "{}",
+			"--input-schema", "{foo: bar}",
 			"--metadata.description", "description",
 			"--metadata.display-name", "display_name",
 			"--metadata.tags", "[string]",
-			"--output-schema", "{}",
+			"--output-schema", "{foo: bar}",
 		)
 	})
 
@@ -67,13 +67,15 @@ func TestAgentGenerate(t *testing.T) {
 			"prompt: prompt\n" +
 			"url: url\n" +
 			"agent_name: agent_name\n" +
-			"input_schema: {}\n" +
+			"input_schema:\n" +
+			"  foo: bar\n" +
 			"metadata:\n" +
 			"  description: description\n" +
 			"  display_name: display_name\n" +
 			"  tags:\n" +
 			"    - string\n" +
-			"output_schema: {}\n")
+			"output_schema:\n" +
+			"  foo: bar\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
@@ -102,30 +104,6 @@ func TestAgentGetGeneration(t *testing.T) {
 			"--api-key", "string",
 			"agent", "get-generation",
 			"--generation-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
-func TestAgentPublish(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "publish",
-			"--agent-name", "agent_name",
-			"--version-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-
-	t.Run("piping data", func(t *testing.T) {
-		// Test piping YAML data over stdin
-		pipeData := []byte("version_id: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData,
-			"--api-key", "string",
-			"agent", "publish",
-			"--agent-name", "agent_name",
 		)
 	})
 }
