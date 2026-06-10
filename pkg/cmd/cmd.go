@@ -102,7 +102,6 @@ func init() {
 					&agentGenerate,
 					&agentGet,
 					&agentGetGeneration,
-					&agentPublish,
 					&agentRun,
 					&agentRunAsync,
 					&agentRunBatch,
