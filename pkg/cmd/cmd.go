@@ -166,6 +166,40 @@ func init() {
 				},
 			},
 			{
+				Name:     "task-agent",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&taskAgentCreate,
+					&taskAgentUpdate,
+					&taskAgentList,
+					&taskAgentDeactivate,
+					&taskAgentGet,
+					&taskAgentRun,
+				},
+			},
+			{
+				Name:     "task-agent:templates",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&taskAgentTemplatesList,
+					&taskAgentTemplatesGet,
+				},
+			},
+			{
+				Name:     "task-agent:runs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&taskAgentRunsList,
+					&taskAgentRunsCancel,
+					&taskAgentRunsGet,
+					&taskAgentRunsGetResult,
+					&taskAgentRunsStreamEvents,
+				},
+			},
+			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
 				UsageText:       "nimble @manpages [-o nimble.1] [--gzip]",
