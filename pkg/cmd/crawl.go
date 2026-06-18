@@ -234,7 +234,7 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Referrer policy for the request",
 			InnerField: "referrer_type",
 		},
-		&requestflag.InnerFlag[bool]{
+		&requestflag.InnerFlag[any]{
 			Name:       "extract-options.render",
 			Usage:      "Whether to render JavaScript content using a browser",
 			InnerField: "render",
