@@ -25,7 +25,7 @@ func TestTaskAgentCreate(t *testing.T) {
 			"--icon", "icon",
 			"--is-active=true",
 			"--output-schema", "{foo: bar}",
-			"--source", "{domains: [string], title: title, order: 0}",
+			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
 			"--suggested-question", "string",
 			"--template", "template",
 			"--use-case", "research",
@@ -51,9 +51,10 @@ func TestTaskAgentCreate(t *testing.T) {
 			"--icon", "icon",
 			"--is-active=true",
 			"--output-schema", "{foo: bar}",
-			"--source.domains", "[string]",
-			"--source.title", "title",
-			"--source.order", "0",
+			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
+			"--sources.avoid", "avoid",
+			"--sources.block", "[{domains: [string], title: title, order: 0}]",
+			"--sources.prioritize", "prioritize",
 			"--suggested-question", "string",
 			"--template", "template",
 			"--use-case", "research",
@@ -76,10 +77,18 @@ func TestTaskAgentCreate(t *testing.T) {
 			"output_schema:\n" +
 			"  foo: bar\n" +
 			"sources:\n" +
-			"  - domains:\n" +
-			"      - string\n" +
-			"    title: title\n" +
-			"    order: 0\n" +
+			"  allow:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  avoid: avoid\n" +
+			"  block:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  prioritize: prioritize\n" +
 			"suggested_questions:\n" +
 			"  - string\n" +
 			"template: template\n" +
@@ -186,6 +195,27 @@ func TestTaskAgentRun(t *testing.T) {
 			"--input", "input",
 			"--enable-events=true",
 			"--output-schema", "{foo: bar}",
+			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(taskAgentRun)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"task-agent", "run",
+			"--agent-id", "agent_id",
+			"--input", "input",
+			"--enable-events=true",
+			"--output-schema", "{foo: bar}",
+			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
+			"--sources.avoid", "avoid",
+			"--sources.block", "[{domains: [string], title: title, order: 0}]",
+			"--sources.prioritize", "prioritize",
 		)
 	})
 
@@ -195,7 +225,20 @@ func TestTaskAgentRun(t *testing.T) {
 			"input: input\n" +
 			"enable_events: true\n" +
 			"output_schema:\n" +
-			"  foo: bar\n")
+			"  foo: bar\n" +
+			"sources:\n" +
+			"  allow:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  avoid: avoid\n" +
+			"  block:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  prioritize: prioritize\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
