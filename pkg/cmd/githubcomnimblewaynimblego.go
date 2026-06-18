@@ -144,7 +144,7 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Referrer policy for the request",
 			BodyPath: "referrer_type",
 		},
-		&requestflag.Flag[bool]{
+		&requestflag.Flag[any]{
 			Name:     "render",
 			Usage:    "Whether to render JavaScript content using a browser",
 			BodyPath: "render",
@@ -364,7 +364,7 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Referrer policy for the request",
 			BodyPath: "referrer_type",
 		},
-		&requestflag.Flag[bool]{
+		&requestflag.Flag[any]{
 			Name:     "render",
 			Usage:    "Whether to render JavaScript content using a browser",
 			BodyPath: "render",
@@ -605,9 +605,9 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Referrer policy for the request",
 			InnerField: "referrer_type",
 		},
-		&requestflag.InnerFlag[bool]{
+		&requestflag.InnerFlag[any]{
 			Name:       "input.render",
-			Usage:      "Whether to render JavaScript content using a browser",
+			Usage:      "Whether to render JavaScript content using a browser. Use 'auto' to let the engine select the candidate config per domain.",
 			InnerField: "render",
 		},
 		&requestflag.InnerFlag[float64]{
@@ -776,9 +776,9 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Referrer policy for the request",
 			InnerField: "referrer_type",
 		},
-		&requestflag.InnerFlag[bool]{
+		&requestflag.InnerFlag[any]{
 			Name:       "shared-inputs.render",
-			Usage:      "Whether to render JavaScript content using a browser",
+			Usage:      "Whether to render JavaScript content using a browser. Use 'auto' to let the engine select the candidate config per domain.",
 			InnerField: "render",
 		},
 		&requestflag.InnerFlag[float64]{

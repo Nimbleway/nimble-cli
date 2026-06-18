@@ -57,8 +57,8 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 			Name:     "output-schema",
 			BodyPath: "output_schema",
 		},
-		&requestflag.Flag[[]map[string]any]{
-			Name:     "source",
+		&requestflag.Flag[map[string]any]{
+			Name:     "sources",
 			BodyPath: "sources",
 		},
 		&requestflag.Flag[[]string]{
@@ -83,18 +83,22 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 	Action:          handleTaskAgentCreate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
-	"source": {
-		&requestflag.InnerFlag[[]string]{
-			Name:       "source.domains",
-			InnerField: "domains",
+	"sources": {
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "sources.allow",
+			InnerField: "allow",
 		},
-		&requestflag.InnerFlag[string]{
-			Name:       "source.title",
-			InnerField: "title",
+		&requestflag.InnerFlag[*string]{
+			Name:       "sources.avoid",
+			InnerField: "avoid",
 		},
-		&requestflag.InnerFlag[int64]{
-			Name:       "source.order",
-			InnerField: "order",
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "sources.block",
+			InnerField: "block",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "sources.prioritize",
+			InnerField: "prioritize",
 		},
 	},
 })
@@ -193,7 +197,7 @@ var taskAgentGet = cli.Command{
 	HideHelpCommand: true,
 }
 
-var taskAgentRun = cli.Command{
+var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 	Name:    "run",
 	Usage:   "Create and enqueue a research run for a Web Search Agent.",
 	Suggest: true,
@@ -217,10 +221,33 @@ var taskAgentRun = cli.Command{
 			Name:     "output-schema",
 			BodyPath: "output_schema",
 		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "sources",
+			BodyPath: "sources",
+		},
 	},
 	Action:          handleTaskAgentRun,
 	HideHelpCommand: true,
-}
+}, map[string][]requestflag.HasOuterFlag{
+	"sources": {
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "sources.allow",
+			InnerField: "allow",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "sources.avoid",
+			InnerField: "avoid",
+		},
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "sources.block",
+			InnerField: "block",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "sources.prioritize",
+			InnerField: "prioritize",
+		},
+	},
+})
 
 func handleTaskAgentCreate(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
