@@ -200,6 +200,40 @@ func init() {
 				},
 			},
 			{
+				Name:     "jobs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&jobsCreate,
+					&jobsUpdate,
+					&jobsList,
+					&jobsDelete,
+					&jobsGet,
+					&jobsRun,
+				},
+			},
+			{
+				Name:     "jobs:runs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&jobsRunsList,
+					&jobsRunsCancel,
+					&jobsRunsGet,
+				},
+			},
+			{
+				Name:     "jobs:runs:artifacts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&jobsRunsArtifactsList,
+					&jobsRunsArtifactsDownloadURL,
+					&jobsRunsArtifactsGet,
+					&jobsRunsArtifactsPreview,
+				},
+			},
+			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
 				UsageText:       "nimble @manpages [-o nimble.1] [--gzip]",
