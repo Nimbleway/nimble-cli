@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.13.0 (2026-06-19)
+
+Full Changelog: [v0.12.0...v0.13.0](https://github.com/Nimbleway/nimble-cli/compare/v0.12.0...v0.13.0)
+
+### Features
+
+* **api:** Add jobs api ([d69d0ac](https://github.com/Nimbleway/nimble-cli/commit/d69d0ac34caa7e0567a8fd1914a0fe19c495d5fa))
+* **api:** api update ([13d4adb](https://github.com/Nimbleway/nimble-cli/commit/13d4adb42b2196d8a4727792d4f60d065c926ca7))
+* **api:** manually update openapi ([f78716a](https://github.com/Nimbleway/nimble-cli/commit/f78716af8d89d42fde571878d15d59d7513af0b7))
+* **api:** Manually update OpenAPI spec ([b8c11fc](https://github.com/Nimbleway/nimble-cli/commit/b8c11fccd028c25113e039e934a54f6512200e6d))
+
+
+### Chores
+
+* **internal:** codegen related update ([b179733](https://github.com/Nimbleway/nimble-cli/commit/b179733b9e92e06ed546255cde6928a0aa60aea7))
+* **internal:** codegen related update ([cf90407](https://github.com/Nimbleway/nimble-cli/commit/cf90407de9f8723cee73c2ee1e4a14a2ed391d00))
+
 ## 0.12.0 (2026-05-10)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/Nimbleway/nimble-cli/compare/v0.11.0...v0.12.0)
