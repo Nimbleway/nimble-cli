@@ -1,0 +1,48 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cmd
+
+import (
+	"testing"
+
+	"github.com/Nimbleway/nimble-cli/internal/mocktest"
+)
+
+func TestJobsRunsList(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"jobs:runs", "list",
+			"--job-id", "job_id",
+			"--page", "1",
+			"--per-page", "1",
+			"--status", "status",
+		)
+	})
+}
+
+func TestJobsRunsCancel(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"jobs:runs", "cancel",
+			"--run-id", "run_id",
+		)
+	})
+}
+
+func TestJobsRunsGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"jobs:runs", "get",
+			"--run-id", "run_id",
+		)
+	})
+}

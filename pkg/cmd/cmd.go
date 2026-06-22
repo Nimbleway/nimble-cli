@@ -102,7 +102,6 @@ func init() {
 					&agentGenerate,
 					&agentGet,
 					&agentGetGeneration,
-					&agentPublish,
 					&agentRun,
 					&agentRunAsync,
 					&agentRunBatch,
@@ -137,6 +136,109 @@ func init() {
 					&batchesList,
 					&batchesGet,
 					&batchesProgress,
+				},
+			},
+			{
+				Name:     "domain-knowledge",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&domainKnowledgeGetDriver,
+				},
+			},
+			{
+				Name:     "media",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&mediaRun,
+					&mediaRunAsync,
+				},
+			},
+			{
+				Name:     "serp",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&serpRun,
+					&serpRunAsync,
+					&serpRunBatch,
+				},
+			},
+			{
+				Name:     "fast-serp",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&fastSerpRun,
+				},
+			},
+			{
+				Name:     "task-agent",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&taskAgentCreate,
+					&taskAgentUpdate,
+					&taskAgentList,
+					&taskAgentDeactivate,
+					&taskAgentGet,
+					&taskAgentRun,
+				},
+			},
+			{
+				Name:     "task-agent:templates",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&taskAgentTemplatesList,
+					&taskAgentTemplatesGet,
+				},
+			},
+			{
+				Name:     "task-agent:runs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&taskAgentRunsList,
+					&taskAgentRunsCancel,
+					&taskAgentRunsGet,
+					&taskAgentRunsGetResult,
+					&taskAgentRunsStreamEvents,
+				},
+			},
+			{
+				Name:     "jobs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&jobsCreate,
+					&jobsUpdate,
+					&jobsList,
+					&jobsDelete,
+					&jobsGet,
+					&jobsRun,
+				},
+			},
+			{
+				Name:     "jobs:runs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&jobsRunsList,
+					&jobsRunsCancel,
+					&jobsRunsGet,
+				},
+			},
+			{
+				Name:     "jobs:runs:artifacts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&jobsRunsArtifactsList,
+					&jobsRunsArtifactsDownloadURL,
+					&jobsRunsArtifactsGet,
+					&jobsRunsArtifactsPreview,
 				},
 			},
 			{

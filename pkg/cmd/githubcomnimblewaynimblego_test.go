@@ -17,6 +17,7 @@ func TestExtract(t *testing.T) {
 			"--api-key", "string",
 			"extract",
 			"--url", "url",
+			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
 			"--browser-action", "{wait_for_element: '#login-form'}",
@@ -63,6 +64,7 @@ func TestExtract(t *testing.T) {
 			"--api-key", "string",
 			"extract",
 			"--url", "url",
+			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
 			"--browser-action", "{wait_for_element: '#login-form'}",
@@ -112,6 +114,8 @@ func TestExtract(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"url: url\n" +
+			"body:\n" +
+			"  key: value\n" +
 			"browser: chrome\n" +
 			"browser_actions:\n" +
 			"  - goto: https://example.com/login\n" +
@@ -211,6 +215,7 @@ func TestExtractAsync(t *testing.T) {
 			"--api-key", "string",
 			"extract-async",
 			"--url", "url",
+			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
 			"--browser-action", "{wait_for_element: '#login-form'}",
@@ -262,6 +267,7 @@ func TestExtractAsync(t *testing.T) {
 			"--api-key", "string",
 			"extract-async",
 			"--url", "url",
+			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
 			"--browser-action", "{wait_for_element: '#login-form'}",
@@ -316,6 +322,8 @@ func TestExtractAsync(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"url: url\n" +
+			"body:\n" +
+			"  key: value\n" +
 			"browser: chrome\n" +
 			"browser_actions:\n" +
 			"  - goto: https://example.com/login\n" +
@@ -419,8 +427,8 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
-			"--input", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
-			"--shared-inputs", "{browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--input", "{body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--shared-inputs", "{body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
 		)
 	})
 
@@ -433,6 +441,7 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
+			"--input.body", "{key: value}",
 			"--input.browser", "chrome",
 			"--input.browser-actions", "[{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}]",
 			"--input.callback-url", "https://example.com/webhook/callback",
@@ -455,7 +464,7 @@ func TestExtractBatch(t *testing.T) {
 			"--input.parse=true",
 			"--input.parser", "{myParser: bar}",
 			"--input.referrer-type", "random",
-			"--input.render=true",
+			"--input.render=false",
 			"--input.request-timeout", "30000",
 			"--input.session", "{id: id, prefetch_userbrowser: true, retry: true, timeout: 1}",
 			"--input.skill", "dynamic-content",
@@ -466,6 +475,7 @@ func TestExtractBatch(t *testing.T) {
 			"--input.storage-url", "s3://bucket-name/path/to/object",
 			"--input.tag", "campaign-2024-q1",
 			"--input.url", "url",
+			"--shared-inputs.body", "{key: value}",
 			"--shared-inputs.browser", "chrome",
 			"--shared-inputs.browser-actions", "[{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}]",
 			"--shared-inputs.callback-url", "https://example.com/webhook/callback",
@@ -488,7 +498,7 @@ func TestExtractBatch(t *testing.T) {
 			"--shared-inputs.parse=true",
 			"--shared-inputs.parser", "{myParser: bar}",
 			"--shared-inputs.referrer-type", "random",
-			"--shared-inputs.render=true",
+			"--shared-inputs.render=false",
 			"--shared-inputs.request-timeout", "30000",
 			"--shared-inputs.session", "{id: id, prefetch_userbrowser: true, retry: true, timeout: 1}",
 			"--shared-inputs.skill", "dynamic-content",
@@ -506,7 +516,9 @@ func TestExtractBatch(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"inputs:\n" +
-			"  - browser: chrome\n" +
+			"  - body:\n" +
+			"      key: value\n" +
+			"    browser: chrome\n" +
 			"    browser_actions:\n" +
 			"      - goto: https://example.com/login\n" +
 			"      - wait_for_element: '#login-form'\n" +
@@ -580,7 +592,7 @@ func TestExtractBatch(t *testing.T) {
 			"    parser:\n" +
 			"      myParser: bar\n" +
 			"    referrer_type: random\n" +
-			"    render: true\n" +
+			"    render: false\n" +
 			"    request_timeout: 30000\n" +
 			"    session:\n" +
 			"      id: id\n" +
@@ -596,6 +608,8 @@ func TestExtractBatch(t *testing.T) {
 			"    tag: campaign-2024-q1\n" +
 			"    url: url\n" +
 			"shared_inputs:\n" +
+			"  body:\n" +
+			"    key: value\n" +
 			"  browser: chrome\n" +
 			"  browser_actions:\n" +
 			"    - goto: https://example.com/login\n" +
@@ -670,7 +684,7 @@ func TestExtractBatch(t *testing.T) {
 			"  parser:\n" +
 			"    myParser: bar\n" +
 			"  referrer_type: random\n" +
-			"  render: true\n" +
+			"  render: false\n" +
 			"  request_timeout: 30000\n" +
 			"  session:\n" +
 			"    id: id\n" +
@@ -736,6 +750,7 @@ func TestSearch(t *testing.T) {
 			"--query", "x",
 			"--content-type", "[string]",
 			"--country", "country",
+			"--debug-params", "{foo: bar}",
 			"--deep-search=true",
 			"--end-date", "end_date",
 			"--exclude-domain", "[string]",
@@ -759,6 +774,8 @@ func TestSearch(t *testing.T) {
 			"content_type:\n" +
 			"  - string\n" +
 			"country: country\n" +
+			"debug_params:\n" +
+			"  foo: bar\n" +
 			"deep_search: true\n" +
 			"end_date: end_date\n" +
 			"exclude_domains:\n" +

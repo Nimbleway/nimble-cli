@@ -125,6 +125,11 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 }, map[string][]requestflag.HasOuterFlag{
 	"extract-options": {
 		&requestflag.InnerFlag[any]{
+			Name:       "extract-options.body",
+			Usage:      "Request body for POST, PUT, PATCH methods",
+			InnerField: "body",
+		},
+		&requestflag.InnerFlag[any]{
 			Name:       "extract-options.browser",
 			Usage:      "Browser type to emulate",
 			InnerField: "browser",
@@ -229,7 +234,7 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Referrer policy for the request",
 			InnerField: "referrer_type",
 		},
-		&requestflag.InnerFlag[bool]{
+		&requestflag.InnerFlag[any]{
 			Name:       "extract-options.render",
 			Usage:      "Whether to render JavaScript content using a browser",
 			InnerField: "render",

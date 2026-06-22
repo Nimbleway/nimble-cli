@@ -63,14 +63,13 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "url",
-			Required: true,
 			BodyPath: "url",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "agent-name",
 			BodyPath: "agent_name",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[map[string]any]{
 			Name:     "input-schema",
 			BodyPath: "input_schema",
 		},
@@ -78,13 +77,12 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 			Name:     "metadata",
 			BodyPath: "metadata",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[map[string]any]{
 			Name:     "output-schema",
 			BodyPath: "output_schema",
 		},
 		&requestflag.Flag[string]{
 			Name:     "from-agent",
-			Required: true,
 			BodyPath: "from_agent",
 		},
 	},
@@ -134,26 +132,6 @@ var agentGetGeneration = cli.Command{
 		},
 	},
 	Action:          handleAgentGetGeneration,
-	HideHelpCommand: true,
-}
-
-var agentPublish = cli.Command{
-	Name:    "publish",
-	Usage:   "Publish Agent Version",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:      "agent-name",
-			Required:  true,
-			PathParam: "agent_name",
-		},
-		&requestflag.Flag[string]{
-			Name:     "version-id",
-			Required: true,
-			BodyPath: "version_id",
-		},
-	},
-	Action:          handleAgentPublish,
 	HideHelpCommand: true,
 }
 
@@ -459,55 +437,6 @@ func handleAgentGetGeneration(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "agent get-generation",
-		Transform:      transform,
-	})
-}
-
-func handleAgentPublish(ctx context.Context, cmd *cli.Command) error {
-	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("agent-name") && len(unusedArgs) > 0 {
-		cmd.Set("agent-name", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		ApplicationJSON,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	params := githubcomnimblewaynimblego.AgentPublishParams{}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agent.Publish(
-		ctx,
-		cmd.Value("agent-name").(string),
-		params,
-		options...,
-	)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	explicitFormat := cmd.Root().IsSet("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(obj, ShowJSONOpts{
-		ExplicitFormat: explicitFormat,
-		Format:         format,
-		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "agent publish",
 		Transform:      transform,
 	})
 }
