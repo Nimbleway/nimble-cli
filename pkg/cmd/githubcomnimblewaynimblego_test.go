@@ -17,6 +17,7 @@ func TestExtract(t *testing.T) {
 			"--api-key", "string",
 			"extract",
 			"--url", "url",
+			"--auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -64,6 +65,7 @@ func TestExtract(t *testing.T) {
 			"--api-key", "string",
 			"extract",
 			"--url", "url",
+			"--auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -114,6 +116,13 @@ func TestExtract(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"url: url\n" +
+			"auto_driver_configuration:\n" +
+			"  vx10: 2\n" +
+			"  vx10-pro: 0\n" +
+			"  vx6-fast: 1\n" +
+			"  vx6-stealth: 1\n" +
+			"  vx8: 5\n" +
+			"  vx8-pro: 5\n" +
 			"body:\n" +
 			"  key: value\n" +
 			"browser: chrome\n" +
@@ -215,6 +224,7 @@ func TestExtractAsync(t *testing.T) {
 			"--api-key", "string",
 			"extract-async",
 			"--url", "url",
+			"--auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -267,6 +277,7 @@ func TestExtractAsync(t *testing.T) {
 			"--api-key", "string",
 			"extract-async",
 			"--url", "url",
+			"--auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--body", "{key: value}",
 			"--browser", "chrome",
 			"--browser-action", "{goto: https://example.com/login}",
@@ -322,6 +333,13 @@ func TestExtractAsync(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"url: url\n" +
+			"auto_driver_configuration:\n" +
+			"  vx10: 2\n" +
+			"  vx10-pro: 0\n" +
+			"  vx6-fast: 1\n" +
+			"  vx6-stealth: 1\n" +
+			"  vx8: 5\n" +
+			"  vx8-pro: 5\n" +
 			"body:\n" +
 			"  key: value\n" +
 			"browser: chrome\n" +
@@ -427,8 +445,8 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
-			"--input", "{body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
-			"--shared-inputs", "{body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--input", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--shared-inputs", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
 		)
 	})
 
@@ -441,6 +459,7 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract-batch",
+			"--input.auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--input.body", "{key: value}",
 			"--input.browser", "chrome",
 			"--input.browser-actions", "[{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}]",
@@ -475,6 +494,7 @@ func TestExtractBatch(t *testing.T) {
 			"--input.storage-url", "s3://bucket-name/path/to/object",
 			"--input.tag", "campaign-2024-q1",
 			"--input.url", "url",
+			"--shared-inputs.auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--shared-inputs.body", "{key: value}",
 			"--shared-inputs.browser", "chrome",
 			"--shared-inputs.browser-actions", "[{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}]",
@@ -516,7 +536,14 @@ func TestExtractBatch(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"inputs:\n" +
-			"  - body:\n" +
+			"  - auto_driver_configuration:\n" +
+			"      vx10: 2\n" +
+			"      vx10-pro: 0\n" +
+			"      vx6-fast: 1\n" +
+			"      vx6-stealth: 1\n" +
+			"      vx8: 5\n" +
+			"      vx8-pro: 5\n" +
+			"    body:\n" +
 			"      key: value\n" +
 			"    browser: chrome\n" +
 			"    browser_actions:\n" +
@@ -608,6 +635,13 @@ func TestExtractBatch(t *testing.T) {
 			"    tag: campaign-2024-q1\n" +
 			"    url: url\n" +
 			"shared_inputs:\n" +
+			"  auto_driver_configuration:\n" +
+			"    vx10: 2\n" +
+			"    vx10-pro: 0\n" +
+			"    vx6-fast: 1\n" +
+			"    vx6-stealth: 1\n" +
+			"    vx8: 5\n" +
+			"    vx8-pro: 5\n" +
 			"  body:\n" +
 			"    key: value\n" +
 			"  browser: chrome\n" +
