@@ -16,7 +16,7 @@ import (
 
 var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "create",
-	Usage:   "Create a new workspace-scoped Web Search Agent. Pass `template` to clone from a\nnamed template.",
+	Usage:   "Create a Web Search Agent instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
@@ -37,7 +37,8 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "effort",
-			Default:  "research",
+			Usage:    "Canonical effort tier names for the research graph.",
+			Default:  "high",
 			BodyPath: "effort",
 		},
 		&requestflag.Flag[[]string]{
@@ -59,6 +60,7 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
+			Usage:    "Source preferences for a web search agent instance.",
 			BodyPath: "sources",
 		},
 		&requestflag.Flag[[]string]{
@@ -67,7 +69,7 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[*string]{
 			Name:     "template",
-			Usage:    "Template name to materialise this instance from. When set, scalar fields and child rows are copied from the template.",
+			Usage:    "Template name to materialize this instance from. When set, the scalar fields and child rows are copied from the template.",
 			BodyPath: "template",
 		},
 		&requestflag.Flag[*string]{
@@ -105,7 +107,7 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 
 var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
-	Usage:   "Apply a JSON Patch document (`application/json-patch+json`) to an agent you own.\nEach operation must be a `replace` with path `/field_name`.",
+	Usage:   "Update Agent",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -115,6 +117,7 @@ var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[[]map[string]any]{
 			Name:     "body",
+			Usage:    "A JSON Patch document per RFC 6902 — a JSON array of patch operations.",
 			Required: true,
 			BodyRoot: true,
 		},
@@ -125,12 +128,16 @@ var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 	"body": {
 		&requestflag.InnerFlag[string]{
 			Name:       "body.op",
-			Usage:      `Allowed values: "replace".`,
+			Usage:      `Allowed values: "add", "remove", "replace", "move", "copy", "test".`,
 			InnerField: "op",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "body.path",
 			InnerField: "path",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "body.from",
+			InnerField: "from",
 		},
 		&requestflag.InnerFlag[any]{
 			Name:       "body.value",
@@ -141,12 +148,18 @@ var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 
 var taskAgentList = cli.Command{
 	Name:    "list",
-	Usage:   "List active Web Search Agents visible to the caller. Includes agents scoped to\nthe caller's workspace.",
+	Usage:   "List Web Search Agent instances.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
-			Name:      "effort",
-			QueryPath: "effort",
+			Name:      "filter-effort",
+			Usage:     "Canonical effort tier names for the research graph.",
+			QueryPath: "filter_effort",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "filter-use-case",
+			Usage:     `Allowed values: "research", "enrichment", "dataset_building".`,
+			QueryPath: "filter_use_case",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
@@ -159,8 +172,8 @@ var taskAgentList = cli.Command{
 			QueryPath: "offset",
 		},
 		&requestflag.Flag[*string]{
-			Name:      "use-case",
-			QueryPath: "use_case",
+			Name:      "workspace-id",
+			QueryPath: "workspace_id",
 		},
 	},
 	Action:          handleTaskAgentList,
@@ -169,7 +182,7 @@ var taskAgentList = cli.Command{
 
 var taskAgentDeactivate = cli.Command{
 	Name:    "deactivate",
-	Usage:   "Deactivate an agent you own. The agent is marked inactive but not deleted.",
+	Usage:   "Deactivate Agent",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -184,7 +197,7 @@ var taskAgentDeactivate = cli.Command{
 
 var taskAgentGet = cli.Command{
 	Name:    "get",
-	Usage:   "Fetch a single Web Search Agent by id.",
+	Usage:   "Get Agent",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -199,7 +212,7 @@ var taskAgentGet = cli.Command{
 
 var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 	Name:    "run",
-	Usage:   "Create and enqueue a research run for a Web Search Agent.",
+	Usage:   "Create a research run for a Web Search Agent instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -212,6 +225,11 @@ var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 			Required: true,
 			BodyPath: "input",
 		},
+		&requestflag.Flag[*string]{
+			Name:     "effort",
+			Usage:    "Canonical effort tier names for the research graph.",
+			BodyPath: "effort",
+		},
 		&requestflag.Flag[bool]{
 			Name:     "enable-events",
 			Default:  false,
@@ -221,8 +239,13 @@ var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 			Name:     "output-schema",
 			BodyPath: "output_schema",
 		},
+		&requestflag.Flag[*string]{
+			Name:     "previous-interaction-id",
+			BodyPath: "previous_interaction_id",
+		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
+			Usage:    "Source preferences for a web search agent instance.",
 			BodyPath: "sources",
 		},
 	},

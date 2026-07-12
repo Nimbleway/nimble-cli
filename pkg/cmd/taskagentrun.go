@@ -16,7 +16,7 @@ import (
 
 var taskAgentRunsList = cli.Command{
 	Name:    "list",
-	Usage:   "List task runs for the caller's workspace and the given agent, newest first.",
+	Usage:   "List runs for this instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -33,6 +33,14 @@ var taskAgentRunsList = cli.Command{
 			Name:      "offset",
 			Default:   0,
 			QueryPath: "offset",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "q",
+			QueryPath: "q",
+		},
+		&requestflag.Flag[*string]{
+			Name:      "status",
+			QueryPath: "status",
 		},
 	},
 	Action:          handleTaskAgentRunsList,
@@ -61,7 +69,7 @@ var taskAgentRunsCancel = cli.Command{
 
 var taskAgentRunsGet = cli.Command{
 	Name:    "get",
-	Usage:   "Poll run status. Repeat until status is 'completed', 'failed', or 'cancelled'.",
+	Usage:   "Fetch a run by id, scoped to the instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -81,7 +89,7 @@ var taskAgentRunsGet = cli.Command{
 
 var taskAgentRunsGetResult = cli.Command{
 	Name:    "get-result",
-	Usage:   "Fetch the result for a terminal run. Returns 408 if still active, 422 with\n`AgentRunFailedResult` if failed.",
+	Usage:   "Fetch the result for a terminal run on this instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -101,7 +109,7 @@ var taskAgentRunsGetResult = cli.Command{
 
 var taskAgentRunsStreamEvents = cli.Command{
 	Name:    "stream-events",
-	Usage:   "Server-Sent Events stream of real-time progress events for a run. The run must\nhave been created with `enable_events=true`.",
+	Usage:   "SSE stream of real-time progress events for a run on this instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

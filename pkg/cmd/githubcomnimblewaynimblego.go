@@ -224,6 +224,10 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "prefetch_userbrowser",
 		},
 		&requestflag.InnerFlag[bool]{
+			Name:       "session.renew-on-blocked",
+			InnerField: "renew_on_blocked",
+		},
+		&requestflag.InnerFlag[bool]{
 			Name:       "session.retry",
 			InnerField: "retry",
 		},
@@ -467,6 +471,10 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.InnerFlag[bool]{
 			Name:       "session.prefetch-userbrowser",
 			InnerField: "prefetch_userbrowser",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "session.renew-on-blocked",
+			InnerField: "renew_on_blocked",
 		},
 		&requestflag.InnerFlag[bool]{
 			Name:       "session.retry",

@@ -33,6 +33,7 @@ var jobsCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
+			Usage:    "Free-text description of the job.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[map[string]any]{
@@ -119,6 +120,7 @@ var jobsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
+			Usage:    "New description.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[map[string]any]{
