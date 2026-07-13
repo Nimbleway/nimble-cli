@@ -166,6 +166,14 @@ func init() {
 				},
 			},
 			{
+				Name:     "fast-serp",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&fastSerpRun,
+				},
+			},
+			{
 				Name:     "task-agent",
 				Category: "API RESOURCE",
 				Suggest:  true,
