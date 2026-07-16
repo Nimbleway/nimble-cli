@@ -19,19 +19,9 @@ var taskAgentTemplatesList = cli.Command{
 	Usage:   "List Templates",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[*string]{
-			Name:      "filter-effort",
-			Usage:     "Canonical effort tier names for the research graph.",
-			QueryPath: "filter_effort",
-		},
-		&requestflag.Flag[*string]{
-			Name:      "filter-use-case",
-			Usage:     `Allowed values: "research", "enrichment", "dataset_building".`,
-			QueryPath: "filter_use_case",
-		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   200,
+			Default:   100,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{

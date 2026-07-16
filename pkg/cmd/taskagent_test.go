@@ -154,9 +154,7 @@ func TestTaskAgentList(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"task-agent", "list",
-			"--filter-effort", "low",
-			"--filter-use-case", "research",
-			"--limit", "0",
+			"--limit", "1",
 			"--offset", "0",
 			"--workspace-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
@@ -198,6 +196,7 @@ func TestTaskAgentRun(t *testing.T) {
 			"--input", "input",
 			"--effort", "low",
 			"--enable-events=true",
+			"--input-data", "[{foo: bar}]",
 			"--output-schema", "{foo: bar}",
 			"--previous-interaction-id", "previous_interaction_id",
 			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
@@ -217,6 +216,7 @@ func TestTaskAgentRun(t *testing.T) {
 			"--input", "input",
 			"--effort", "low",
 			"--enable-events=true",
+			"--input-data", "[{foo: bar}]",
 			"--output-schema", "{foo: bar}",
 			"--previous-interaction-id", "previous_interaction_id",
 			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
@@ -232,6 +232,8 @@ func TestTaskAgentRun(t *testing.T) {
 			"input: input\n" +
 			"effort: low\n" +
 			"enable_events: true\n" +
+			"input_data:\n" +
+			"  - foo: bar\n" +
 			"output_schema:\n" +
 			"  foo: bar\n" +
 			"previous_interaction_id: previous_interaction_id\n" +

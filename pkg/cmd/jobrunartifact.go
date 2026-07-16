@@ -39,7 +39,7 @@ var jobsRunsArtifactsDownloadURL = cli.Command{
 			Required:  true,
 			PathParam: "run_id",
 		},
-		&requestflag.Flag[string]{
+		&requestflag.Flag[int64]{
 			Name:      "artifact-id",
 			Required:  true,
 			PathParam: "artifact_id",
@@ -59,7 +59,7 @@ var jobsRunsArtifactsGet = cli.Command{
 			Required:  true,
 			PathParam: "run_id",
 		},
-		&requestflag.Flag[string]{
+		&requestflag.Flag[int64]{
 			Name:      "artifact-id",
 			Required:  true,
 			PathParam: "artifact_id",
@@ -79,7 +79,7 @@ var jobsRunsArtifactsPreview = cli.Command{
 			Required:  true,
 			PathParam: "run_id",
 		},
-		&requestflag.Flag[string]{
+		&requestflag.Flag[int64]{
 			Name:      "artifact-id",
 			Required:  true,
 			PathParam: "artifact_id",
@@ -161,7 +161,7 @@ func handleJobsRunsArtifactsDownloadURL(ctx context.Context, cmd *cli.Command) e
 	options = append(options, option.WithResponseBodyInto(&res))
 	_, err = client.Jobs.Runs.Artifacts.DownloadURL(
 		ctx,
-		cmd.Value("artifact-id").(string),
+		cmd.Value("artifact-id").(int64),
 		params,
 		options...,
 	)
@@ -212,7 +212,7 @@ func handleJobsRunsArtifactsGet(ctx context.Context, cmd *cli.Command) error {
 	options = append(options, option.WithResponseBodyInto(&res))
 	_, err = client.Jobs.Runs.Artifacts.Get(
 		ctx,
-		cmd.Value("artifact-id").(string),
+		cmd.Value("artifact-id").(int64),
 		params,
 		options...,
 	)
@@ -263,7 +263,7 @@ func handleJobsRunsArtifactsPreview(ctx context.Context, cmd *cli.Command) error
 	options = append(options, option.WithResponseBodyInto(&res))
 	_, err = client.Jobs.Runs.Artifacts.Preview(
 		ctx,
-		cmd.Value("artifact-id").(string),
+		cmd.Value("artifact-id").(int64),
 		params,
 		options...,
 	)

@@ -28,7 +28,7 @@ func TestJobsRunsArtifactsDownloadURL(t *testing.T) {
 			"--api-key", "string",
 			"jobs:runs:artifacts", "download-url",
 			"--run-id", "run_id",
-			"--artifact-id", "artifact_id",
+			"--artifact-id", "0",
 		)
 	})
 }
@@ -41,7 +41,7 @@ func TestJobsRunsArtifactsGet(t *testing.T) {
 			"--api-key", "string",
 			"jobs:runs:artifacts", "get",
 			"--run-id", "run_id",
-			"--artifact-id", "artifact_id",
+			"--artifact-id", "0",
 		)
 	})
 }
@@ -54,7 +54,7 @@ func TestJobsRunsArtifactsPreview(t *testing.T) {
 			"--api-key", "string",
 			"jobs:runs:artifacts", "preview",
 			"--run-id", "run_id",
-			"--artifact-id", "artifact_id",
+			"--artifact-id", "0",
 		)
 	})
 }
