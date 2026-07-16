@@ -26,21 +26,13 @@ var taskAgentRunsList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   20,
+			Default:   100,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "offset",
 			Default:   0,
 			QueryPath: "offset",
-		},
-		&requestflag.Flag[*string]{
-			Name:      "q",
-			QueryPath: "q",
-		},
-		&requestflag.Flag[*string]{
-			Name:      "status",
-			QueryPath: "status",
 		},
 	},
 	Action:          handleTaskAgentRunsList,
