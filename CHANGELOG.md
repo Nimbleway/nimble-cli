@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.15.0 (2026-07-19)
+
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/Nimbleway/nimble-cli/compare/v0.14.0...v0.15.0)
+
+### Features
+
+* **api:** api update ([404b9e1](https://github.com/Nimbleway/nimble-cli/commit/404b9e16284e7a880e9a2cce21226742d5baaced))
+* **api:** api update ([4421400](https://github.com/Nimbleway/nimble-cli/commit/44214003cf07d73d16afcecd70f377c4ef484bd1))
+* **api:** api update ([868cd3e](https://github.com/Nimbleway/nimble-cli/commit/868cd3ed67b65faa1bd2e177c966a55fbb57b6ea))
+* **api:** api update ([ca1870d](https://github.com/Nimbleway/nimble-cli/commit/ca1870d62462326005a771c8543a97186685e150))
+* **api:** api update ([4c406e3](https://github.com/Nimbleway/nimble-cli/commit/4c406e3fb0d24ce74b710117af37b5f43482a15b))
+* **api:** api update ([1528da4](https://github.com/Nimbleway/nimble-cli/commit/1528da4422fc14bd123559378504553813e125b8))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([4761f34](https://github.com/Nimbleway/nimble-cli/commit/4761f348eae6d209b38167b5fb7abfa86a4dd04d))
+
 ## 0.14.0 (2026-06-22)
 
 Full Changelog:
