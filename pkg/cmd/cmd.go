@@ -201,7 +201,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&taskAgentRunsList,
-					&taskAgentRunsCancel,
 					&taskAgentRunsGet,
 					&taskAgentRunsGetResult,
 					&taskAgentRunsStreamEvents,

@@ -29,7 +29,6 @@ func TestTaskAgentCreate(t *testing.T) {
 			"--suggested-question", "string",
 			"--template", "template",
 			"--use-case", "research",
-			"--workspace-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 
@@ -58,7 +57,6 @@ func TestTaskAgentCreate(t *testing.T) {
 			"--suggested-question", "string",
 			"--template", "template",
 			"--use-case", "research",
-			"--workspace-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 
@@ -92,8 +90,7 @@ func TestTaskAgentCreate(t *testing.T) {
 			"suggested_questions:\n" +
 			"  - string\n" +
 			"template: template\n" +
-			"use_case: research\n" +
-			"workspace_id: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n")
+			"use_case: research\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",

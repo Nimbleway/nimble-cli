@@ -927,11 +927,6 @@ var search = cli.Command{
 			Default:  "US",
 			BodyPath: "country",
 		},
-		&requestflag.Flag[map[string]any]{
-			Name:     "debug-params",
-			Usage:    "Internal-only. Gated to allowlisted accounts; ignored otherwise.",
-			BodyPath: "debug_params",
-		},
 		&requestflag.Flag[*bool]{
 			Name:     "deep-search",
 			Usage:    "Deprecated. Use search_depth instead. true maps to 'deep', false maps to 'lite'.",
