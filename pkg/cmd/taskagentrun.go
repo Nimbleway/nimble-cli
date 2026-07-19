@@ -39,26 +39,6 @@ var taskAgentRunsList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var taskAgentRunsCancel = cli.Command{
-	Name:    "cancel",
-	Usage:   "Cancel an in-progress or queued run.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:      "agent-id",
-			Required:  true,
-			PathParam: "agent_id",
-		},
-		&requestflag.Flag[string]{
-			Name:      "run-id",
-			Required:  true,
-			PathParam: "run_id",
-		},
-	},
-	Action:          handleTaskAgentRunsCancel,
-	HideHelpCommand: true,
-}
-
 var taskAgentRunsGet = cli.Command{
 	Name:    "get",
 	Usage:   "Fetch a run by id, scoped to the instance.",
@@ -166,40 +146,6 @@ func handleTaskAgentRunsList(ctx context.Context, cmd *cli.Command) error {
 		Title:          "task-agent:runs list",
 		Transform:      transform,
 	})
-}
-
-func handleTaskAgentRunsCancel(ctx context.Context, cmd *cli.Command) error {
-	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("run-id") && len(unusedArgs) > 0 {
-		cmd.Set("run-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	params := githubcomnimblewaynimblego.TaskAgentRunCancelParams{
-		AgentID: cmd.Value("agent-id").(string),
-	}
-
-	return client.TaskAgent.Runs.Cancel(
-		ctx,
-		cmd.Value("run-id").(string),
-		params,
-		options...,
-	)
 }
 
 func handleTaskAgentRunsGet(ctx context.Context, cmd *cli.Command) error {

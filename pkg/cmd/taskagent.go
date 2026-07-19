@@ -86,11 +86,6 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Primary use case supported by the agent.",
 			BodyPath: "use_case",
 		},
-		&requestflag.Flag[*string]{
-			Name:     "workspace-id",
-			Usage:    "Workspace identifier to associate with the agent.",
-			BodyPath: "workspace_id",
-		},
 	},
 	Action:          handleTaskAgentCreate,
 	HideHelpCommand: true,

@@ -790,7 +790,6 @@ func TestSearch(t *testing.T) {
 			"--query", "x",
 			"--content-type", "[string]",
 			"--country", "country",
-			"--debug-params", "{foo: bar}",
 			"--deep-search=true",
 			"--end-date", "end_date",
 			"--exclude-domain", "[string]",
@@ -814,8 +813,6 @@ func TestSearch(t *testing.T) {
 			"content_type:\n" +
 			"  - string\n" +
 			"country: country\n" +
-			"debug_params:\n" +
-			"  foo: bar\n" +
 			"deep_search: true\n" +
 			"end_date: end_date\n" +
 			"exclude_domains:\n" +

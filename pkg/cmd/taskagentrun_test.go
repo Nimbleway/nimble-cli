@@ -22,19 +22,6 @@ func TestTaskAgentRunsList(t *testing.T) {
 	})
 }
 
-func TestTaskAgentRunsCancel(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"task-agent:runs", "cancel",
-			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--run-id", "run_id",
-		)
-	})
-}
-
 func TestTaskAgentRunsGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
