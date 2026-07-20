@@ -149,10 +149,8 @@ func TestJobsList(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"jobs", "list",
-			"--agent-name", "agent_name",
-			"--page", "1",
-			"--per-page", "1",
-			"--q", "q",
+			"--limit", "1",
+			"--offset", "0",
 		)
 	})
 }
@@ -176,18 +174,6 @@ func TestJobsGet(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"jobs", "get",
-			"--job-id", "job_id",
-		)
-	})
-}
-
-func TestJobsRun(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"jobs", "run",
 			"--job-id", "job_id",
 		)
 	})

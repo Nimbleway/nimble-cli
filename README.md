@@ -48,7 +48,7 @@ nimble [resource] <command> [flags...]
 ```
 
 ```sh
-nimble extract \
+nimble extract run \
   --api-key 'My API Key' \
   --url https://exapmle.com
 ```

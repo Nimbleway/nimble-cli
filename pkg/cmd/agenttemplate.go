@@ -14,9 +14,9 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var taskAgentTemplatesList = cli.Command{
+var agentsTemplatesList = cli.Command{
 	Name:    "list",
-	Usage:   "List Templates",
+	Usage:   "List the pre-built agent templates available to your account. Use a template's\n`template_name` with `POST /v2/agents` to create an agent instance from it.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[int64]{
@@ -30,13 +30,13 @@ var taskAgentTemplatesList = cli.Command{
 			QueryPath: "offset",
 		},
 	},
-	Action:          handleTaskAgentTemplatesList,
+	Action:          handleAgentsTemplatesList,
 	HideHelpCommand: true,
 }
 
-var taskAgentTemplatesGet = cli.Command{
+var agentsTemplatesGet = cli.Command{
 	Name:    "get",
-	Usage:   "Get Template",
+	Usage:   "Retrieve a single agent template by its stable `template_name`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -45,11 +45,11 @@ var taskAgentTemplatesGet = cli.Command{
 			PathParam: "template_name",
 		},
 	},
-	Action:          handleTaskAgentTemplatesGet,
+	Action:          handleAgentsTemplatesGet,
 	HideHelpCommand: true,
 }
 
-func handleTaskAgentTemplatesList(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsTemplatesList(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -68,11 +68,11 @@ func handleTaskAgentTemplatesList(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	params := githubcomnimblewaynimblego.TaskAgentTemplateListParams{}
+	params := githubcomnimblewaynimblego.AgentTemplateListParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.TaskAgent.Templates.List(ctx, params, options...)
+	_, err = client.Agents.Templates.List(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -85,12 +85,12 @@ func handleTaskAgentTemplatesList(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "task-agent:templates list",
+		Title:          "agents:templates list",
 		Transform:      transform,
 	})
 }
 
-func handleTaskAgentTemplatesGet(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsTemplatesGet(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("template-name") && len(unusedArgs) > 0 {
@@ -114,7 +114,7 @@ func handleTaskAgentTemplatesGet(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.TaskAgent.Templates.Get(ctx, cmd.Value("template-name").(string), options...)
+	_, err = client.Agents.Templates.Get(ctx, cmd.Value("template-name").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func handleTaskAgentTemplatesGet(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "task-agent:templates get",
+		Title:          "agents:templates get",
 		Transform:      transform,
 	})
 }
