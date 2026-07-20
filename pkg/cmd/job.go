@@ -20,10 +20,10 @@ var jobsCreate = requestflag.WithInnerFlags(cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "agent-name",
-			Usage:    "Name of the agent to run.",
+			Name:     "extract-template-name",
+			Usage:    "Name of the extract template to run.",
 			Required: true,
-			BodyPath: "agent_name",
+			BodyPath: "extract_template_name",
 		},
 		&requestflag.Flag[string]{
 			Name:     "name",
