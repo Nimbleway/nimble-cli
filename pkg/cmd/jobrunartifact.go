@@ -16,7 +16,7 @@ import (
 
 var jobsRunsArtifactsList = cli.Command{
 	Name:    "list",
-	Usage:   "List Run Artifacts",
+	Usage:   "List Run Artifacts Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -31,7 +31,7 @@ var jobsRunsArtifactsList = cli.Command{
 
 var jobsRunsArtifactsDownloadURL = cli.Command{
 	Name:    "download-url",
-	Usage:   "Get Run Artifact Download URL",
+	Usage:   "Get Run Artifact Download Url Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -51,7 +51,7 @@ var jobsRunsArtifactsDownloadURL = cli.Command{
 
 var jobsRunsArtifactsGet = cli.Command{
 	Name:    "get",
-	Usage:   "Get Run Artifact",
+	Usage:   "Get Run Artifact Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -71,7 +71,7 @@ var jobsRunsArtifactsGet = cli.Command{
 
 var jobsRunsArtifactsPreview = cli.Command{
 	Name:    "preview",
-	Usage:   "Preview Run Artifact",
+	Usage:   "Preview Run Artifact Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

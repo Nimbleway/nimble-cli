@@ -88,23 +88,81 @@ func init() {
 			},
 		},
 		Commands: []*cli.Command{
-			&extract,
-			&extractAsync,
-			&extractBatch,
 			&map_,
 			&search,
 			{
-				Name:     "agent",
+				Name:     "extract",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&agentList,
-					&agentGenerate,
-					&agentGet,
-					&agentGetGeneration,
-					&agentRun,
-					&agentRunAsync,
-					&agentRunBatch,
+					&extractAsync,
+					&extractBatch,
+					&extractRun,
+				},
+			},
+			{
+				Name:     "extract:templates",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&extractTemplatesUpdate,
+					&extractTemplatesList,
+					&extractTemplatesDelete,
+					&extractTemplatesAsync,
+					&extractTemplatesBatch,
+					&extractTemplatesGet,
+					&extractTemplatesRun,
+				},
+			},
+			{
+				Name:     "extract:templates:generations",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&extractTemplatesGenerationsCreate,
+					&extractTemplatesGenerationsGet,
+				},
+			},
+			{
+				Name:     "extract:templates:versions",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&extractTemplatesVersionsList,
+					&extractTemplatesVersionsGet,
+				},
+			},
+			{
+				Name:     "agents",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&agentsCreate,
+					&agentsUpdate,
+					&agentsList,
+					&agentsDelete,
+					&agentsGet,
+				},
+			},
+			{
+				Name:     "agents:templates",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&agentsTemplatesList,
+					&agentsTemplatesGet,
+				},
+			},
+			{
+				Name:     "agents:runs",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&agentsRunsCreate,
+					&agentsRunsList,
+					&agentsRunsGet,
+					&agentsRunsResult,
+					&agentsRunsStreamEvents,
 				},
 			},
 			{
@@ -174,39 +232,6 @@ func init() {
 				},
 			},
 			{
-				Name:     "task-agent",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&taskAgentCreate,
-					&taskAgentUpdate,
-					&taskAgentList,
-					&taskAgentDeactivate,
-					&taskAgentGet,
-					&taskAgentRun,
-				},
-			},
-			{
-				Name:     "task-agent:templates",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&taskAgentTemplatesList,
-					&taskAgentTemplatesGet,
-				},
-			},
-			{
-				Name:     "task-agent:runs",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&taskAgentRunsList,
-					&taskAgentRunsGet,
-					&taskAgentRunsGetResult,
-					&taskAgentRunsStreamEvents,
-				},
-			},
-			{
 				Name:     "jobs",
 				Category: "API RESOURCE",
 				Suggest:  true,
@@ -216,7 +241,6 @@ func init() {
 					&jobsList,
 					&jobsDelete,
 					&jobsGet,
-					&jobsRun,
 				},
 			},
 			{
@@ -224,6 +248,7 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
+					&jobsRunsCreate,
 					&jobsRunsList,
 					&jobsRunsCancel,
 					&jobsRunsGet,
