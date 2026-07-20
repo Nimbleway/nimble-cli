@@ -14,9 +14,24 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+var jobsRunsCreate = cli.Command{
+	Name:    "create",
+	Usage:   "Trigger Job Run Public V2",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "job-id",
+			Required:  true,
+			PathParam: "job_id",
+		},
+	},
+	Action:          handleJobsRunsCreate,
+	HideHelpCommand: true,
+}
+
 var jobsRunsList = cli.Command{
 	Name:    "list",
-	Usage:   "List Runs for Job",
+	Usage:   "List Job Runs Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -25,19 +40,14 @@ var jobsRunsList = cli.Command{
 			PathParam: "job_id",
 		},
 		&requestflag.Flag[int64]{
-			Name:      "page",
-			Default:   1,
-			QueryPath: "page",
+			Name:      "limit",
+			Default:   100,
+			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
-			Name:      "per-page",
-			Default:   20,
-			QueryPath: "per_page",
-		},
-		&requestflag.Flag[*string]{
-			Name:      "status",
-			Usage:     "Filter by status",
-			QueryPath: "status",
+			Name:      "offset",
+			Default:   0,
+			QueryPath: "offset",
 		},
 	},
 	Action:          handleJobsRunsList,
@@ -46,7 +56,7 @@ var jobsRunsList = cli.Command{
 
 var jobsRunsCancel = cli.Command{
 	Name:    "cancel",
-	Usage:   "Cancel Run",
+	Usage:   "Cancel Run Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -61,7 +71,7 @@ var jobsRunsCancel = cli.Command{
 
 var jobsRunsGet = cli.Command{
 	Name:    "get",
-	Usage:   "Get Run",
+	Usage:   "Get Run Public V2",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -72,6 +82,48 @@ var jobsRunsGet = cli.Command{
 	},
 	Action:          handleJobsRunsGet,
 	HideHelpCommand: true,
+}
+
+func handleJobsRunsCreate(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("job-id") && len(unusedArgs) > 0 {
+		cmd.Set("job-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Jobs.Runs.New(ctx, cmd.Value("job-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "jobs:runs create",
+		Transform:      transform,
+	})
 }
 
 func handleJobsRunsList(ctx context.Context, cmd *cli.Command) error {

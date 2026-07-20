@@ -14,80 +14,55 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var agentsCreate = requestflag.WithInnerFlags(cli.Command{
+var agentsRunsCreate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "create",
-	Usage:   "Create a Web Search Agent. Either pass `template` to materialize a pre-built\ntemplate (its fields, goals, sources, and suggested questions are copied), or\ndefine the agent from scratch with `display_name`, `goals`, `sources`, and an\noptional `output_schema` for structured results.",
+	Usage:   "Start an agent run. The run executes asynchronously: the response returns\nimmediately with status `queued`, then poll `GET .../runs/{run_id}` until\n`completed` and fetch the output from `GET .../runs/{run_id}/result` — or set\n`enable_events: true` and follow `GET .../runs/{run_id}/events` for live\nprogress.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[*string]{
-			Name:     "agent-name",
-			Usage:    "Stable agent name.",
-			BodyPath: "agent_name",
-		},
-		&requestflag.Flag[*string]{
-			Name:     "description",
-			Usage:    "Agent description shown to users.",
-			BodyPath: "description",
-		},
-		&requestflag.Flag[*string]{
-			Name:     "display-name",
-			Usage:    "Human-friendly agent name shown to users.",
-			BodyPath: "display_name",
-		},
-		&requestflag.Flag[*string]{
-			Name:     "domain-expertise",
-			Usage:    "Domain expertise or operating context for the agent.",
-			BodyPath: "domain_expertise",
+		&requestflag.Flag[string]{
+			Name:      "agent-id",
+			Required:  true,
+			PathParam: "agent_id",
 		},
 		&requestflag.Flag[string]{
-			Name:     "effort",
-			Usage:    "Default effort level for this agent's runs.",
-			Default:  "high",
-			BodyPath: "effort",
-		},
-		&requestflag.Flag[[]string]{
-			Name:     "goal",
-			Usage:    "Ordered goals for the agent to follow.",
-			BodyPath: "goals",
+			Name:     "input",
+			Usage:    "User prompt or task instructions for the run.",
+			Required: true,
+			BodyPath: "input",
 		},
 		&requestflag.Flag[*string]{
-			Name:     "icon",
-			Usage:    "Icon identifier used when presenting the agent.",
-			BodyPath: "icon",
+			Name:     "effort",
+			Usage:    "Canonical effort tier names for the research graph.",
+			BodyPath: "effort",
 		},
 		&requestflag.Flag[bool]{
-			Name:     "is-active",
-			Usage:    "Whether the agent can be used to start new runs.",
-			Default:  true,
-			BodyPath: "is_active",
+			Name:     "enable-events",
+			Usage:    "Whether to stream run events when supported.",
+			Default:  false,
+			BodyPath: "enable_events",
+		},
+		&requestflag.Flag[any]{
+			Name:     "input-data",
+			Usage:    "Existing records to ENRICH: a list of partial rows, or a single object, mirroring output_schema's shape.",
+			BodyPath: "input_data",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "output-schema",
-			Usage:    "JSON schema describing the structured output the agent should produce.",
+			Usage:    "JSON schema overriding the agent's default structured output for this run.",
 			BodyPath: "output_schema",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "previous-interaction-id",
+			Usage:    "Previous interaction identifier used to continue a conversation.",
+			BodyPath: "previous_interaction_id",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
-			Usage:    "Source guidance for the agent.",
+			Usage:    "Source guidance overriding the agent default.",
 			BodyPath: "sources",
 		},
-		&requestflag.Flag[[]string]{
-			Name:     "suggested-question",
-			Usage:    "Suggested prompts users can run with this agent.",
-			BodyPath: "suggested_questions",
-		},
-		&requestflag.Flag[*string]{
-			Name:     "template",
-			Usage:    "Template name to materialize this instance from. When set, the scalar fields and child rows are copied from the template.",
-			BodyPath: "template",
-		},
-		&requestflag.Flag[*string]{
-			Name:     "use-case",
-			Usage:    "Primary use case supported by the agent.",
-			BodyPath: "use_case",
-		},
 	},
-	Action:          handleAgentsCreate,
+	Action:          handleAgentsRunsCreate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"sources": {
@@ -114,9 +89,9 @@ var agentsCreate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var agentsUpdate = requestflag.WithInnerFlags(cli.Command{
-	Name:    "update",
-	Usage:   "Update an agent with a\n[JSON Patch](https://datatracker.ietf.org/doc/html/rfc6902) document — an array\nof `{op, path, value}` operations applied to the agent, e.g.\n`[{\"op\": \"replace\", \"path\": \"/display_name\", \"value\": \"My agent\"}]`. Returns the\nupdated agent.",
+var agentsRunsList = cli.Command{
+	Name:    "list",
+	Usage:   "List the runs of an agent, newest first, paginated with `offset`/`limit`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -124,42 +99,6 @@ var agentsUpdate = requestflag.WithInnerFlags(cli.Command{
 			Required:  true,
 			PathParam: "agent_id",
 		},
-		&requestflag.Flag[[]map[string]any]{
-			Name:     "body",
-			Usage:    "A JSON Patch document per RFC 6902 — a JSON array of patch operations.",
-			Required: true,
-			BodyRoot: true,
-		},
-	},
-	Action:          handleAgentsUpdate,
-	HideHelpCommand: true,
-}, map[string][]requestflag.HasOuterFlag{
-	"body": {
-		&requestflag.InnerFlag[string]{
-			Name:       "body.op",
-			Usage:      `Allowed values: "add", "remove", "replace", "move", "copy", "test".`,
-			InnerField: "op",
-		},
-		&requestflag.InnerFlag[string]{
-			Name:       "body.path",
-			InnerField: "path",
-		},
-		&requestflag.InnerFlag[*string]{
-			Name:       "body.from",
-			InnerField: "from",
-		},
-		&requestflag.InnerFlag[any]{
-			Name:       "body.value",
-			InnerField: "value",
-		},
-	},
-})
-
-var agentsList = cli.Command{
-	Name:    "list",
-	Usage:   "List the active Web Search Agents in your account. Results are scoped to the\nworkspace resolved from your token (or the optional `workspace_id` query\nparameter) and paginated with `offset`/`limit`.",
-	Suggest: true,
-	Flags: []cli.Flag{
 		&requestflag.Flag[int64]{
 			Name:      "limit",
 			Default:   100,
@@ -170,33 +109,14 @@ var agentsList = cli.Command{
 			Default:   0,
 			QueryPath: "offset",
 		},
-		&requestflag.Flag[*string]{
-			Name:      "workspace-id",
-			QueryPath: "workspace_id",
-		},
 	},
-	Action:          handleAgentsList,
+	Action:          handleAgentsRunsList,
 	HideHelpCommand: true,
 }
 
-var agentsDelete = cli.Command{
-	Name:    "delete",
-	Usage:   "Deactivate an agent. This is a soft delete: the agent can no longer start new\nruns, but its existing runs and their results remain retrievable.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:      "agent-id",
-			Required:  true,
-			PathParam: "agent_id",
-		},
-	},
-	Action:          handleAgentsDelete,
-	HideHelpCommand: true,
-}
-
-var agentsGet = cli.Command{
+var agentsRunsGet = cli.Command{
 	Name:    "get",
-	Usage:   "Retrieve a single Web Search Agent by ID.",
+	Usage:   "Retrieve a run's current state. Poll this endpoint after creating a run: the run\nis finished once `status` is `completed`, `failed`, or `cancelled`.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -204,53 +124,57 @@ var agentsGet = cli.Command{
 			Required:  true,
 			PathParam: "agent_id",
 		},
+		&requestflag.Flag[string]{
+			Name:      "run-id",
+			Required:  true,
+			PathParam: "run_id",
+		},
 	},
-	Action:          handleAgentsGet,
+	Action:          handleAgentsRunsGet,
 	HideHelpCommand: true,
 }
 
-func handleAgentsCreate(ctx context.Context, cmd *cli.Command) error {
-	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		ApplicationJSON,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	params := githubcomnimblewaynimblego.AgentNewParams{}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agents.New(ctx, params, options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	explicitFormat := cmd.Root().IsSet("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(obj, ShowJSONOpts{
-		ExplicitFormat: explicitFormat,
-		Format:         format,
-		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "agents create",
-		Transform:      transform,
-	})
+var agentsRunsResult = cli.Command{
+	Name:    "result",
+	Usage:   "Fetch the output of a completed run. The `output` is `type: \"text\"` (a prose\nanswer) or `type: \"json\"` (structured data matching the output schema), plus\n`trust` metadata with per-claim citations for the answer.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "agent-id",
+			Required:  true,
+			PathParam: "agent_id",
+		},
+		&requestflag.Flag[string]{
+			Name:      "run-id",
+			Required:  true,
+			PathParam: "run_id",
+		},
+	},
+	Action:          handleAgentsRunsResult,
+	HideHelpCommand: true,
 }
 
-func handleAgentsUpdate(ctx context.Context, cmd *cli.Command) error {
+var agentsRunsStreamEvents = cli.Command{
+	Name:    "stream-events",
+	Usage:   "Stream a run's progress as\n[server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)\n(`text/event-stream`). Create the run with `enable_events: true` to have events\npublished. A keep-alive comment is sent every 15 seconds.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "agent-id",
+			Required:  true,
+			PathParam: "agent_id",
+		},
+		&requestflag.Flag[string]{
+			Name:      "run-id",
+			Required:  true,
+			PathParam: "run_id",
+		},
+	},
+	Action:          handleAgentsRunsStreamEvents,
+	HideHelpCommand: true,
+}
+
+func handleAgentsRunsCreate(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("agent-id") && len(unusedArgs) > 0 {
@@ -272,11 +196,11 @@ func handleAgentsUpdate(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	params := githubcomnimblewaynimblego.AgentUpdateParams{}
+	params := githubcomnimblewaynimblego.AgentRunNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agents.Update(
+	_, err = client.Agents.Runs.New(
 		ctx,
 		cmd.Value("agent-id").(string),
 		params,
@@ -294,53 +218,12 @@ func handleAgentsUpdate(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "agents update",
+		Title:          "agents:runs create",
 		Transform:      transform,
 	})
 }
 
-func handleAgentsList(ctx context.Context, cmd *cli.Command) error {
-	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	params := githubcomnimblewaynimblego.AgentListParams{}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agents.List(ctx, params, options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	explicitFormat := cmd.Root().IsSet("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(obj, ShowJSONOpts{
-		ExplicitFormat: explicitFormat,
-		Format:         format,
-		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "agents list",
-		Transform:      transform,
-	})
-}
-
-func handleAgentsDelete(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsRunsList(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("agent-id") && len(unusedArgs) > 0 {
@@ -362,14 +245,38 @@ func handleAgentsDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Agents.Delete(ctx, cmd.Value("agent-id").(string), options...)
+	params := githubcomnimblewaynimblego.AgentRunListParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agents.Runs.List(
+		ctx,
+		cmd.Value("agent-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "agents:runs list",
+		Transform:      transform,
+	})
 }
 
-func handleAgentsGet(ctx context.Context, cmd *cli.Command) error {
+func handleAgentsRunsGet(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("agent-id") && len(unusedArgs) > 0 {
-		cmd.Set("agent-id", unusedArgs[0])
+	if !cmd.IsSet("run-id") && len(unusedArgs) > 0 {
+		cmd.Set("run-id", unusedArgs[0])
 		unusedArgs = unusedArgs[1:]
 	}
 	if len(unusedArgs) > 0 {
@@ -387,9 +294,18 @@ func handleAgentsGet(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	params := githubcomnimblewaynimblego.AgentRunGetParams{
+		AgentID: cmd.Value("agent-id").(string),
+	}
+
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Agents.Get(ctx, cmd.Value("agent-id").(string), options...)
+	_, err = client.Agents.Runs.Get(
+		ctx,
+		cmd.Value("run-id").(string),
+		params,
+		options...,
+	)
 	if err != nil {
 		return err
 	}
@@ -402,7 +318,92 @@ func handleAgentsGet(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "agents get",
+		Title:          "agents:runs get",
 		Transform:      transform,
 	})
+}
+
+func handleAgentsRunsResult(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("run-id") && len(unusedArgs) > 0 {
+		cmd.Set("run-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := githubcomnimblewaynimblego.AgentRunResultParams{
+		AgentID: cmd.Value("agent-id").(string),
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agents.Runs.Result(
+		ctx,
+		cmd.Value("run-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "agents:runs result",
+		Transform:      transform,
+	})
+}
+
+func handleAgentsRunsStreamEvents(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("run-id") && len(unusedArgs) > 0 {
+		cmd.Set("run-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := githubcomnimblewaynimblego.AgentRunStreamEventsParams{
+		AgentID: cmd.Value("agent-id").(string),
+	}
+
+	return client.Agents.Runs.StreamEvents(
+		ctx,
+		cmd.Value("run-id").(string),
+		params,
+		options...,
+	)
 }
