@@ -65,10 +65,6 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 			Name:     "url",
 			BodyPath: "url",
 		},
-		&requestflag.Flag[*string]{
-			Name:     "agent-name",
-			BodyPath: "agent_name",
-		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "input-schema",
 			BodyPath: "input_schema",
@@ -76,6 +72,10 @@ var agentGenerate = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.Flag[map[string]any]{
 			Name:     "metadata",
 			BodyPath: "metadata",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "name",
+			BodyPath: "name",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "output-schema",

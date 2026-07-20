@@ -37,7 +37,7 @@ func TestCrawlRun(t *testing.T) {
 			"--crawl-entire-domain=false",
 			"--exclude-path", "/exclude-this-path",
 			"--exclude-path", "/and-this-path",
-			"--extract-options", "{body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, tag: campaign-2024-q1, url: url}",
+			"--extract-options", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: true, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, renew_on_blocked: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, tag: campaign-2024-q1, url: url}",
 			"--ignore-query-parameters=false",
 			"--include-path", "/include-this-path",
 			"--include-path", "/and-this-path",
@@ -64,6 +64,7 @@ func TestCrawlRun(t *testing.T) {
 			"--crawl-entire-domain=false",
 			"--exclude-path", "/exclude-this-path",
 			"--exclude-path", "/and-this-path",
+			"--extract-options.auto-driver-configuration", "{vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}",
 			"--extract-options.body", "{key: value}",
 			"--extract-options.browser", "chrome",
 			"--extract-options.browser-actions", "[{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}]",
@@ -88,7 +89,7 @@ func TestCrawlRun(t *testing.T) {
 			"--extract-options.referrer-type", "random",
 			"--extract-options.render=true",
 			"--extract-options.request-timeout", "30000",
-			"--extract-options.session", "{id: id, prefetch_userbrowser: true, retry: true, timeout: 1}",
+			"--extract-options.session", "{id: id, prefetch_userbrowser: true, renew_on_blocked: true, retry: true, timeout: 1}",
 			"--extract-options.skill", "dynamic-content",
 			"--extract-options.state", "CA",
 			"--extract-options.tag", "campaign-2024-q1",
@@ -122,6 +123,13 @@ func TestCrawlRun(t *testing.T) {
 			"  - /exclude-this-path\n" +
 			"  - /and-this-path\n" +
 			"extract_options:\n" +
+			"  auto_driver_configuration:\n" +
+			"    vx10: 2\n" +
+			"    vx10-pro: 0\n" +
+			"    vx6-fast: 1\n" +
+			"    vx6-stealth: 1\n" +
+			"    vx8: 5\n" +
+			"    vx8-pro: 5\n" +
 			"  body:\n" +
 			"    key: value\n" +
 			"  browser: chrome\n" +
@@ -202,6 +210,7 @@ func TestCrawlRun(t *testing.T) {
 			"  session:\n" +
 			"    id: id\n" +
 			"    prefetch_userbrowser: true\n" +
+			"    renew_on_blocked: true\n" +
 			"    retry: true\n" +
 			"    timeout: 1\n" +
 			"  skill: dynamic-content\n" +

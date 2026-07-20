@@ -16,26 +16,18 @@ import (
 
 var taskAgentTemplatesList = cli.Command{
 	Name:    "list",
-	Usage:   "List all available Web Search Agent templates.",
+	Usage:   "List Templates",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[*string]{
-			Name:      "effort",
-			QueryPath: "effort",
-		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   200,
+			Default:   100,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "offset",
 			Default:   0,
 			QueryPath: "offset",
-		},
-		&requestflag.Flag[*string]{
-			Name:      "use-case",
-			QueryPath: "use_case",
 		},
 	},
 	Action:          handleTaskAgentTemplatesList,
@@ -44,7 +36,7 @@ var taskAgentTemplatesList = cli.Command{
 
 var taskAgentTemplatesGet = cli.Command{
 	Name:    "get",
-	Usage:   "Fetch a single Web Search Agent template by name.",
+	Usage:   "Get Template",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{

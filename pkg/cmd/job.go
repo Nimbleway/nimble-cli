@@ -21,32 +21,39 @@ var jobsCreate = requestflag.WithInnerFlags(cli.Command{
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:     "agent-name",
+			Usage:    "Name of the agent to run.",
 			Required: true,
 			BodyPath: "agent_name",
 		},
 		&requestflag.Flag[string]{
 			Name:     "name",
+			Usage:    "Job name.",
 			Required: true,
 			BodyPath: "name",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
+			Usage:    "Free-text description of the job.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "destination",
+			Usage:    "Where a job writes its results.",
 			BodyPath: "destination",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "display-name",
+			Usage:    "Human-friendly job name shown in the UI.",
 			BodyPath: "display_name",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "inputs",
+			Usage:    "Configuration for the input data a job processes.",
 			BodyPath: "inputs",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "schedule",
+			Usage:    "Cron-based schedule controlling when a job runs automatically.",
 			BodyPath: "schedule",
 		},
 	},
@@ -56,41 +63,46 @@ var jobsCreate = requestflag.WithInnerFlags(cli.Command{
 	"destination": {
 		&requestflag.InnerFlag[string]{
 			Name:       "destination.path",
+			Usage:      "Destination path the output is written to.",
 			InnerField: "path",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "destination.type",
-			Usage:      `Allowed values: "file", "s3".`,
+			Usage:      "Destination kind: a local 'file' or an 's3' bucket.",
 			InnerField: "type",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "destination.format",
-			Usage:      `Allowed values: "jsonl", "csv", "parquet".`,
+			Usage:      "Output file format.",
 			InnerField: "format",
 		},
 	},
 	"inputs": {
 		&requestflag.InnerFlag[string]{
 			Name:       "inputs.type",
-			Usage:      `Allowed values: "s3", "inline", "file".`,
+			Usage:      "How inputs are supplied: an 's3' bucket, 'inline' records, or an uploaded 'file'.",
 			InnerField: "type",
 		},
 		&requestflag.InnerFlag[any]{
 			Name:       "inputs.data",
+			Usage:      "Inline list of input records. Used when type is 'inline'.",
 			InnerField: "data",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "inputs.file-path",
+			Usage:      "Path to the input file; must start with 's3' or 'file_'. Used for 's3'/'file' types.",
 			InnerField: "file_path",
 		},
 	},
 	"schedule": {
 		&requestflag.InnerFlag[string]{
 			Name:       "schedule.cron",
+			Usage:      "Cron expression defining when the job runs.",
 			InnerField: "cron",
 		},
 		&requestflag.InnerFlag[bool]{
 			Name:       "schedule.enabled",
+			Usage:      "Whether the schedule is currently active.",
 			InnerField: "enabled",
 		},
 	},
@@ -108,22 +120,27 @@ var jobsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
+			Usage:    "New description.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "destination",
+			Usage:    "Where a job writes its results.",
 			BodyPath: "destination",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "display-name",
+			Usage:    "New display name.",
 			BodyPath: "display_name",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "inputs",
+			Usage:    "Configuration for the input data a job processes.",
 			BodyPath: "inputs",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "schedule",
+			Usage:    "Cron-based schedule controlling when a job runs automatically.",
 			BodyPath: "schedule",
 		},
 	},
@@ -133,41 +150,46 @@ var jobsUpdate = requestflag.WithInnerFlags(cli.Command{
 	"destination": {
 		&requestflag.InnerFlag[string]{
 			Name:       "destination.path",
+			Usage:      "Destination path the output is written to.",
 			InnerField: "path",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "destination.type",
-			Usage:      `Allowed values: "file", "s3".`,
+			Usage:      "Destination kind: a local 'file' or an 's3' bucket.",
 			InnerField: "type",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "destination.format",
-			Usage:      `Allowed values: "jsonl", "csv", "parquet".`,
+			Usage:      "Output file format.",
 			InnerField: "format",
 		},
 	},
 	"inputs": {
 		&requestflag.InnerFlag[string]{
 			Name:       "inputs.type",
-			Usage:      `Allowed values: "s3", "inline", "file".`,
+			Usage:      "How inputs are supplied: an 's3' bucket, 'inline' records, or an uploaded 'file'.",
 			InnerField: "type",
 		},
 		&requestflag.InnerFlag[any]{
 			Name:       "inputs.data",
+			Usage:      "Inline list of input records. Used when type is 'inline'.",
 			InnerField: "data",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "inputs.file-path",
+			Usage:      "Path to the input file; must start with 's3' or 'file_'. Used for 's3'/'file' types.",
 			InnerField: "file_path",
 		},
 	},
 	"schedule": {
 		&requestflag.InnerFlag[string]{
 			Name:       "schedule.cron",
+			Usage:      "Cron expression defining when the job runs.",
 			InnerField: "cron",
 		},
 		&requestflag.InnerFlag[bool]{
 			Name:       "schedule.enabled",
+			Usage:      "Whether the schedule is currently active.",
 			InnerField: "enabled",
 		},
 	},

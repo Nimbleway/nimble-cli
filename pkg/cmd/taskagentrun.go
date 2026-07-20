@@ -16,7 +16,7 @@ import (
 
 var taskAgentRunsList = cli.Command{
 	Name:    "list",
-	Usage:   "List task runs for the caller's workspace and the given agent, newest first.",
+	Usage:   "List runs for this instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -26,7 +26,7 @@ var taskAgentRunsList = cli.Command{
 		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   20,
+			Default:   100,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
@@ -39,29 +39,9 @@ var taskAgentRunsList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var taskAgentRunsCancel = cli.Command{
-	Name:    "cancel",
-	Usage:   "Cancel an in-progress or queued run.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:      "agent-id",
-			Required:  true,
-			PathParam: "agent_id",
-		},
-		&requestflag.Flag[string]{
-			Name:      "run-id",
-			Required:  true,
-			PathParam: "run_id",
-		},
-	},
-	Action:          handleTaskAgentRunsCancel,
-	HideHelpCommand: true,
-}
-
 var taskAgentRunsGet = cli.Command{
 	Name:    "get",
-	Usage:   "Poll run status. Repeat until status is 'completed', 'failed', or 'cancelled'.",
+	Usage:   "Fetch a run by id, scoped to the instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -81,7 +61,7 @@ var taskAgentRunsGet = cli.Command{
 
 var taskAgentRunsGetResult = cli.Command{
 	Name:    "get-result",
-	Usage:   "Fetch the result for a terminal run. Returns 408 if still active, 422 with\n`AgentRunFailedResult` if failed.",
+	Usage:   "Fetch the result for a terminal run on this instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -101,7 +81,7 @@ var taskAgentRunsGetResult = cli.Command{
 
 var taskAgentRunsStreamEvents = cli.Command{
 	Name:    "stream-events",
-	Usage:   "Server-Sent Events stream of real-time progress events for a run. The run must\nhave been created with `enable_events=true`.",
+	Usage:   "SSE stream of real-time progress events for a run on this instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -166,40 +146,6 @@ func handleTaskAgentRunsList(ctx context.Context, cmd *cli.Command) error {
 		Title:          "task-agent:runs list",
 		Transform:      transform,
 	})
-}
-
-func handleTaskAgentRunsCancel(ctx context.Context, cmd *cli.Command) error {
-	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("run-id") && len(unusedArgs) > 0 {
-		cmd.Set("run-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	params := githubcomnimblewaynimblego.TaskAgentRunCancelParams{
-		AgentID: cmd.Value("agent-id").(string),
-	}
-
-	return client.TaskAgent.Runs.Cancel(
-		ctx,
-		cmd.Value("run-id").(string),
-		params,
-		options...,
-	)
 }
 
 func handleTaskAgentRunsGet(ctx context.Context, cmd *cli.Command) error {
@@ -330,27 +276,10 @@ func handleTaskAgentRunsStreamEvents(ctx context.Context, cmd *cli.Command) erro
 		AgentID: cmd.Value("agent-id").(string),
 	}
 
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.TaskAgent.Runs.StreamEvents(
+	return client.TaskAgent.Runs.StreamEvents(
 		ctx,
 		cmd.Value("run-id").(string),
 		params,
 		options...,
 	)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	explicitFormat := cmd.Root().IsSet("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(obj, ShowJSONOpts{
-		ExplicitFormat: explicitFormat,
-		Format:         format,
-		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "task-agent:runs stream-events",
-		Transform:      transform,
-	})
 }

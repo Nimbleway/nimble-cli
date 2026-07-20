@@ -15,10 +15,8 @@ func TestTaskAgentTemplatesList(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"task-agent:templates", "list",
-			"--effort", "effort",
 			"--limit", "1",
 			"--offset", "0",
-			"--use-case", "use_case",
 		)
 	})
 }

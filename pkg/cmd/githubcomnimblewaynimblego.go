@@ -25,6 +25,11 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			Required: true,
 			BodyPath: "url",
 		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "auto-driver-configuration",
+			Usage:    "Custom flow for the optimization engine: maps candidate names to the number of attempts to spend on each candidate before advancing (0 skips it). Key order defines the flow order. Providing it opts the request into 'auto' driver selection.",
+			BodyPath: "auto_driver_configuration",
+		},
 		&requestflag.Flag[any]{
 			Name:     "body",
 			Usage:    "Request body for POST, PUT, PATCH methods",
@@ -219,6 +224,10 @@ var extract = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "prefetch_userbrowser",
 		},
 		&requestflag.InnerFlag[bool]{
+			Name:       "session.renew-on-blocked",
+			InnerField: "renew_on_blocked",
+		},
+		&requestflag.InnerFlag[bool]{
 			Name:       "session.retry",
 			InnerField: "retry",
 		},
@@ -239,6 +248,11 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Target URL to scrape",
 			Required: true,
 			BodyPath: "url",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "auto-driver-configuration",
+			Usage:    "Custom flow for the optimization engine: maps candidate names to the number of attempts to spend on each candidate before advancing (0 skips it). Key order defines the flow order. Providing it opts the request into 'auto' driver selection.",
+			BodyPath: "auto_driver_configuration",
 		},
 		&requestflag.Flag[any]{
 			Name:     "body",
@@ -459,6 +473,10 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "prefetch_userbrowser",
 		},
 		&requestflag.InnerFlag[bool]{
+			Name:       "session.renew-on-blocked",
+			InnerField: "renew_on_blocked",
+		},
+		&requestflag.InnerFlag[bool]{
 			Name:       "session.retry",
 			InnerField: "retry",
 		},
@@ -490,6 +508,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"input": {
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "input.auto-driver-configuration",
+			Usage:      "Custom flow for the optimization engine: maps candidate names to the number of attempts to spend on each candidate before advancing (0 skips it). Key order defines the flow order. Providing it opts the request into 'auto' driver selection.",
+			InnerField: "auto_driver_configuration",
+		},
 		&requestflag.InnerFlag[any]{
 			Name:       "input.body",
 			Usage:      "Request body for POST, PUT, PATCH methods",
@@ -537,7 +560,7 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "input.driver",
-			Usage:      "Browser driver to use",
+			Usage:      "Browser driver to use. Use 'auto' to let the engine select the candidate config per domain.",
 			InnerField: "driver",
 		},
 		&requestflag.InnerFlag[[]int64]{
@@ -661,6 +684,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 		},
 	},
 	"shared-inputs": {
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "shared-inputs.auto-driver-configuration",
+			Usage:      "Custom flow for the optimization engine: maps candidate names to the number of attempts to spend on each candidate before advancing (0 skips it). Key order defines the flow order. Providing it opts the request into 'auto' driver selection.",
+			InnerField: "auto_driver_configuration",
+		},
 		&requestflag.InnerFlag[any]{
 			Name:       "shared-inputs.body",
 			Usage:      "Request body for POST, PUT, PATCH methods",
@@ -708,7 +736,7 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "shared-inputs.driver",
-			Usage:      "Browser driver to use",
+			Usage:      "Browser driver to use. Use 'auto' to let the engine select the candidate config per domain.",
 			InnerField: "driver",
 		},
 		&requestflag.InnerFlag[[]int64]{
@@ -899,11 +927,6 @@ var search = cli.Command{
 			Default:  "US",
 			BodyPath: "country",
 		},
-		&requestflag.Flag[map[string]any]{
-			Name:     "debug-params",
-			Usage:    "Internal-only. Gated to allowlisted accounts; ignored otherwise.",
-			BodyPath: "debug_params",
-		},
 		&requestflag.Flag[*bool]{
 			Name:     "deep-search",
 			Usage:    "Deprecated. Use search_depth instead. true maps to 'deep', false maps to 'lite'.",
@@ -945,7 +968,7 @@ var search = cli.Command{
 		&requestflag.Flag[int64]{
 			Name:     "max-results",
 			Usage:    "Maximum number of results to return. Actual count may be lower depending on availability.",
-			Default:  3,
+			Default:  10,
 			BodyPath: "max_results",
 		},
 		&requestflag.Flag[int64]{

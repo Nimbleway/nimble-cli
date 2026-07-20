@@ -34,9 +34,9 @@ func TestAgentGenerate(t *testing.T) {
 			"agent", "generate",
 			"--prompt", "prompt",
 			"--url", "url",
-			"--agent-name", "agent_name",
 			"--input-schema", "{foo: bar}",
 			"--metadata", "{description: description, display_name: display_name, tags: [string]}",
+			"--name", "name",
 			"--output-schema", "{foo: bar}",
 		)
 	})
@@ -52,11 +52,11 @@ func TestAgentGenerate(t *testing.T) {
 			"agent", "generate",
 			"--prompt", "prompt",
 			"--url", "url",
-			"--agent-name", "agent_name",
 			"--input-schema", "{foo: bar}",
 			"--metadata.description", "description",
 			"--metadata.display-name", "display_name",
 			"--metadata.tags", "[string]",
+			"--name", "name",
 			"--output-schema", "{foo: bar}",
 		)
 	})
@@ -66,7 +66,6 @@ func TestAgentGenerate(t *testing.T) {
 		pipeData := []byte("" +
 			"prompt: prompt\n" +
 			"url: url\n" +
-			"agent_name: agent_name\n" +
 			"input_schema:\n" +
 			"  foo: bar\n" +
 			"metadata:\n" +
@@ -74,6 +73,7 @@ func TestAgentGenerate(t *testing.T) {
 			"  display_name: display_name\n" +
 			"  tags:\n" +
 			"    - string\n" +
+			"name: name\n" +
 			"output_schema:\n" +
 			"  foo: bar\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(

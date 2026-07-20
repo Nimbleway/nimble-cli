@@ -16,68 +16,75 @@ import (
 
 var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "create",
-	Usage:   "Create a new workspace-scoped Web Search Agent. Pass `template` to clone from a\nnamed template.",
+	Usage:   "Create a Web Search Agent instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[*string]{
 			Name:     "agent-name",
+			Usage:    "Stable agent name.",
 			BodyPath: "agent_name",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "description",
+			Usage:    "Agent description shown to users.",
 			BodyPath: "description",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "display-name",
+			Usage:    "Human-friendly agent name shown to users.",
 			BodyPath: "display_name",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "domain-expertise",
+			Usage:    "Domain expertise or operating context for the agent.",
 			BodyPath: "domain_expertise",
 		},
 		&requestflag.Flag[string]{
 			Name:     "effort",
-			Default:  "research",
+			Usage:    "Default effort level for this agent's runs.",
+			Default:  "high",
 			BodyPath: "effort",
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "goal",
+			Usage:    "Ordered goals for the agent to follow.",
 			BodyPath: "goals",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "icon",
+			Usage:    "Icon identifier used when presenting the agent.",
 			BodyPath: "icon",
 		},
 		&requestflag.Flag[bool]{
 			Name:     "is-active",
+			Usage:    "Whether the agent can be used to start new runs.",
 			Default:  true,
 			BodyPath: "is_active",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "output-schema",
+			Usage:    "JSON schema describing the structured output the agent should produce.",
 			BodyPath: "output_schema",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
+			Usage:    "Source guidance for the agent.",
 			BodyPath: "sources",
 		},
 		&requestflag.Flag[[]string]{
 			Name:     "suggested-question",
+			Usage:    "Suggested prompts users can run with this agent.",
 			BodyPath: "suggested_questions",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "template",
-			Usage:    "Template name to materialise this instance from. When set, scalar fields and child rows are copied from the template.",
+			Usage:    "Template name to materialize this instance from. When set, the scalar fields and child rows are copied from the template.",
 			BodyPath: "template",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "use-case",
-			Usage:    `Allowed values: "research", "enrichment", "dataset_building".`,
+			Usage:    "Primary use case supported by the agent.",
 			BodyPath: "use_case",
-		},
-		&requestflag.Flag[*string]{
-			Name:     "workspace-id",
-			BodyPath: "workspace_id",
 		},
 	},
 	Action:          handleTaskAgentCreate,
@@ -86,18 +93,22 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 	"sources": {
 		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "sources.allow",
+			Usage:      "Source groups the agent is allowed to use.",
 			InnerField: "allow",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "sources.avoid",
+			Usage:      "Free-text guidance describing sources or domains to avoid.",
 			InnerField: "avoid",
 		},
 		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "sources.block",
+			Usage:      "Source groups the agent should not use.",
 			InnerField: "block",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "sources.prioritize",
+			Usage:      "Free-text guidance describing sources or domains to prioritize.",
 			InnerField: "prioritize",
 		},
 	},
@@ -105,7 +116,7 @@ var taskAgentCreate = requestflag.WithInnerFlags(cli.Command{
 
 var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
-	Usage:   "Apply a JSON Patch document (`application/json-patch+json`) to an agent you own.\nEach operation must be a `replace` with path `/field_name`.",
+	Usage:   "Update Agent",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -115,6 +126,7 @@ var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[[]map[string]any]{
 			Name:     "body",
+			Usage:    "A JSON Patch document per RFC 6902 — a JSON array of patch operations.",
 			Required: true,
 			BodyRoot: true,
 		},
@@ -125,12 +137,16 @@ var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 	"body": {
 		&requestflag.InnerFlag[string]{
 			Name:       "body.op",
-			Usage:      `Allowed values: "replace".`,
+			Usage:      `Allowed values: "add", "remove", "replace", "move", "copy", "test".`,
 			InnerField: "op",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "body.path",
 			InnerField: "path",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "body.from",
+			InnerField: "from",
 		},
 		&requestflag.InnerFlag[any]{
 			Name:       "body.value",
@@ -141,16 +157,12 @@ var taskAgentUpdate = requestflag.WithInnerFlags(cli.Command{
 
 var taskAgentList = cli.Command{
 	Name:    "list",
-	Usage:   "List active Web Search Agents visible to the caller. Includes agents scoped to\nthe caller's workspace.",
+	Usage:   "List Web Search Agent instances.",
 	Suggest: true,
 	Flags: []cli.Flag{
-		&requestflag.Flag[*string]{
-			Name:      "effort",
-			QueryPath: "effort",
-		},
 		&requestflag.Flag[int64]{
 			Name:      "limit",
-			Default:   20,
+			Default:   100,
 			QueryPath: "limit",
 		},
 		&requestflag.Flag[int64]{
@@ -159,8 +171,8 @@ var taskAgentList = cli.Command{
 			QueryPath: "offset",
 		},
 		&requestflag.Flag[*string]{
-			Name:      "use-case",
-			QueryPath: "use_case",
+			Name:      "workspace-id",
+			QueryPath: "workspace_id",
 		},
 	},
 	Action:          handleTaskAgentList,
@@ -169,7 +181,7 @@ var taskAgentList = cli.Command{
 
 var taskAgentDeactivate = cli.Command{
 	Name:    "deactivate",
-	Usage:   "Deactivate an agent you own. The agent is marked inactive but not deleted.",
+	Usage:   "Deactivate Agent",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -184,7 +196,7 @@ var taskAgentDeactivate = cli.Command{
 
 var taskAgentGet = cli.Command{
 	Name:    "get",
-	Usage:   "Fetch a single Web Search Agent by id.",
+	Usage:   "Get Agent",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -199,7 +211,7 @@ var taskAgentGet = cli.Command{
 
 var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 	Name:    "run",
-	Usage:   "Create and enqueue a research run for a Web Search Agent.",
+	Usage:   "Create a research run for a Web Search Agent instance.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
@@ -209,20 +221,39 @@ var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "input",
+			Usage:    "User prompt or task instructions for the run.",
 			Required: true,
 			BodyPath: "input",
 		},
+		&requestflag.Flag[*string]{
+			Name:     "effort",
+			Usage:    "Canonical effort tier names for the research graph.",
+			BodyPath: "effort",
+		},
 		&requestflag.Flag[bool]{
 			Name:     "enable-events",
+			Usage:    "Whether to stream run events when supported.",
 			Default:  false,
 			BodyPath: "enable_events",
 		},
+		&requestflag.Flag[any]{
+			Name:     "input-data",
+			Usage:    "Existing records to ENRICH: a list of partial rows, or a single object, mirroring output_schema's shape.",
+			BodyPath: "input_data",
+		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "output-schema",
+			Usage:    "JSON schema overriding the agent's default structured output for this run.",
 			BodyPath: "output_schema",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "previous-interaction-id",
+			Usage:    "Previous interaction identifier used to continue a conversation.",
+			BodyPath: "previous_interaction_id",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
+			Usage:    "Source guidance overriding the agent default.",
 			BodyPath: "sources",
 		},
 	},
@@ -232,18 +263,22 @@ var taskAgentRun = requestflag.WithInnerFlags(cli.Command{
 	"sources": {
 		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "sources.allow",
+			Usage:      "Source groups the agent is allowed to use.",
 			InnerField: "allow",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "sources.avoid",
+			Usage:      "Free-text guidance describing sources or domains to avoid.",
 			InnerField: "avoid",
 		},
 		&requestflag.InnerFlag[[]map[string]any]{
 			Name:       "sources.block",
+			Usage:      "Source groups the agent should not use.",
 			InnerField: "block",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "sources.prioritize",
+			Usage:      "Free-text guidance describing sources or domains to prioritize.",
 			InnerField: "prioritize",
 		},
 	},
