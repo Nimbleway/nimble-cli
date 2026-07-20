@@ -16,7 +16,7 @@ func TestJobsCreate(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"jobs", "create",
-			"--agent-name", "agent_name",
+			"--extract-template-name", "extract_template_name",
 			"--name", "name",
 			"--description", "description",
 			"--destination", "{path: path, type: file, format: jsonl}",
@@ -35,7 +35,7 @@ func TestJobsCreate(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"jobs", "create",
-			"--agent-name", "agent_name",
+			"--extract-template-name", "extract_template_name",
 			"--name", "name",
 			"--description", "description",
 			"--destination.path", "path",
@@ -53,7 +53,7 @@ func TestJobsCreate(t *testing.T) {
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
-			"agent_name: agent_name\n" +
+			"extract_template_name: extract_template_name\n" +
 			"name: name\n" +
 			"description: description\n" +
 			"destination:\n" +
