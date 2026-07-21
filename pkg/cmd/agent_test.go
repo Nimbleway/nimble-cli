@@ -19,12 +19,12 @@ func TestAgentsCreate(t *testing.T) {
 			"--agent-name", "agent_name",
 			"--description", "description",
 			"--display-name", "display_name",
-			"--domain-expertise", "domain_expertise",
 			"--effort", "low",
 			"--goal", "string",
 			"--icon", "icon",
 			"--is-active=true",
 			"--output-schema", "{foo: bar}",
+			"--skill", "skill",
 			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
 			"--suggested-question", "string",
 			"--template", "template",
@@ -44,12 +44,12 @@ func TestAgentsCreate(t *testing.T) {
 			"--agent-name", "agent_name",
 			"--description", "description",
 			"--display-name", "display_name",
-			"--domain-expertise", "domain_expertise",
 			"--effort", "low",
 			"--goal", "string",
 			"--icon", "icon",
 			"--is-active=true",
 			"--output-schema", "{foo: bar}",
+			"--skill", "skill",
 			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
 			"--sources.avoid", "avoid",
 			"--sources.block", "[{domains: [string], title: title, order: 0}]",
@@ -66,7 +66,6 @@ func TestAgentsCreate(t *testing.T) {
 			"agent_name: agent_name\n" +
 			"description: description\n" +
 			"display_name: display_name\n" +
-			"domain_expertise: domain_expertise\n" +
 			"effort: low\n" +
 			"goals:\n" +
 			"  - string\n" +
@@ -74,6 +73,7 @@ func TestAgentsCreate(t *testing.T) {
 			"is_active: true\n" +
 			"output_schema:\n" +
 			"  foo: bar\n" +
+			"skill: skill\n" +
 			"sources:\n" +
 			"  allow:\n" +
 			"    - domains:\n" +
