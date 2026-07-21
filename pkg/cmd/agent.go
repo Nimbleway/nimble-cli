@@ -34,11 +34,6 @@ var agentsCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Human-friendly agent name shown to users.",
 			BodyPath: "display_name",
 		},
-		&requestflag.Flag[*string]{
-			Name:     "domain-expertise",
-			Usage:    "Domain expertise or operating context for the agent.",
-			BodyPath: "domain_expertise",
-		},
 		&requestflag.Flag[string]{
 			Name:     "effort",
 			Usage:    "Default effort level for this agent's runs.",
@@ -65,6 +60,11 @@ var agentsCreate = requestflag.WithInnerFlags(cli.Command{
 			Name:     "output-schema",
 			Usage:    "JSON schema describing the structured output the agent should produce.",
 			BodyPath: "output_schema",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "skill",
+			Usage:    "Skill or operating context for the agent.",
+			BodyPath: "skill",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
