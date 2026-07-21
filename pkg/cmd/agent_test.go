@@ -181,3 +181,74 @@ func TestAgentsGet(t *testing.T) {
 		)
 	})
 }
+
+func TestAgentsRun(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "run",
+			"--input", "input",
+			"--effort", "low",
+			"--enable-events=true",
+			"--input-data", "[{foo: bar}]",
+			"--output-schema", "{foo: bar}",
+			"--previous-interaction-id", "previous_interaction_id",
+			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(agentsRun)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "run",
+			"--input", "input",
+			"--effort", "low",
+			"--enable-events=true",
+			"--input-data", "[{foo: bar}]",
+			"--output-schema", "{foo: bar}",
+			"--previous-interaction-id", "previous_interaction_id",
+			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
+			"--sources.avoid", "avoid",
+			"--sources.block", "[{domains: [string], title: title, order: 0}]",
+			"--sources.prioritize", "prioritize",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"input: input\n" +
+			"effort: low\n" +
+			"enable_events: true\n" +
+			"input_data:\n" +
+			"  - foo: bar\n" +
+			"output_schema:\n" +
+			"  foo: bar\n" +
+			"previous_interaction_id: previous_interaction_id\n" +
+			"sources:\n" +
+			"  allow:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  avoid: avoid\n" +
+			"  block:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  prioritize: prioritize\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"agents", "run",
+		)
+	})
+}

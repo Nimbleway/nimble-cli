@@ -142,6 +142,7 @@ func init() {
 					&agentsList,
 					&agentsDelete,
 					&agentsGet,
+					&agentsRun,
 				},
 			},
 			{

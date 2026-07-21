@@ -209,6 +209,76 @@ var agentsGet = cli.Command{
 	HideHelpCommand: true,
 }
 
+var agentsRun = requestflag.WithInnerFlags(cli.Command{
+	Name:    "run",
+	Usage:   "Creates a minimal persistent Web Search Agent and starts a run for it. The\nresponse includes `web_search_agent_id` for later agent and run queries.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "input",
+			Usage:    "User prompt or task instructions for the run.",
+			Required: true,
+			BodyPath: "input",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "effort",
+			Usage:    "Canonical effort tier names for the research graph.",
+			BodyPath: "effort",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "enable-events",
+			Usage:    "Whether to stream run events when supported.",
+			Default:  false,
+			BodyPath: "enable_events",
+		},
+		&requestflag.Flag[any]{
+			Name:     "input-data",
+			Usage:    "Existing records to ENRICH: a list of partial rows, or a single object, mirroring output_schema's shape.",
+			BodyPath: "input_data",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "output-schema",
+			Usage:    "JSON schema overriding the agent's default structured output for this run.",
+			BodyPath: "output_schema",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "previous-interaction-id",
+			Usage:    "Previous interaction identifier used to continue a conversation.",
+			BodyPath: "previous_interaction_id",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "sources",
+			Usage:    "Source guidance overriding the agent default.",
+			BodyPath: "sources",
+		},
+	},
+	Action:          handleAgentsRun,
+	HideHelpCommand: true,
+}, map[string][]requestflag.HasOuterFlag{
+	"sources": {
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "sources.allow",
+			Usage:      "Source groups the agent is allowed to use.",
+			InnerField: "allow",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "sources.avoid",
+			Usage:      "Free-text guidance describing sources or domains to avoid.",
+			InnerField: "avoid",
+		},
+		&requestflag.InnerFlag[[]map[string]any]{
+			Name:       "sources.block",
+			Usage:      "Source groups the agent should not use.",
+			InnerField: "block",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "sources.prioritize",
+			Usage:      "Free-text guidance describing sources or domains to prioritize.",
+			InnerField: "prioritize",
+		},
+	},
+})
+
 func handleAgentsCreate(ctx context.Context, cmd *cli.Command) error {
 	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -403,6 +473,47 @@ func handleAgentsGet(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "agents get",
+		Transform:      transform,
+	})
+}
+
+func handleAgentsRun(ctx context.Context, cmd *cli.Command) error {
+	client := githubcomnimblewaynimblego.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := githubcomnimblewaynimblego.AgentRunParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Agents.Run(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "agents run",
 		Transform:      transform,
 	})
 }
