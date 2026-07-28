@@ -190,6 +190,10 @@ var agentsRunsStreamEvents = cli.Command{
 			Required:  true,
 			PathParam: "run_id",
 		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
+		},
 	},
 	Action:          handleAgentsRunsStreamEvents,
 	HideHelpCommand: true,
@@ -421,10 +425,24 @@ func handleAgentsRunsStreamEvents(ctx context.Context, cmd *cli.Command) error {
 		AgentID: cmd.Value("agent-id").(string),
 	}
 
-	return client.Agents.Runs.StreamEvents(
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	stream := client.Agents.Runs.StreamEventsStreaming(
 		ctx,
 		cmd.Value("run-id").(string),
 		params,
 		options...,
 	)
+	maxItems := int64(-1)
+	if cmd.IsSet("max-items") {
+		maxItems = cmd.Value("max-items").(int64)
+	}
+	return ShowJSONIterator(stream, maxItems, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "agents:runs stream-events",
+		Transform:      transform,
+	})
 }
