@@ -142,6 +142,7 @@ func TestAgentsRunsStreamEvents(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"agents:runs", "stream-events",
+			"--max-items", "10",
 			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--run-id", "run_id",
 		)
