@@ -221,6 +221,11 @@ var agentsRun = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "input",
 		},
 		&requestflag.Flag[*string]{
+			Name:     "agent-name",
+			Usage:    "Stable agent name. On this no-agent-id route, an unseen name creates a new agent; an existing name reuses it. Ignored on the /{agent_id}/runs route.",
+			BodyPath: "agent_name",
+		},
+		&requestflag.Flag[*string]{
 			Name:     "effort",
 			Usage:    "Canonical effort tier names for the research graph.",
 			BodyPath: "effort",
@@ -236,6 +241,12 @@ var agentsRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Existing records to ENRICH: a list of partial rows, or a single object, mirroring output_schema's shape.",
 			BodyPath: "input_data",
 		},
+		&requestflag.Flag[string]{
+			Name:     "origin",
+			Usage:    "Origin of public API runs. Public requests are always API-originated.",
+			Default:  "api",
+			BodyPath: "origin",
+		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "output-schema",
 			Usage:    "JSON schema overriding the agent's default structured output for this run.",
@@ -246,10 +257,20 @@ var agentsRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Previous interaction identifier used to continue a conversation.",
 			BodyPath: "previous_interaction_id",
 		},
+		&requestflag.Flag[*string]{
+			Name:     "skill",
+			Usage:    "Skill override for this run. One-time only, except when this run creates a new agent via agent_name, in which case it becomes the new agent's stored skill.",
+			BodyPath: "skill",
+		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "sources",
 			Usage:    "Source guidance overriding the agent default.",
 			BodyPath: "sources",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "use-case",
+			Usage:    "Only settable when this run creates a new agent (via agent_name, or when no agent is resolved), in which case it becomes the new agent's stored use_case. For a run against an existing agent, this must match the agent's own use_case — passing the same value is accepted as a no-op, a different value is rejected.",
+			BodyPath: "use_case",
 		},
 	},
 	Action:          handleAgentsRun,

@@ -190,12 +190,16 @@ func TestAgentsRun(t *testing.T) {
 			"--api-key", "string",
 			"agents", "run",
 			"--input", "input",
+			"--agent-name", "agent_name",
 			"--effort", "low",
 			"--enable-events=true",
 			"--input-data", "[{foo: bar}]",
+			"--origin", "api",
 			"--output-schema", "{foo: bar}",
 			"--previous-interaction-id", "previous_interaction_id",
+			"--skill", "skill",
 			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
+			"--use-case", "research",
 		)
 	})
 
@@ -209,15 +213,19 @@ func TestAgentsRun(t *testing.T) {
 			"--api-key", "string",
 			"agents", "run",
 			"--input", "input",
+			"--agent-name", "agent_name",
 			"--effort", "low",
 			"--enable-events=true",
 			"--input-data", "[{foo: bar}]",
+			"--origin", "api",
 			"--output-schema", "{foo: bar}",
 			"--previous-interaction-id", "previous_interaction_id",
+			"--skill", "skill",
 			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
 			"--sources.avoid", "avoid",
 			"--sources.block", "[{domains: [string], title: title, order: 0}]",
 			"--sources.prioritize", "prioritize",
+			"--use-case", "research",
 		)
 	})
 
@@ -225,13 +233,16 @@ func TestAgentsRun(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"input: input\n" +
+			"agent_name: agent_name\n" +
 			"effort: low\n" +
 			"enable_events: true\n" +
 			"input_data:\n" +
 			"  - foo: bar\n" +
+			"origin: api\n" +
 			"output_schema:\n" +
 			"  foo: bar\n" +
 			"previous_interaction_id: previous_interaction_id\n" +
+			"skill: skill\n" +
 			"sources:\n" +
 			"  allow:\n" +
 			"    - domains:\n" +
@@ -244,7 +255,8 @@ func TestAgentsRun(t *testing.T) {
 			"        - string\n" +
 			"      title: title\n" +
 			"      order: 0\n" +
-			"  prioritize: prioritize\n")
+			"  prioritize: prioritize\n" +
+			"use_case: research\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
