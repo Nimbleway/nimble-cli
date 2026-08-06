@@ -80,10 +80,18 @@ func handleBrowserLogin(ctx context.Context) error {
 		return cli.Exit("", 1)
 	}
 
+	fmt.Println("Validating API key...")
+	info, err := auth.ValidateAPIKey(ctx, result.APIKey)
+	if err != nil {
+		fmt.Printf("Browser login failed: %s\n", err)
+		return cli.Exit("", 1)
+	}
+
 	creds := &auth.Credentials{
 		APIKey:      result.APIKey,
 		Source:      "oauth",
 		CreatedAt:   time.Now().UTC().Format(time.RFC3339),
+		Email:       info.Username,
 		AccountName: result.AccountName,
 	}
 

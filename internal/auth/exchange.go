@@ -40,9 +40,9 @@ func discoverEndpoints(ctx context.Context, baseURL string) (*oauthEndpoints, er
 func registerClient(ctx context.Context, endpoint, redirectURI string) (string, error) {
 	body := map[string]interface{}{
 		"client_name":                "Nimble CLI",
-		"redirect_uris":             []string{redirectURI},
-		"grant_types":               []string{"authorization_code"},
-		"response_types":            []string{"code"},
+		"redirect_uris":              []string{redirectURI},
+		"grant_types":                []string{"authorization_code"},
+		"response_types":             []string{"code"},
 		"token_endpoint_auth_method": "none",
 	}
 	data, err := json.Marshal(body)
