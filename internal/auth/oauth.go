@@ -25,6 +25,11 @@ func DefaultOAuthConfig() OAuthConfig {
 type OAuthResult struct {
 	APIKey      string
 	AccountName string
+	// CleanupStaleKeys removes API keys left by earlier CLI logins. It is
+	// never nil and must be called only after APIKey has been validated and
+	// persisted, so a failure in between cannot revoke the previous key while
+	// leaving no usable replacement.
+	CleanupStaleKeys func()
 }
 
 func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (*OAuthResult, error) {
@@ -73,14 +78,15 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (*OAuthResult, error) {
 		return nil, fmt.Errorf("failed to exchange authorization code: %w", err)
 	}
 
-	entry, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken)
+	entry, cleanup, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch API key: %w", err)
 	}
 
 	return &OAuthResult{
-		APIKey:      entry.Key,
-		AccountName: entry.AccountName,
+		APIKey:           entry.Key,
+		AccountName:      entry.AccountName,
+		CleanupStaleKeys: cleanup,
 	}, nil
 }
 

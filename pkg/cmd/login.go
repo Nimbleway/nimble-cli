@@ -99,6 +99,10 @@ func handleBrowserLogin(ctx context.Context) error {
 		return fmt.Errorf("failed to save credentials: %w", err)
 	}
 
+	// Only now is the new key proven usable and durable, so older CLI keys can
+	// safely be revoked.
+	result.CleanupStaleKeys()
+
 	displayName := result.AccountName
 	if displayName == "" {
 		displayName = "(unknown account)"

@@ -337,6 +337,9 @@ type mockOAuthServerOptions struct {
 	// collection instead of 201. Later POSTs succeed, which models the
 	// key-limit-then-retry path when set to 403.
 	createStatus int
+	// forbiddenNotKeyLimit, with createStatus 403, returns a 403 that is not a
+	// key-limit error, which must not trigger key deletion.
+	forbiddenNotKeyLimit bool
 	// createdKey overrides the secret returned by POST. Use to model a server
 	// that answers with a masked or empty key.
 	createdKey string
@@ -452,7 +455,15 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 				first := createCalls == 1
 				mu.Unlock()
 				if opts.createStatus != 0 && first {
+					w.Header().Set("Content-Type", "application/json")
 					w.WriteHeader(opts.createStatus)
+					// Proxit reports the key limit through the message body;
+					// the CLI must only revoke keys for this specific 403.
+					if opts.createStatus == http.StatusForbidden && !opts.forbiddenNotKeyLimit {
+						fmt.Fprint(w, `{"message":"max api keys limit reached"}`)
+					} else {
+						fmt.Fprint(w, `{"message":"forbidden"}`)
+					}
 					return
 				}
 				created := apiKey
@@ -536,29 +547,31 @@ func TestLoginBrowser(t *testing.T) {
 	assert.Equal(t, "oauth-account", creds["account_name"])
 	assert.Equal(t, "oauth-user@example.com", creds["email"])
 
-	// The key must be created before the stale key is revoked, and the minted
-	// key must be validated against whoami before it is stored.
-	assert.Contains(t, requests, "GET /api/v1/account/api-key")
-	assert.Contains(t, requests, "POST /api/v1/account/api-key")
-	assert.Contains(t, requests, "DELETE /api/v1/account/api-key/key-guid-1")
-	assert.Contains(t, requests, "GET /api/v1/auth/whoami")
-	assert.Less(t, indexOfRequest(t, requests, "POST /api/v1/account/api-key"),
-		indexOfRequest(t, requests, "DELETE /api/v1/account/api-key/key-guid-1"),
-		"new key must be created before the old one is revoked")
-	assert.Less(t, indexOfRequest(t, requests, "POST /api/v1/account/api-key"),
-		indexOfRequest(t, requests, "GET /api/v1/auth/whoami"),
-		"validation must run on the freshly created key")
+	// The exact order matters: create the new key, prove it works, and only
+	// then revoke the old one. Any other order can leave the account with no
+	// usable key.
+	assert.Equal(t, []string{
+		"GET /api/v1/account/api-key",
+		"POST /api/v1/account/api-key",
+		"GET /api/v1/auth/whoami",
+		"DELETE /api/v1/account/api-key/key-guid-1",
+	}, keyRequests(requests))
 }
 
-func indexOfRequest(t *testing.T, requests []string, want string) int {
-	t.Helper()
-	for i, r := range requests {
-		if r == want {
-			return i
+// keyRequests filters out the OAuth handshake so only key lifecycle and
+// validation calls remain, in the order they were served.
+func keyRequests(requests []string) []string {
+	var out []string
+	for _, r := range requests {
+		switch {
+		case strings.HasPrefix(r, "GET /api/v1/account/api-key"),
+			strings.HasPrefix(r, "POST /api/v1/account/api-key"),
+			strings.HasPrefix(r, "DELETE /api/v1/account/api-key"),
+			strings.HasPrefix(r, "GET /api/v1/auth/whoami"):
+			out = append(out, r)
 		}
 	}
-	t.Fatalf("request %q not found in %v", want, requests)
-	return -1
+	return out
 }
 
 // TestLoginBrowserMaskedKey guards the bug this flow originally had: storing
@@ -566,8 +579,10 @@ func indexOfRequest(t *testing.T, requests []string, want string) int {
 func TestLoginBrowserMaskedKey(t *testing.T) {
 	configDir := t.TempDir()
 
+	var requests []string
 	srv := mockOAuthServerWithOptions(t, "nbl_oauth_masked_key_1234", mockOAuthServerOptions{
 		createdKey: "nbl_**********1234",
+		requests:   &requests,
 	})
 
 	stdin := []byte("1\n")
@@ -583,16 +598,26 @@ func TestLoginBrowserMaskedKey(t *testing.T) {
 
 	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
 	assert.True(t, os.IsNotExist(err), "masked key must not be stored")
+
+	// createAPIKey must reject the masked secret itself. Reaching whoami would
+	// mean that check is gone and the test only passes by luck.
+	assert.Equal(t, []string{
+		"GET /api/v1/account/api-key",
+		"POST /api/v1/account/api-key",
+	}, keyRequests(requests), "masked key must be rejected before validation")
 }
 
 // TestLoginBrowserWhoamiRejects covers a key that the server mints but the
-// whoami endpoint refuses.
+// whoami endpoint refuses. The old key must survive, since the replacement
+// turned out to be unusable.
 func TestLoginBrowserWhoamiRejects(t *testing.T) {
 	configDir := t.TempDir()
 
+	var requests []string
 	// whoami only accepts apiKey, so a different created key is rejected.
 	srv := mockOAuthServerWithOptions(t, "nbl_oauth_expected_key", mockOAuthServerOptions{
 		createdKey: "nbl_oauth_unexpected_key",
+		requests:   &requests,
 	})
 
 	stdin := []byte("1\n")
@@ -608,6 +633,125 @@ func TestLoginBrowserWhoamiRejects(t *testing.T) {
 
 	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
 	assert.True(t, os.IsNotExist(err), "unvalidated key must not be stored")
+
+	assert.NotContains(t, keyRequests(requests), "DELETE /api/v1/account/api-key/key-guid-1",
+		"stale key must not be revoked when validation fails")
+}
+
+// TestLoginBrowserSaveFailure makes the credential write fail after validation
+// succeeds, proving cleanup runs only after the credential is durable.
+func TestLoginBrowserSaveFailure(t *testing.T) {
+	tmp := t.TempDir()
+
+	var requests []string
+	srv := mockOAuthServerWithOptions(t, "nbl_oauth_save_fail_key", mockOAuthServerOptions{
+		requests: &requests,
+	})
+
+	// A regular file where the config directory belongs makes MkdirAll fail.
+	configDir := filepath.Join(tmp, "blocked")
+	require.NoError(t, os.WriteFile(configDir, []byte("not a directory"), 0600))
+
+	stdin := []byte("1\n")
+	stdout, _, exitCode := runCLIWithStdin(t, stdin, map[string]string{
+		"NIMBLE_CONFIG_DIR":      configDir,
+		"NIMBLE_AUTH_BASE_URL":   srv.URL,
+		"NIMBLE_AUTH_WHOAMI_URL": srv.URL,
+		"NIMBLE_BROWSER":         writeBrowserScript(t, tmp),
+	}, "login")
+
+	assert.NotEqual(t, 0, exitCode, "unsaveable credential should fail login; stdout: %s", stdout)
+	assert.NotContains(t, keyRequests(requests), "DELETE /api/v1/account/api-key/key-guid-1",
+		"stale key must not be revoked when the credential cannot be saved")
+}
+
+// TestLoginBrowserForbiddenNotKeyLimit asserts that a 403 which is not a key
+// limit error fails without revoking anything.
+func TestLoginBrowserForbiddenNotKeyLimit(t *testing.T) {
+	configDir := t.TempDir()
+
+	var requests []string
+	srv := mockOAuthServerWithOptions(t, "nbl_oauth_forbidden_key", mockOAuthServerOptions{
+		createStatus:         http.StatusForbidden,
+		forbiddenNotKeyLimit: true,
+		requests:             &requests,
+	})
+
+	stdin := []byte("1\n")
+	stdout, _, exitCode := runCLIWithStdin(t, stdin, map[string]string{
+		"NIMBLE_CONFIG_DIR":      configDir,
+		"NIMBLE_AUTH_BASE_URL":   srv.URL,
+		"NIMBLE_AUTH_WHOAMI_URL": srv.URL,
+		"NIMBLE_BROWSER":         writeBrowserScript(t, configDir),
+	}, "login")
+
+	assert.Equal(t, 1, exitCode, "non-key-limit 403 should fail login; stdout: %s", stdout)
+	assert.Equal(t, []string{
+		"GET /api/v1/account/api-key",
+		"POST /api/v1/account/api-key",
+	}, keyRequests(requests), "a 403 that is not a key limit must not revoke or retry")
+
+	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
+	assert.True(t, os.IsNotExist(err))
+}
+
+// TestLoginBrowserKeyLimitListFailure covers the key limit hit when the stale
+// keys cannot even be listed, so there is nothing safe to revoke.
+func TestLoginBrowserKeyLimitListFailure(t *testing.T) {
+	configDir := t.TempDir()
+
+	var requests []string
+	srv := mockOAuthServerWithOptions(t, "nbl_oauth_limit_list_key", mockOAuthServerOptions{
+		createStatus: http.StatusForbidden,
+		listStatus:   http.StatusInternalServerError,
+		requests:     &requests,
+	})
+
+	stdin := []byte("1\n")
+	stdout, _, exitCode := runCLIWithStdin(t, stdin, map[string]string{
+		"NIMBLE_CONFIG_DIR":      configDir,
+		"NIMBLE_AUTH_BASE_URL":   srv.URL,
+		"NIMBLE_AUTH_WHOAMI_URL": srv.URL,
+		"NIMBLE_BROWSER":         writeBrowserScript(t, configDir),
+	}, "login")
+
+	assert.Equal(t, 1, exitCode, "key limit with unusable list should fail login; stdout: %s", stdout)
+	assert.NotContains(t, keyRequests(requests), "DELETE /api/v1/account/api-key/key-guid-1",
+		"nothing may be revoked when the key list is unknown")
+
+	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
+	assert.True(t, os.IsNotExist(err))
+}
+
+// TestLoginBrowserKeyLimitDeleteFailure covers the key limit when the stale key
+// cannot be removed, so no slot can be freed for a replacement.
+func TestLoginBrowserKeyLimitDeleteFailure(t *testing.T) {
+	configDir := t.TempDir()
+
+	var requests []string
+	srv := mockOAuthServerWithOptions(t, "nbl_oauth_limit_del_key", mockOAuthServerOptions{
+		createStatus: http.StatusForbidden,
+		deleteStatus: http.StatusInternalServerError,
+		requests:     &requests,
+	})
+
+	stdin := []byte("1\n")
+	stdout, _, exitCode := runCLIWithStdin(t, stdin, map[string]string{
+		"NIMBLE_CONFIG_DIR":      configDir,
+		"NIMBLE_AUTH_BASE_URL":   srv.URL,
+		"NIMBLE_AUTH_WHOAMI_URL": srv.URL,
+		"NIMBLE_BROWSER":         writeBrowserScript(t, configDir),
+	}, "login")
+
+	assert.Equal(t, 1, exitCode, "key limit with failed cleanup should fail login; stdout: %s", stdout)
+	assert.Equal(t, []string{
+		"GET /api/v1/account/api-key",
+		"POST /api/v1/account/api-key",
+		"DELETE /api/v1/account/api-key/key-guid-1",
+	}, keyRequests(requests), "creation must not be retried when the slot was never freed")
+
+	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
+	assert.True(t, os.IsNotExist(err))
 }
 
 // TestLoginBrowserListFailure asserts login still succeeds when stale-key
@@ -689,24 +833,15 @@ func TestLoginBrowserKeyLimit(t *testing.T) {
 	require.NoError(t, json.Unmarshal(data, &creds))
 	assert.Equal(t, "nbl_oauth_limit_key_123", creds["api_key"])
 
-	// Second POST only happens after the stale key was revoked.
-	assert.Less(t, indexOfRequest(t, requests, "DELETE /api/v1/account/api-key/key-guid-1"),
-		lastIndexOfRequest(t, requests, "POST /api/v1/account/api-key"),
-		"retry must come after the stale key is revoked")
-}
-
-func lastIndexOfRequest(t *testing.T, requests []string, want string) int {
-	t.Helper()
-	idx := -1
-	for i, r := range requests {
-		if r == want {
-			idx = i
-		}
-	}
-	if idx == -1 {
-		t.Fatalf("request %q not found in %v", want, requests)
-	}
-	return idx
+	// Exactly one retry after exactly one revocation, and no second cleanup
+	// pass now that the stale key is already gone.
+	assert.Equal(t, []string{
+		"GET /api/v1/account/api-key",
+		"POST /api/v1/account/api-key",
+		"DELETE /api/v1/account/api-key/key-guid-1",
+		"POST /api/v1/account/api-key",
+		"GET /api/v1/auth/whoami",
+	}, keyRequests(requests))
 }
 
 func TestLoginBrowserInvalid(t *testing.T) {
