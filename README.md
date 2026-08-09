@@ -85,13 +85,13 @@ nimble [resource] <command> [flags...]
 ```
 
 ```sh
-nimble extract --url https://example.com
+nimble extract run --url https://example.com
 ```
 
 To override the stored credential for a single command, pass `--api-key`:
 
 ```sh
-nimble extract \
+nimble extract run \
   --api-key 'My API Key' \
   --url https://example.com
 ```

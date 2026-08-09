@@ -124,6 +124,16 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"extract-options": {
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "extract-options.auto-driver-configuration",
+			Usage:      "Custom flow for the optimization engine: maps candidate names to the number of attempts to spend on each candidate before advancing (0 skips it). Key order defines the flow order. Providing it opts the request into 'auto' driver selection.",
+			InnerField: "auto_driver_configuration",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "extract-options.body",
+			Usage:      "Request body for POST, PUT, PATCH methods",
+			InnerField: "body",
+		},
 		&requestflag.InnerFlag[any]{
 			Name:       "extract-options.browser",
 			Usage:      "Browser type to emulate",
@@ -229,7 +239,7 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Referrer policy for the request",
 			InnerField: "referrer_type",
 		},
-		&requestflag.InnerFlag[bool]{
+		&requestflag.InnerFlag[any]{
 			Name:       "extract-options.render",
 			Usage:      "Whether to render JavaScript content using a browser",
 			InnerField: "render",

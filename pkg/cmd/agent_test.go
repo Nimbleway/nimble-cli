@@ -9,256 +9,258 @@ import (
 	"github.com/Nimbleway/nimble-cli/internal/requestflag"
 )
 
-func TestAgentList(t *testing.T) {
+func TestAgentsCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "list",
-			"--limit", "1",
-			"--managed-by", "nimble",
-			"--offset", "0",
-			"--privacy", "public",
-			"--search", "search",
-		)
-	})
-}
-
-func TestAgentGenerate(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "generate",
-			"--prompt", "prompt",
-			"--url", "url",
+			"agents", "create",
 			"--agent-name", "agent_name",
-			"--input-schema", "{}",
-			"--metadata", "{description: description, display_name: display_name, tags: [string]}",
-			"--output-schema", "{}",
+			"--description", "description",
+			"--display-name", "display_name",
+			"--effort", "low",
+			"--goal", "string",
+			"--icon", "icon",
+			"--is-active=true",
+			"--output-schema", "{foo: bar}",
+			"--skill", "skill",
+			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
+			"--suggested-question", "string",
+			"--template", "template",
+			"--use-case", "research",
 		)
 	})
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(agentGenerate)
+		requestflag.CheckInnerFlags(agentsCreate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "generate",
-			"--prompt", "prompt",
-			"--url", "url",
+			"agents", "create",
 			"--agent-name", "agent_name",
-			"--input-schema", "{}",
-			"--metadata.description", "description",
-			"--metadata.display-name", "display_name",
-			"--metadata.tags", "[string]",
-			"--output-schema", "{}",
+			"--description", "description",
+			"--display-name", "display_name",
+			"--effort", "low",
+			"--goal", "string",
+			"--icon", "icon",
+			"--is-active=true",
+			"--output-schema", "{foo: bar}",
+			"--skill", "skill",
+			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
+			"--sources.avoid", "avoid",
+			"--sources.block", "[{domains: [string], title: title, order: 0}]",
+			"--sources.prioritize", "prioritize",
+			"--suggested-question", "string",
+			"--template", "template",
+			"--use-case", "research",
 		)
 	})
 
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
-			"prompt: prompt\n" +
-			"url: url\n" +
 			"agent_name: agent_name\n" +
-			"input_schema: {}\n" +
-			"metadata:\n" +
-			"  description: description\n" +
-			"  display_name: display_name\n" +
-			"  tags:\n" +
-			"    - string\n" +
-			"output_schema: {}\n")
-		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData,
-			"--api-key", "string",
-			"agent", "generate",
-		)
-	})
-}
-
-func TestAgentGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "get",
-			"--template-name", "template_name",
-		)
-	})
-}
-
-func TestAgentGetGeneration(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "get-generation",
-			"--generation-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
-func TestAgentPublish(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "publish",
-			"--agent-name", "agent_name",
-			"--version-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-
-	t.Run("piping data", func(t *testing.T) {
-		// Test piping YAML data over stdin
-		pipeData := []byte("version_id: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData,
-			"--api-key", "string",
-			"agent", "publish",
-			"--agent-name", "agent_name",
-		)
-	})
-}
-
-func TestAgentRun(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "run",
-			"--agent", "agent",
-			"--params", "{foo: bar}",
-			"--format", "html",
-			"--format", "markdown",
-			"--localization=true",
-		)
-	})
-
-	t.Run("piping data", func(t *testing.T) {
-		// Test piping YAML data over stdin
-		pipeData := []byte("" +
-			"agent: agent\n" +
-			"params:\n" +
+			"description: description\n" +
+			"display_name: display_name\n" +
+			"effort: low\n" +
+			"goals:\n" +
+			"  - string\n" +
+			"icon: icon\n" +
+			"is_active: true\n" +
+			"output_schema:\n" +
 			"  foo: bar\n" +
-			"formats:\n" +
-			"  - html\n" +
-			"  - markdown\n" +
-			"localization: true\n")
+			"skill: skill\n" +
+			"sources:\n" +
+			"  allow:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  avoid: avoid\n" +
+			"  block:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  prioritize: prioritize\n" +
+			"suggested_questions:\n" +
+			"  - string\n" +
+			"template: template\n" +
+			"use_case: research\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agent", "run",
+			"agents", "create",
 		)
 	})
 }
 
-func TestAgentRunAsync(t *testing.T) {
+func TestAgentsUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "run-async",
-			"--agent", "agent",
-			"--params", "{foo: bar}",
-			"--callback-url", "https://example.com/webhook/callback",
-			"--format", "html",
-			"--format", "markdown",
-			"--localization=true",
-			"--storage-compress=true",
-			"--storage-object-name", "result-2024-01-15.json",
-			"--storage-type", "s3",
-			"--storage-url", "s3://bucket-name/path/to/object",
-		)
-	})
-
-	t.Run("piping data", func(t *testing.T) {
-		// Test piping YAML data over stdin
-		pipeData := []byte("" +
-			"agent: agent\n" +
-			"params:\n" +
-			"  foo: bar\n" +
-			"callback_url: https://example.com/webhook/callback\n" +
-			"formats:\n" +
-			"  - html\n" +
-			"  - markdown\n" +
-			"localization: true\n" +
-			"storage_compress: true\n" +
-			"storage_object_name: result-2024-01-15.json\n" +
-			"storage_type: s3\n" +
-			"storage_url: s3://bucket-name/path/to/object\n")
-		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData,
-			"--api-key", "string",
-			"agent", "run-async",
-		)
-	})
-}
-
-func TestAgentRunBatch(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"agent", "run-batch",
-			"--input", "{formats: [html, markdown], localization: true, params: {foo: bar}}",
-			"--shared-inputs", "{agent: agent, formats: [html, markdown], localization: true, params: {foo: bar}}",
+			"agents", "update",
+			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--body", "{op: add, path: path, from: from, value: {}}",
 		)
 	})
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(agentRunBatch)
+		requestflag.CheckInnerFlags(agentsUpdate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"agent", "run-batch",
-			"--input.formats", "[html, markdown]",
-			"--input.localization=true",
-			"--input.params", "{foo: bar}",
-			"--shared-inputs.agent", "agent",
-			"--shared-inputs.formats", "[html, markdown]",
-			"--shared-inputs.localization=true",
-			"--shared-inputs.params", "{foo: bar}",
+			"agents", "update",
+			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--body.op", "add",
+			"--body.path", "path",
+			"--body.from", "from",
+			"--body.value", "{}",
 		)
 	})
 
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
-			"inputs:\n" +
-			"  - formats:\n" +
-			"      - html\n" +
-			"      - markdown\n" +
-			"    localization: true\n" +
-			"    params:\n" +
-			"      foo: bar\n" +
-			"shared_inputs:\n" +
-			"  agent: agent\n" +
-			"  formats:\n" +
-			"    - html\n" +
-			"    - markdown\n" +
-			"  localization: true\n" +
-			"  params:\n" +
-			"    foo: bar\n")
+			"- op: add\n" +
+			"  path: path\n" +
+			"  from: from\n" +
+			"  value: {}\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"agent", "run-batch",
+			"agents", "update",
+			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAgentsList(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "list",
+			"--limit", "1",
+			"--offset", "0",
+			"--workspace-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAgentsDelete(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "delete",
+			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAgentsGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "get",
+			"--agent-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAgentsRun(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "run",
+			"--input", "input",
+			"--agent-name", "agent_name",
+			"--effort", "low",
+			"--enable-events=true",
+			"--input-data", "[{foo: bar}]",
+			"--origin", "api",
+			"--output-schema", "{foo: bar}",
+			"--previous-interaction-id", "previous_interaction_id",
+			"--skill", "skill",
+			"--sources", "{allow: [{domains: [string], title: title, order: 0}], avoid: avoid, block: [{domains: [string], title: title, order: 0}], prioritize: prioritize}",
+			"--use-case", "research",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(agentsRun)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"agents", "run",
+			"--input", "input",
+			"--agent-name", "agent_name",
+			"--effort", "low",
+			"--enable-events=true",
+			"--input-data", "[{foo: bar}]",
+			"--origin", "api",
+			"--output-schema", "{foo: bar}",
+			"--previous-interaction-id", "previous_interaction_id",
+			"--skill", "skill",
+			"--sources.allow", "[{domains: [string], title: title, order: 0}]",
+			"--sources.avoid", "avoid",
+			"--sources.block", "[{domains: [string], title: title, order: 0}]",
+			"--sources.prioritize", "prioritize",
+			"--use-case", "research",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"input: input\n" +
+			"agent_name: agent_name\n" +
+			"effort: low\n" +
+			"enable_events: true\n" +
+			"input_data:\n" +
+			"  - foo: bar\n" +
+			"origin: api\n" +
+			"output_schema:\n" +
+			"  foo: bar\n" +
+			"previous_interaction_id: previous_interaction_id\n" +
+			"skill: skill\n" +
+			"sources:\n" +
+			"  allow:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  avoid: avoid\n" +
+			"  block:\n" +
+			"    - domains:\n" +
+			"        - string\n" +
+			"      title: title\n" +
+			"      order: 0\n" +
+			"  prioritize: prioritize\n" +
+			"use_case: research\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"agents", "run",
 		)
 	})
 }
