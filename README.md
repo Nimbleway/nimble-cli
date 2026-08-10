@@ -64,6 +64,22 @@ nimble logout   # remove the stored credential
 Credentials are written to `~/.nimble/credentials.json` with `0600` permissions.
 Set `NIMBLE_CONFIG_DIR` to store them elsewhere.
 
+### API keys created by browser login
+
+Browser login creates an API key named after the user and machine that made it,
+for example `CLI (omerm @ MacBook-Pro-8)`. The name is visible in the Nimble
+console, so you can tell whose key it is and where it came from. Long names are
+truncated to the 50 characters the API allows.
+
+Logging in again from the same machine replaces that key, so keys do not pile up.
+Keys belonging to another machine, to a teammate on the same account, or to a CLI
+version older than this naming scheme are never touched. Accounts are shared, so
+a login here must not invalidate a key someone else is still using.
+
+If you used the CLI before this naming scheme existed, a key named `Nimble CLI`
+may still be on your account. It is left alone on purpose, since it cannot be
+attributed to a machine. Remove it in the console once nothing depends on it.
+
 ### Credential priority
 
 When a command needs an API key, the CLI uses the first source available:

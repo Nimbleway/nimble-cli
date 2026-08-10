@@ -80,12 +80,12 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (*OAuthResult, error) {
 
 	// The key name is scoped per user (and per machine) so that two people
 	// sharing an account don't revoke each other's CLI keys on login.
-	info, err := ValidateAccessToken(ctx, accessToken)
+	username, err := authenticatedUsername(ctx, accessToken)
 	if err != nil {
-		return nil, fmt.Errorf("failed to identify authenticated user: %w", err)
+		return nil, err
 	}
 
-	entry, cleanup, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken, info.Username)
+	entry, cleanup, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken, username)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch API key: %w", err)
 	}
@@ -95,6 +95,31 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (*OAuthResult, error) {
 		AccountName:      entry.AccountName,
 		CleanupStaleKeys: cleanup,
 	}, nil
+}
+
+// authenticatedUsername identifies the person logging in, which scopes both the
+// key name and the cleanup that follows.
+//
+// The whoami endpoint is asked first, since it is the authority. When it cannot
+// answer, the access token's own username claim is used instead: the name only
+// has to be stable and specific to this user, and failing the whole login over
+// a call made purely to derive a name would be a worse outcome. If neither
+// yields a name, the login stops rather than fall back to a shared name that
+// would put another person's key in scope for deletion.
+func authenticatedUsername(ctx context.Context, accessToken string) (string, error) {
+	info, err := ValidateAccessToken(ctx, accessToken)
+	if err == nil && info.Username != "" {
+		return info.Username, nil
+	}
+
+	if username := tokenUsername(accessToken); username != "" {
+		return username, nil
+	}
+
+	if err != nil {
+		return "", fmt.Errorf("failed to identify authenticated user: %w", err)
+	}
+	return "", fmt.Errorf("failed to identify authenticated user: no username in the whoami response or the access token")
 }
 
 func generatePKCE() (verifier, challenge string, err error) {

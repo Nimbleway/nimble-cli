@@ -78,6 +78,7 @@ type apiKeyEntry struct {
 	Key         string `json:"key"`
 	KeyName     string `json:"key_name"`
 	AccountName string `json:"account_name"`
+	CreatedBy   string `json:"created_by"`
 }
 
 // fetchOrCreateAPIKey always creates a fresh API key. The list endpoint
@@ -97,7 +98,7 @@ func fetchOrCreateAPIKey(ctx context.Context, baseURL, token, username string) (
 	noCleanup := func() {}
 	keyName := CLIKeyName(username)
 
-	stale, listErr := listCLIKeys(ctx, baseURL, token, keyName)
+	stale, listErr := listCLIKeys(ctx, baseURL, token, keyName, username)
 
 	key, err = createAPIKey(ctx, baseURL, token, keyName)
 	if err != nil {
@@ -133,9 +134,15 @@ func fetchOrCreateAPIKey(ctx context.Context, baseURL, token, username string) (
 	}, nil
 }
 
-// listCLIKeys returns the GUIDs of keys previously created by this CLI for
-// the same scoped keyName.
-func listCLIKeys(ctx context.Context, baseURL, token, keyName string) ([]string, error) {
+// listCLIKeys returns the GUIDs of keys previously created by this CLI for the
+// same scoped keyName.
+//
+// The name alone is not quite enough. Long usernames are truncated to fit
+// maxKeyNameLen, so two people whose usernames share a prefix can end up with
+// the same key name. created_by is the server's own record of who made a key, so
+// it settles that case. It is only used to exclude keys: a server that omits the
+// field leaves cleanup working off the name, as before.
+func listCLIKeys(ctx context.Context, baseURL, token, keyName, username string) ([]string, error) {
 	keys, err := listAPIKeys(ctx, baseURL, token)
 	if err != nil {
 		return nil, err
@@ -143,9 +150,13 @@ func listCLIKeys(ctx context.Context, baseURL, token, keyName string) ([]string,
 
 	var guids []string
 	for _, k := range keys {
-		if k.KeyName == keyName && k.GUID != "" {
-			guids = append(guids, k.GUID)
+		if k.KeyName != keyName || k.GUID == "" {
+			continue
 		}
+		if k.CreatedBy != "" && username != "" && k.CreatedBy != username {
+			continue
+		}
+		guids = append(guids, k.GUID)
 	}
 	return guids, nil
 }
@@ -197,22 +208,44 @@ func deleteAPIKey(ctx context.Context, baseURL, token, guid string) error {
 }
 
 // errKeyLimitExceeded reports that the account cannot hold another API key.
-// Proxit answers 403 with entities.ErrApiKeysExceededLimit in the message
-// field when ResourceLimits.ApiKeys is reached. Other 403s (a read-only
-// super-user, a revoked scope) must not be mistaken for it, since only the
-// key limit justifies revoking existing keys.
+// The server answers 403 when ResourceLimits.ApiKeys is reached. Other 403s (a
+// read-only super-user, a revoked scope) must not be mistaken for it, since only
+// the key limit justifies revoking existing keys.
 var errKeyLimitExceeded = errors.New("account API key limit reached")
 
-const keyLimitMessage = "api key limit reached"
+// keyLimitMessages are the phrasings seen for the key limit. Proxit defines the
+// error as "max api keys limit reached" (entities.ErrApiKeysExceededLimit) and
+// the auth service raises "API key limit reached", which differ in more than
+// case, so neither is a substring of the other.
+var keyLimitMessages = []string{
+	"api key limit reached",
+	"api keys limit reached",
+}
 
+// isKeyLimitResponse reports whether a 403 body says the account is at its key
+// limit. The field carrying the text depends on which layer answered: proxit's
+// error middleware writes {"error": ...}, some handlers write {"message": ...},
+// and FastAPI services write {"detail": ...}. Reading only one of them silently
+// disables limit recovery, so all three are accepted.
 func isKeyLimitResponse(resp *http.Response) bool {
 	var body struct {
+		Error   string `json:"error"`
 		Message string `json:"message"`
+		Detail  string `json:"detail"`
 	}
 	if err := decodeBody(resp, &body); err != nil {
 		return false
 	}
-	return strings.Contains(strings.ToLower(body.Message), keyLimitMessage)
+
+	for _, field := range []string{body.Error, body.Message, body.Detail} {
+		text := strings.ToLower(field)
+		for _, want := range keyLimitMessages {
+			if strings.Contains(text, want) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func createAPIKey(ctx context.Context, baseURL, token, keyName string) (*apiKeyEntry, error) {
