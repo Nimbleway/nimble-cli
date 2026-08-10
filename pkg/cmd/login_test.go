@@ -16,6 +16,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/Nimbleway/nimble-cli/internal/auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -434,8 +435,8 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 			fmt.Fprint(w, `{"access_token":"test_jwt_token"}`)
 
 		case "/api/v1/account/api-key":
-			auth := r.Header.Get("Authorization")
-			if auth != "Bearer test_jwt_token" {
+			bearer := r.Header.Get("Authorization")
+			if bearer != "Bearer test_jwt_token" {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
@@ -448,7 +449,7 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 				// The real list endpoint masks key secrets. The CLI must never
 				// store this value.
 				w.Header().Set("Content-Type", "application/json")
-				fmt.Fprintf(w, `[{"guid":"key-guid-1","key":%q,"key_name":"Nimble CLI","account_name":"oauth-account"}]`, maskKey(apiKey))
+				fmt.Fprintf(w, `[{"guid":"key-guid-1","key":%q,"key_name":%q,"account_name":"oauth-account"}]`, maskKey(apiKey), auth.CLIKeyName(oauthUsername))
 			case http.MethodPost:
 				mu.Lock()
 				createCalls++
@@ -472,7 +473,7 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 				}
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusCreated)
-				fmt.Fprintf(w, `{"guid":"key-guid-2","key":%q,"key_name":"Nimble CLI","account_name":"oauth-account"}`, created)
+				fmt.Fprintf(w, `{"guid":"key-guid-2","key":%q,"key_name":%q,"account_name":"oauth-account"}`, created, auth.CLIKeyName(oauthUsername))
 			default:
 				w.WriteHeader(http.StatusMethodNotAllowed)
 			}
@@ -489,16 +490,17 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 			w.WriteHeader(http.StatusOK)
 
 		case "/api/v1/auth/whoami":
-			// Validate that the caller provides the expected API key.
-			auth := r.Header.Get("Authorization")
-			expectedBearer := "Bearer " + apiKey
-			if auth != expectedBearer {
+			// Accepts both the OAuth access token (used to identify the user
+			// before the key is minted) and the final API key (used to
+			// validate it once created).
+			bearer := r.Header.Get("Authorization")
+			if bearer != "Bearer test_jwt_token" && bearer != "Bearer "+apiKey {
 				w.WriteHeader(http.StatusUnauthorized)
 				fmt.Fprint(w, `{"error":"unauthorized"}`)
 				return
 			}
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprintf(w, `{"username":"oauth-user@example.com","account":"oauth-account"}`)
+			fmt.Fprintf(w, `{"username":%q,"account":"oauth-account"}`, oauthUsername)
 
 		default:
 			http.NotFound(w, r)
@@ -507,6 +509,10 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 	t.Cleanup(srv.Close)
 	return srv
 }
+
+// oauthUsername is the identity mockOAuthServerWithOptions returns from
+// whoami for both the OAuth access token and the final API key.
+const oauthUsername = "oauth-user@example.com"
 
 // writeBrowserScript writes a fake browser that follows the authorize URL,
 // standing in for a human completing the consent page.
@@ -547,10 +553,11 @@ func TestLoginBrowser(t *testing.T) {
 	assert.Equal(t, "oauth-account", creds["account_name"])
 	assert.Equal(t, "oauth-user@example.com", creds["email"])
 
-	// The exact order matters: create the new key, prove it works, and only
-	// then revoke the old one. Any other order can leave the account with no
-	// usable key.
+	// The exact order matters: identify the user (to scope the key name),
+	// create the new key, prove it works, and only then revoke the old one.
+	// Any other order can leave the account with no usable key.
 	assert.Equal(t, []string{
+		"GET /api/v1/auth/whoami",
 		"GET /api/v1/account/api-key",
 		"POST /api/v1/account/api-key",
 		"GET /api/v1/auth/whoami",
@@ -599,9 +606,12 @@ func TestLoginBrowserMaskedKey(t *testing.T) {
 	_, err := os.Stat(filepath.Join(configDir, "credentials.json"))
 	assert.True(t, os.IsNotExist(err), "masked key must not be stored")
 
-	// createAPIKey must reject the masked secret itself. Reaching whoami would
-	// mean that check is gone and the test only passes by luck.
+	// createAPIKey must reject the masked secret itself. Reaching the
+	// post-creation whoami validation would mean that check is gone and the
+	// test only passes by luck. The leading whoami is the pre-creation
+	// identity lookup used to scope the key name.
 	assert.Equal(t, []string{
+		"GET /api/v1/auth/whoami",
 		"GET /api/v1/account/api-key",
 		"POST /api/v1/account/api-key",
 	}, keyRequests(requests), "masked key must be rejected before validation")
@@ -614,7 +624,8 @@ func TestLoginBrowserWhoamiRejects(t *testing.T) {
 	configDir := t.TempDir()
 
 	var requests []string
-	// whoami only accepts apiKey, so a different created key is rejected.
+	// whoami only accepts the access token or apiKey, so a different created
+	// key is rejected.
 	srv := mockOAuthServerWithOptions(t, "nbl_oauth_expected_key", mockOAuthServerOptions{
 		createdKey: "nbl_oauth_unexpected_key",
 		requests:   &requests,
@@ -687,6 +698,7 @@ func TestLoginBrowserForbiddenNotKeyLimit(t *testing.T) {
 
 	assert.Equal(t, 1, exitCode, "non-key-limit 403 should fail login; stdout: %s", stdout)
 	assert.Equal(t, []string{
+		"GET /api/v1/auth/whoami",
 		"GET /api/v1/account/api-key",
 		"POST /api/v1/account/api-key",
 	}, keyRequests(requests), "a 403 that is not a key limit must not revoke or retry")
@@ -745,6 +757,7 @@ func TestLoginBrowserKeyLimitDeleteFailure(t *testing.T) {
 
 	assert.Equal(t, 1, exitCode, "key limit with failed cleanup should fail login; stdout: %s", stdout)
 	assert.Equal(t, []string{
+		"GET /api/v1/auth/whoami",
 		"GET /api/v1/account/api-key",
 		"POST /api/v1/account/api-key",
 		"DELETE /api/v1/account/api-key/key-guid-1",
@@ -836,6 +849,7 @@ func TestLoginBrowserKeyLimit(t *testing.T) {
 	// Exactly one retry after exactly one revocation, and no second cleanup
 	// pass now that the stale key is already gone.
 	assert.Equal(t, []string{
+		"GET /api/v1/auth/whoami",
 		"GET /api/v1/account/api-key",
 		"POST /api/v1/account/api-key",
 		"DELETE /api/v1/account/api-key/key-guid-1",

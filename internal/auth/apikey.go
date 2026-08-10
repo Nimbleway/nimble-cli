@@ -5,10 +5,73 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 )
 
-const cliKeyName = "Nimble CLI"
+// cliKeyPrefix marks a key as CLI-created. It deliberately omits "Nimble":
+// every key in the account is a Nimble key, so the word only spends budget
+// against maxKeyNameLen.
+const cliKeyPrefix = "CLI"
+
+// maxKeyNameLen is the server's limit on the key_name field.
+const maxKeyNameLen = 50
+
+// CLIKeyName scopes the key name to the user and machine that created it, so
+// two people (or two machines) sharing an account don't revoke each other's
+// CLI keys on login. The email domain and FQDN suffix are dropped, and the
+// remainder is truncated as needed, to stay within maxKeyNameLen.
+func CLIKeyName(username string) string {
+	host, err := os.Hostname()
+	if err != nil {
+		host = ""
+	}
+	return cliKeyNameFor(username, host)
+}
+
+// cliKeyNameFor is CLIKeyName with the hostname injected, so the length and
+// truncation rules can be tested without depending on the test machine.
+func cliKeyNameFor(username, host string) string {
+	if username == "" {
+		username = "unknown-user"
+	} else if at := strings.IndexByte(username, '@'); at > 0 {
+		username = username[:at]
+	}
+
+	if host == "" {
+		host = "unknown-host"
+	} else if dot := strings.IndexByte(host, '.'); dot > 0 {
+		host = host[:dot]
+	}
+
+	// Trim only as much as the limit demands. Each part has a fair share, but
+	// whichever part is under its share lends the surplus to the other, so a
+	// short username leaves room for a long hostname and vice versa.
+	budget := maxKeyNameLen - len(cliKeyPrefix) - len(" ( @ )")
+	fairUser := max(budget*2/3, 1) // favors the username: it identifies the person
+	fairHost := max(budget-fairUser, 1)
+
+	if len(username)+len(host) > budget {
+		switch {
+		case len(username) <= fairUser:
+			host = truncate(host, budget-len(username))
+		case len(host) <= fairHost:
+			username = truncate(username, budget-len(host))
+		default:
+			username = truncate(username, fairUser)
+			host = truncate(host, fairHost)
+		}
+	}
+
+	return fmt.Sprintf("%s (%s @ %s)", cliKeyPrefix, username, host)
+}
+
+func truncate(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n]
+}
 
 type apiKeyEntry struct {
 	GUID        string `json:"guid"`
@@ -30,12 +93,13 @@ type apiKeyEntry struct {
 // If the account is already at its key limit, stale keys are removed up front
 // (there is no way to mint a replacement otherwise) and creation is retried
 // once.
-func fetchOrCreateAPIKey(ctx context.Context, baseURL, token string) (key *apiKeyEntry, cleanup func(), err error) {
+func fetchOrCreateAPIKey(ctx context.Context, baseURL, token, username string) (key *apiKeyEntry, cleanup func(), err error) {
 	noCleanup := func() {}
+	keyName := CLIKeyName(username)
 
-	stale, listErr := listCLIKeys(ctx, baseURL, token)
+	stale, listErr := listCLIKeys(ctx, baseURL, token, keyName)
 
-	key, err = createAPIKey(ctx, baseURL, token)
+	key, err = createAPIKey(ctx, baseURL, token, keyName)
 	if err != nil {
 		if !errors.Is(err, errKeyLimitExceeded) {
 			return nil, noCleanup, err
@@ -51,7 +115,7 @@ func fetchOrCreateAPIKey(ctx context.Context, baseURL, token string) (key *apiKe
 		}
 		// Already deleted, so nothing is left for the caller to clean up.
 		stale = nil
-		if key, err = createAPIKey(ctx, baseURL, token); err != nil {
+		if key, err = createAPIKey(ctx, baseURL, token, keyName); err != nil {
 			return nil, noCleanup, err
 		}
 	}
@@ -69,8 +133,9 @@ func fetchOrCreateAPIKey(ctx context.Context, baseURL, token string) (key *apiKe
 	}, nil
 }
 
-// listCLIKeys returns the GUIDs of keys previously created by this CLI.
-func listCLIKeys(ctx context.Context, baseURL, token string) ([]string, error) {
+// listCLIKeys returns the GUIDs of keys previously created by this CLI for
+// the same scoped keyName.
+func listCLIKeys(ctx context.Context, baseURL, token, keyName string) ([]string, error) {
 	keys, err := listAPIKeys(ctx, baseURL, token)
 	if err != nil {
 		return nil, err
@@ -78,7 +143,7 @@ func listCLIKeys(ctx context.Context, baseURL, token string) ([]string, error) {
 
 	var guids []string
 	for _, k := range keys {
-		if k.KeyName == cliKeyName && k.GUID != "" {
+		if k.KeyName == keyName && k.GUID != "" {
 			guids = append(guids, k.GUID)
 		}
 	}
@@ -150,8 +215,8 @@ func isKeyLimitResponse(resp *http.Response) bool {
 	return strings.Contains(strings.ToLower(body.Message), keyLimitMessage)
 }
 
-func createAPIKey(ctx context.Context, baseURL, token string) (*apiKeyEntry, error) {
-	req, err := http.NewRequestWithContext(ctx, "POST", baseURL+"/api/v1/account/api-key", strings.NewReader(fmt.Sprintf(`{"key_name":%q}`, cliKeyName)))
+func createAPIKey(ctx context.Context, baseURL, token, keyName string) (*apiKeyEntry, error) {
+	req, err := http.NewRequestWithContext(ctx, "POST", baseURL+"/api/v1/account/api-key", strings.NewReader(fmt.Sprintf(`{"key_name":%q}`, keyName)))
 	if err != nil {
 		return nil, err
 	}

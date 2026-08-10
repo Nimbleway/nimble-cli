@@ -78,7 +78,14 @@ func RunOAuthFlow(ctx context.Context, cfg OAuthConfig) (*OAuthResult, error) {
 		return nil, fmt.Errorf("failed to exchange authorization code: %w", err)
 	}
 
-	entry, cleanup, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken)
+	// The key name is scoped per user (and per machine) so that two people
+	// sharing an account don't revoke each other's CLI keys on login.
+	info, err := ValidateAccessToken(ctx, accessToken)
+	if err != nil {
+		return nil, fmt.Errorf("failed to identify authenticated user: %w", err)
+	}
+
+	entry, cleanup, err := fetchOrCreateAPIKey(ctx, cfg.BaseURL, accessToken, info.Username)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch API key: %w", err)
 	}
