@@ -460,7 +460,7 @@ func mockOAuthServerWithOptions(t *testing.T, apiKey string, opts mockOAuthServe
 					// Proxit reports the key limit through the message body;
 					// the CLI must only revoke keys for this specific 403.
 					if opts.createStatus == http.StatusForbidden && !opts.forbiddenNotKeyLimit {
-						fmt.Fprint(w, `{"message":"max api keys limit reached"}`)
+						fmt.Fprint(w, `{"message":"API key limit reached"}`)
 					} else {
 						fmt.Fprint(w, `{"message":"forbidden"}`)
 					}

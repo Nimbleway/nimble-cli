@@ -138,7 +138,7 @@ func deleteAPIKey(ctx context.Context, baseURL, token, guid string) error {
 // key limit justifies revoking existing keys.
 var errKeyLimitExceeded = errors.New("account API key limit reached")
 
-const keyLimitMessage = "max api keys limit reached"
+const keyLimitMessage = "api key limit reached"
 
 func isKeyLimitResponse(resp *http.Response) bool {
 	var body struct {
