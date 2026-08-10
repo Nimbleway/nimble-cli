@@ -19,14 +19,18 @@ func whoamiBaseURL() string {
 	return "https://api.webit.live"
 }
 
-func ValidateAPIKey(ctx context.Context, apiKey string) (*UserInfo, error) {
+// ValidateToken calls the whoami endpoint with the given bearer token.
+// tokenLabel names the credential in error messages (e.g. "API key", "access
+// token"), since the endpoint accepts both an API key and an OAuth access
+// token.
+func ValidateToken(ctx context.Context, token, tokenLabel string) (*UserInfo, error) {
 	reqURL := whoamiBaseURL() + "/api/v1/auth/whoami"
 
 	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
@@ -35,7 +39,7 @@ func ValidateAPIKey(ctx context.Context, apiKey string) (*UserInfo, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
-		return nil, fmt.Errorf("API key is invalid or expired")
+		return nil, fmt.Errorf("%s is invalid or expired", tokenLabel)
 	}
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("authentication server returned status %d", resp.StatusCode)
@@ -46,4 +50,12 @@ func ValidateAPIKey(ctx context.Context, apiKey string) (*UserInfo, error) {
 		return nil, fmt.Errorf("failed to parse authentication response: %w", err)
 	}
 	return &info, nil
+}
+
+func ValidateAPIKey(ctx context.Context, apiKey string) (*UserInfo, error) {
+	return ValidateToken(ctx, apiKey, "API key")
+}
+
+func ValidateAccessToken(ctx context.Context, accessToken string) (*UserInfo, error) {
+	return ValidateToken(ctx, accessToken, "access token")
 }
