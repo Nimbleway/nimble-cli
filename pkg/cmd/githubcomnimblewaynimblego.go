@@ -102,6 +102,12 @@ var search = cli.Command{
 			BodyPath: "focus",
 		},
 		&requestflag.Flag[bool]{
+			Name:     "full-content",
+			Usage:    "Return richer per-result content on the fast path. With search_depth='fast', enables live crawling of both web and news sources so results carry full markdown content instead of snippets only. Higher recall and cost. Ignored for other search_depth values.",
+			Default:  false,
+			BodyPath: "full_content",
+		},
+		&requestflag.Flag[bool]{
 			Name:     "include-answer",
 			Usage:    "Generate an LLM-powered answer summary based on search result snippets.",
 			Default:  false,

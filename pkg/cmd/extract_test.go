@@ -46,6 +46,7 @@ func TestExtractAsync(t *testing.T) {
 			"--os", "windows",
 			"--parse=true",
 			"--parser", "{myParser: bar}",
+			"--realtime-total-timeout", "15000",
 			"--referrer-type", "random",
 			"--render=true",
 			"--request-timeout", "30000",
@@ -105,6 +106,7 @@ func TestExtractAsync(t *testing.T) {
 			"--os", "windows",
 			"--parse=true",
 			"--parser", "{myParser: bar}",
+			"--realtime-total-timeout", "15000",
 			"--referrer-type", "random",
 			"--render=true",
 			"--request-timeout", "30000",
@@ -209,6 +211,7 @@ func TestExtractAsync(t *testing.T) {
 			"parse: true\n" +
 			"parser:\n" +
 			"  myParser: bar\n" +
+			"realtime_total_timeout: 15000\n" +
 			"referrer_type: random\n" +
 			"render: true\n" +
 			"request_timeout: 30000\n" +
@@ -240,8 +243,8 @@ func TestExtractBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"extract", "batch",
-			"--input", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, renew_on_blocked: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
-			"--shared-inputs", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, renew_on_blocked: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--input", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, realtime_total_timeout: 15000, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, renew_on_blocked: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
+			"--shared-inputs", "{auto_driver_configuration: {vx10: 2, vx10-pro: 0, vx6-fast: 1, vx6-stealth: 1, vx8: 5, vx8-pro: 5}, body: {key: value}, browser: chrome, browser_actions: [{goto: https://example.com/login}, {wait_for_element: '#login-form'}, {fill: {selector: '#username', value: user@example.com, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {fill: {selector: '#password', value: password123, click_on_element: true, delay: 1000, mode: type, mouse_movement_strategy: linear, required: 'true', scroll: true, skip: 'true', timeout: 0, typing_interval: 1000, typing_strategy: simple, visible: true}}, {click: '#submit'}, {screenshot: {format: png, full_page: true, quality: 0, required: 'true', skip: 'true'}}], callback_url: https://example.com/webhook/callback, city: Los Angeles, consent_header: true, cookies: sessionId=abc123; userId=user456, country: US, device: desktop, driver: vx8, expected_status_codes: [200, 201], formats: [html], headers: {Accept-Language: en-US, User-Agent: CustomBot/1.0}, http2: true, is_xhr: true, locale: en-US, markdown_backend: full_page, method: GET, network_capture: [{method: GET, resource_type: document, status_code: 100, url: {value: value, type: exact}, validation: true, wait_for_requests_count: 0, wait_for_requests_count_timeout: 1}], os: windows, parse: true, parser: {myParser: bar}, realtime_total_timeout: 15000, referrer_type: random, render: false, request_timeout: 30000, session: {id: id, prefetch_userbrowser: true, renew_on_blocked: true, retry: true, timeout: 1}, skill: dynamic-content, state: CA, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object, tag: campaign-2024-q1, url: url}",
 		)
 	})
 
@@ -277,6 +280,7 @@ func TestExtractBatch(t *testing.T) {
 			"--input.os", "windows",
 			"--input.parse=true",
 			"--input.parser", "{myParser: bar}",
+			"--input.realtime-total-timeout", "15000",
 			"--input.referrer-type", "random",
 			"--input.render=false",
 			"--input.request-timeout", "30000",
@@ -312,6 +316,7 @@ func TestExtractBatch(t *testing.T) {
 			"--shared-inputs.os", "windows",
 			"--shared-inputs.parse=true",
 			"--shared-inputs.parser", "{myParser: bar}",
+			"--shared-inputs.realtime-total-timeout", "15000",
 			"--shared-inputs.referrer-type", "random",
 			"--shared-inputs.render=false",
 			"--shared-inputs.request-timeout", "30000",
@@ -413,6 +418,7 @@ func TestExtractBatch(t *testing.T) {
 			"    parse: true\n" +
 			"    parser:\n" +
 			"      myParser: bar\n" +
+			"    realtime_total_timeout: 15000\n" +
 			"    referrer_type: random\n" +
 			"    render: false\n" +
 			"    request_timeout: 30000\n" +
@@ -513,6 +519,7 @@ func TestExtractBatch(t *testing.T) {
 			"  parse: true\n" +
 			"  parser:\n" +
 			"    myParser: bar\n" +
+			"  realtime_total_timeout: 15000\n" +
 			"  referrer_type: random\n" +
 			"  render: false\n" +
 			"  request_timeout: 30000\n" +
@@ -574,6 +581,7 @@ func TestExtractRun(t *testing.T) {
 			"--os", "windows",
 			"--parse=true",
 			"--parser", "{myParser: bar}",
+			"--realtime-total-timeout", "15000",
 			"--referrer-type", "random",
 			"--render=true",
 			"--request-timeout", "30000",
@@ -628,6 +636,7 @@ func TestExtractRun(t *testing.T) {
 			"--os", "windows",
 			"--parse=true",
 			"--parser", "{myParser: bar}",
+			"--realtime-total-timeout", "15000",
 			"--referrer-type", "random",
 			"--render=true",
 			"--request-timeout", "30000",
@@ -727,6 +736,7 @@ func TestExtractRun(t *testing.T) {
 			"parse: true\n" +
 			"parser:\n" +
 			"  myParser: bar\n" +
+			"realtime_total_timeout: 15000\n" +
 			"referrer_type: random\n" +
 			"render: true\n" +
 			"request_timeout: 30000\n" +

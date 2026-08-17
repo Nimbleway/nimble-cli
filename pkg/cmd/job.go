@@ -93,6 +93,11 @@ var jobsCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Path to the input file; must start with 's3' or 'file_'. Used for 's3'/'file' types.",
 			InnerField: "file_path",
 		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "inputs.node-data",
+			Usage:      "Inline input records keyed by source node id, e.g. {'source_a': [{...}]}. Used when type is 'inline' on a dynamic-workflow job, which has one source node per input file. Mutually exclusive with 'data'.",
+			InnerField: "node_data",
+		},
 	},
 	"schedule": {
 		&requestflag.InnerFlag[string]{
@@ -179,6 +184,11 @@ var jobsUpdate = requestflag.WithInnerFlags(cli.Command{
 			Name:       "inputs.file-path",
 			Usage:      "Path to the input file; must start with 's3' or 'file_'. Used for 's3'/'file' types.",
 			InnerField: "file_path",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "inputs.node-data",
+			Usage:      "Inline input records keyed by source node id, e.g. {'source_a': [{...}]}. Used when type is 'inline' on a dynamic-workflow job, which has one source node per input file. Mutually exclusive with 'data'.",
+			InnerField: "node_data",
 		},
 	},
 	"schedule": {
