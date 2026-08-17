@@ -21,7 +21,7 @@ func TestJobsCreate(t *testing.T) {
 			"--description", "description",
 			"--destination", "{path: path, type: file, format: jsonl}",
 			"--display-name", "display_name",
-			"--inputs", "{type: s3, data: [{foo: bar}], file_path: file_path}",
+			"--inputs", "{type: s3, data: [{foo: bar}], file_path: file_path, node_data: {foo: [{foo: bar}]}}",
 			"--schedule", "{cron: cron, enabled: true}",
 		)
 	})
@@ -45,6 +45,7 @@ func TestJobsCreate(t *testing.T) {
 			"--inputs.type", "s3",
 			"--inputs.data", "[{foo: bar}]",
 			"--inputs.file-path", "file_path",
+			"--inputs.node-data", "{foo: [{foo: bar}]}",
 			"--schedule.cron", "cron",
 			"--schedule.enabled=true",
 		)
@@ -66,6 +67,9 @@ func TestJobsCreate(t *testing.T) {
 			"  data:\n" +
 			"    - foo: bar\n" +
 			"  file_path: file_path\n" +
+			"  node_data:\n" +
+			"    foo:\n" +
+			"      - foo: bar\n" +
 			"schedule:\n" +
 			"  cron: cron\n" +
 			"  enabled: true\n")
@@ -88,7 +92,7 @@ func TestJobsUpdate(t *testing.T) {
 			"--description", "description",
 			"--destination", "{path: path, type: file, format: jsonl}",
 			"--display-name", "display_name",
-			"--inputs", "{type: s3, data: [{foo: bar}], file_path: file_path}",
+			"--inputs", "{type: s3, data: [{foo: bar}], file_path: file_path, node_data: {foo: [{foo: bar}]}}",
 			"--schedule", "{cron: cron, enabled: true}",
 		)
 	})
@@ -111,6 +115,7 @@ func TestJobsUpdate(t *testing.T) {
 			"--inputs.type", "s3",
 			"--inputs.data", "[{foo: bar}]",
 			"--inputs.file-path", "file_path",
+			"--inputs.node-data", "{foo: [{foo: bar}]}",
 			"--schedule.cron", "cron",
 			"--schedule.enabled=true",
 		)
@@ -130,6 +135,9 @@ func TestJobsUpdate(t *testing.T) {
 			"  data:\n" +
 			"    - foo: bar\n" +
 			"  file_path: file_path\n" +
+			"  node_data:\n" +
+			"    foo:\n" +
+			"      - foo: bar\n" +
 			"schedule:\n" +
 			"  cron: cron\n" +
 			"  enabled: true\n")

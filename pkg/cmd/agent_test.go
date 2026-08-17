@@ -153,7 +153,6 @@ func TestAgentsList(t *testing.T) {
 			"agents", "list",
 			"--limit", "1",
 			"--offset", "0",
-			"--workspace-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }

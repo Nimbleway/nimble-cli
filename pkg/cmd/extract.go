@@ -149,6 +149,11 @@ var extractAsync = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "Custom parser configuration as a key-value map",
 			BodyPath: "parser",
 		},
+		&requestflag.Flag[float64]{
+			Name:     "realtime-total-timeout",
+			Usage:    "Overall deadline in milliseconds for a realtime request. Clamped to the account total timeout — it can shorten the deadline but never extend it. Has no effect on async requests.",
+			BodyPath: "realtime_total_timeout",
+		},
 		&requestflag.Flag[string]{
 			Name:     "referrer-type",
 			Usage:    "Referrer policy for the request",
@@ -399,6 +404,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Custom parser configuration as a key-value map",
 			InnerField: "parser",
 		},
+		&requestflag.InnerFlag[float64]{
+			Name:       "input.realtime-total-timeout",
+			Usage:      "Overall deadline in milliseconds for a realtime request. Clamped to the account total timeout — it can shorten the deadline but never extend it. Has no effect on async requests.",
+			InnerField: "realtime_total_timeout",
+		},
 		&requestflag.InnerFlag[string]{
 			Name:       "input.referrer-type",
 			Usage:      "Referrer policy for the request",
@@ -574,6 +584,11 @@ var extractBatch = requestflag.WithInnerFlags(cli.Command{
 			Name:       "shared-inputs.parser",
 			Usage:      "Custom parser configuration as a key-value map",
 			InnerField: "parser",
+		},
+		&requestflag.InnerFlag[float64]{
+			Name:       "shared-inputs.realtime-total-timeout",
+			Usage:      "Overall deadline in milliseconds for a realtime request. Clamped to the account total timeout — it can shorten the deadline but never extend it. Has no effect on async requests.",
+			InnerField: "realtime_total_timeout",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "shared-inputs.referrer-type",
@@ -766,6 +781,11 @@ var extractRun = requestflag.WithInnerFlags(cli.Command{
 			Name:     "parser",
 			Usage:    "Custom parser configuration as a key-value map",
 			BodyPath: "parser",
+		},
+		&requestflag.Flag[float64]{
+			Name:     "realtime-total-timeout",
+			Usage:    "Overall deadline in milliseconds for a realtime request. Clamped to the account total timeout — it can shorten the deadline but never extend it. Has no effect on async requests.",
+			BodyPath: "realtime_total_timeout",
 		},
 		&requestflag.Flag[string]{
 			Name:     "referrer-type",

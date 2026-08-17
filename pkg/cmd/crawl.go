@@ -234,6 +234,11 @@ var crawlRun = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Custom parser configuration as a key-value map",
 			InnerField: "parser",
 		},
+		&requestflag.InnerFlag[float64]{
+			Name:       "extract-options.realtime-total-timeout",
+			Usage:      "Overall deadline in milliseconds for a realtime request. Clamped to the account total timeout — it can shorten the deadline but never extend it. Has no effect on async requests.",
+			InnerField: "realtime_total_timeout",
+		},
 		&requestflag.InnerFlag[string]{
 			Name:       "extract-options.referrer-type",
 			Usage:      "Referrer policy for the request",

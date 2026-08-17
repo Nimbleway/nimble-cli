@@ -170,10 +170,6 @@ var agentsList = cli.Command{
 			Default:   0,
 			QueryPath: "offset",
 		},
-		&requestflag.Flag[*string]{
-			Name:      "workspace-id",
-			QueryPath: "workspace_id",
-		},
 	},
 	Action:          handleAgentsList,
 	HideHelpCommand: true,
