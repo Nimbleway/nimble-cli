@@ -55,6 +55,7 @@ func TestSearch(t *testing.T) {
 			"--end-date", "end_date",
 			"--exclude-domain", "[string]",
 			"--focus", "string",
+			"--full-content=true",
 			"--include-answer=true",
 			"--include-domain", "[string]",
 			"--locale", "locale",
@@ -79,6 +80,7 @@ func TestSearch(t *testing.T) {
 			"exclude_domains:\n" +
 			"  - string\n" +
 			"focus: string\n" +
+			"full_content: true\n" +
 			"include_answer: true\n" +
 			"include_domains:\n" +
 			"  - string\n" +
