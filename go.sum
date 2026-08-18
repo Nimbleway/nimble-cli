@@ -1,5 +1,5 @@
-github.com/Nimbleway/nimble-go v1.2.0 h1:jvI4qECo2QqmQVOEwOD1nf/NloXGLxci2wBSArmThTg=
-github.com/Nimbleway/nimble-go v1.2.0/go.mod h1:u+fLHrOMixx9eA+VjRmzoFUrBWtY7GagaiH/vnkkRT4=
+github.com/Nimbleway/nimble-go v1.3.0 h1:87siihJJAuGYs44RFG08NcoN8sRpVwT9svZx9mhbnyA=
+github.com/Nimbleway/nimble-go v1.3.0/go.mod h1:u+fLHrOMixx9eA+VjRmzoFUrBWtY7GagaiH/vnkkRT4=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiErDT4WkJ2k=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWpi6yML8=
