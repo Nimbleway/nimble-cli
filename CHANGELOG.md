@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.0 (2026-08-19)
+
+Full Changelog: [v1.3.0...v1.4.0](https://github.com/Nimbleway/nimble-cli/compare/v1.3.0...v1.4.0)
+
+### Features
+
+* **auth:** add login, whoami, and logout commands with browser-based OAuth ([#25](https://github.com/Nimbleway/nimble-cli/issues/25)) ([fd26724](https://github.com/Nimbleway/nimble-cli/commit/fd267241a598cbad221e9eb0370ad8cea707a8c3))
+
+
+### Chores
+
+* **internal:** codegen related update ([3de5a8f](https://github.com/Nimbleway/nimble-cli/commit/3de5a8f80b1c9c726dfa05c7ba03260d91f8b908))
+
 ## 1.3.0 (2026-08-17)
 
 Full Changelog: [v1.2.0...v1.3.0](https://github.com/Nimbleway/nimble-cli/compare/v1.2.0...v1.3.0)
