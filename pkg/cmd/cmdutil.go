@@ -16,6 +16,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/Nimbleway/nimble-cli/internal/auth"
 	"github.com/Nimbleway/nimble-cli/internal/jsonview"
 	"github.com/Nimbleway/nimble-go/option"
 
@@ -46,8 +47,14 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 		option.WithHeader("X-Stainless-Runtime", "cli"),
 		option.WithHeader("X-Stainless-CLI-Command", cmd.FullName()),
 	}
-	if cmd.IsSet("api-key") {
+	if isAPIKeyFlag() {
 		opts = append(opts, option.WithAPIKey(cmd.String("api-key")))
+	} else if creds, err := auth.LoadCredentials(); err != nil {
+		log.Printf("Warning: failed to load stored credentials: %v", err)
+	} else if creds != nil {
+		opts = append(opts, option.WithAPIKey(creds.APIKey))
+	} else if envKey := os.Getenv("NIMBLE_API_KEY"); envKey != "" {
+		opts = append(opts, option.WithAPIKey(envKey))
 	}
 	if cmd.IsSet("client-source") {
 		opts = append(opts, option.WithClientSource(cmd.String("client-source")))
@@ -59,6 +66,15 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 	}
 
 	return opts
+}
+
+func isAPIKeyFlag() bool {
+	for _, arg := range os.Args {
+		if arg == "--api-key" || strings.HasPrefix(arg, "--api-key=") {
+			return true
+		}
+	}
+	return false
 }
 
 var debugMiddlewareOption = option.WithMiddleware(

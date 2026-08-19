@@ -39,6 +39,59 @@ After cloning the git repository for this project, you can use the
 ./scripts/run args...
 ```
 
+## Authentication
+
+Run `nimble login` once and the CLI stores your credentials, so later commands
+need no `--api-key` flag:
+
+```sh
+nimble login
+```
+
+Login offers two methods:
+
+- **Browser** (default): opens your browser to approve access, then stores the
+  API key it retrieves for your account.
+- **Paste an API key**: enter a key directly. It is validated before it is saved.
+
+Two related commands round this out:
+
+```sh
+nimble whoami   # show the active credential and where it came from
+nimble logout   # remove the stored credential
+```
+
+Credentials are written to `~/.nimble/credentials.json` with `0600` permissions.
+Set `NIMBLE_CONFIG_DIR` to store them elsewhere.
+
+### API keys created by browser login
+
+Browser login creates an API key named after the user and machine that made it,
+for example `CLI (omerm @ MacBook-Pro-8)`. The name is visible in the Nimble
+console, so you can tell whose key it is and where it came from. Long names are
+truncated to the 50 characters the API allows.
+
+Logging in again from the same machine replaces that key, so keys do not pile up.
+Keys belonging to another machine, to a teammate on the same account, or to a CLI
+version older than this naming scheme are never touched. Accounts are shared, so
+a login here must not invalidate a key someone else is still using.
+
+If you used the CLI before this naming scheme existed, a key named `Nimble CLI`
+may still be on your account. It is left alone on purpose, since it cannot be
+attributed to a machine. Remove it in the console once nothing depends on it.
+
+### Credential priority
+
+When a command needs an API key, the CLI uses the first source available:
+
+1. `--api-key` flag (explicit per-command override)
+2. Stored credential (from `nimble login`)
+3. `NIMBLE_API_KEY` environment variable
+
+Note that a stored credential takes precedence over `NIMBLE_API_KEY`. If a
+command uses an unexpected key, run `nimble whoami` to see which source is
+active, and `nimble logout` to fall back to the environment variable.
+
 ## Usage
 
 The CLI follows a resource-based command structure:
@@ -48,23 +101,30 @@ nimble [resource] <command> [flags...]
 ```
 
 ```sh
+nimble extract run --url https://example.com
+```
+
+To override the stored credential for a single command, pass `--api-key`:
+
+```sh
 nimble extract run \
   --api-key 'My API Key' \
-  --url https://exapmle.com
+  --url https://example.com
 ```
 
 For details about specific commands, use the `--help` flag.
 
 ### Environment variables
 
-| Environment variable | Required | Default value |
-| -------------------- | -------- | ------------- |
-| `NIMBLE_API_KEY`     | no       | `null`        |
-| `CLIENT_SOURCE`      | no       | `"sdk"`       |
+| Environment variable | Required | Default value  |
+| -------------------- | -------- | -------------- |
+| `NIMBLE_API_KEY`     | no       | `null`         |
+| `NIMBLE_CONFIG_DIR`  | no       | `~/.nimble`    |
+| `CLIENT_SOURCE`      | no       | `"sdk"`        |
 
 ### Global flags
 
-- `--api-key` (can also be set with `NIMBLE_API_KEY` env var)
+- `--api-key` (can also be set with `NIMBLE_API_KEY` env var, or stored via `nimble login`)
 - `--client-source` (can also be set with `CLIENT_SOURCE` env var)
 - `--help` - Show command line usage
 - `--debug` - Enable debug logging (includes HTTP request/response details)
