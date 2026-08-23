@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 (2026-08-23)
+
+Full Changelog: [v1.4.0...v1.5.0](https://github.com/Nimbleway/nimble-cli/compare/v1.4.0...v1.5.0)
+
+### Features
+
+* **api:** api update ([3b26001](https://github.com/Nimbleway/nimble-cli/commit/3b26001d7d0ff9e2a1ebf3e993f7a889dfcd5293))
+
 ## 1.4.0 (2026-08-19)
 
 Full Changelog: [v1.3.0...v1.4.0](https://github.com/Nimbleway/nimble-cli/compare/v1.3.0...v1.4.0)
