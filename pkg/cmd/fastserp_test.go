@@ -26,6 +26,7 @@ func TestFastSerpRun(t *testing.T) {
 			"--parse=true",
 			"--query", "nimble web data",
 			"--render=false",
+			"--resolve-url=true",
 			"--show-hidden-results=false",
 		)
 	})
@@ -44,6 +45,7 @@ func TestFastSerpRun(t *testing.T) {
 			"parse: true\n" +
 			"query: nimble web data\n" +
 			"render: false\n" +
+			"resolve_url: true\n" +
 			"show_hidden_results: false\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
