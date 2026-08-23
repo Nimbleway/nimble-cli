@@ -27,6 +27,7 @@ func TestSerpRun(t *testing.T) {
 			"--parse=true",
 			"--query", "nimble web data",
 			"--render=false",
+			"--resolve-url=true",
 			"--show-hidden-results=false",
 		)
 	})
@@ -45,6 +46,7 @@ func TestSerpRun(t *testing.T) {
 			"parse: true\n" +
 			"query: nimble web data\n" +
 			"render: false\n" +
+			"resolve_url: true\n" +
 			"show_hidden_results: false\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
@@ -73,6 +75,7 @@ func TestSerpRunAsync(t *testing.T) {
 			"--parse=true",
 			"--query", "nimble web data",
 			"--render=false",
+			"--resolve-url=true",
 			"--show-hidden-results=false",
 			"--storage-compress=true",
 			"--storage-object-name", "result-2024-01-15.json",
@@ -96,6 +99,7 @@ func TestSerpRunAsync(t *testing.T) {
 			"parse: true\n" +
 			"query: nimble web data\n" +
 			"render: false\n" +
+			"resolve_url: true\n" +
 			"show_hidden_results: false\n" +
 			"storage_compress: true\n" +
 			"storage_object_name: result-2024-01-15.json\n" +
@@ -116,8 +120,8 @@ func TestSerpRunBatch(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"serp", "run-batch",
-			"--input", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, search_engine: google_search, show_hidden_results: false, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
-			"--shared-inputs", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, search_engine: google_search, show_hidden_results: false, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
+			"--input", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, resolve_url: true, search_engine: google_search, show_hidden_results: false, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
+			"--shared-inputs", "{callback_url: https://example.com/webhook/callback, country: US, device: desktop, domain: com, locale: en, location: 'New York, New York, United States', num_results: 10, page: 1, parse: true, query: nimble web data, render: false, resolve_url: true, search_engine: google_search, show_hidden_results: false, storage_compress: true, storage_object_name: result-2024-01-15.json, storage_type: s3, storage_url: s3://bucket-name/path/to/object}",
 		)
 	})
 
@@ -141,6 +145,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"--input.parse=true",
 			"--input.query", "nimble web data",
 			"--input.render=false",
+			"--input.resolve-url=true",
 			"--input.search-engine", "google_search",
 			"--input.show-hidden-results=false",
 			"--input.storage-compress=true",
@@ -158,6 +163,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"--shared-inputs.parse=true",
 			"--shared-inputs.query", "nimble web data",
 			"--shared-inputs.render=false",
+			"--shared-inputs.resolve-url=true",
 			"--shared-inputs.search-engine", "google_search",
 			"--shared-inputs.show-hidden-results=false",
 			"--shared-inputs.storage-compress=true",
@@ -182,6 +188,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"    parse: true\n" +
 			"    query: nimble web data\n" +
 			"    render: false\n" +
+			"    resolve_url: true\n" +
 			"    search_engine: google_search\n" +
 			"    show_hidden_results: false\n" +
 			"    storage_compress: true\n" +
@@ -200,6 +207,7 @@ func TestSerpRunBatch(t *testing.T) {
 			"  parse: true\n" +
 			"  query: nimble web data\n" +
 			"  render: false\n" +
+			"  resolve_url: true\n" +
 			"  search_engine: google_search\n" +
 			"  show_hidden_results: false\n" +
 			"  storage_compress: true\n" +

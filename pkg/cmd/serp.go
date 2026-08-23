@@ -79,6 +79,11 @@ var serpRun = cli.Command{
 			BodyPath: "render",
 		},
 		&requestflag.Flag[bool]{
+			Name:     "resolve-url",
+			Usage:    "When true, search result links that point at a search-engine redirector are resolved to their final destination URLs. Best-effort within a time budget: links that cannot be resolved in time are returned unchanged.",
+			BodyPath: "resolve_url",
+		},
+		&requestflag.Flag[bool]{
 			Name:     "show-hidden-results",
 			Usage:    "When true, disables Google result filtering (filter=0) so omitted/duplicate and highly similar pages are also returned. Applies to Google search engines.",
 			BodyPath: "show_hidden_results",
@@ -156,6 +161,11 @@ var serpRunAsync = cli.Command{
 			Usage:    "Whether to render the page in a browser before extracting.",
 			Default:  false,
 			BodyPath: "render",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "resolve-url",
+			Usage:    "When true, search result links that point at a search-engine redirector are resolved to their final destination URLs. Best-effort within a time budget: links that cannot be resolved in time are returned unchanged.",
+			BodyPath: "resolve_url",
 		},
 		&requestflag.Flag[bool]{
 			Name:     "show-hidden-results",
@@ -263,6 +273,11 @@ var serpRunBatch = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "Whether to render the page in a browser before extracting.",
 			InnerField: "render",
 		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "input.resolve-url",
+			Usage:      "When true, search result links that point at a search-engine redirector are resolved to their final destination URLs. Best-effort within a time budget: links that cannot be resolved in time are returned unchanged.",
+			InnerField: "resolve_url",
+		},
 		&requestflag.InnerFlag[string]{
 			Name:       "input.search-engine",
 			Usage:      "The search engine to query.",
@@ -349,6 +364,11 @@ var serpRunBatch = requestflag.WithInnerFlags(cli.Command{
 			Name:       "shared-inputs.render",
 			Usage:      "Whether to render the page in a browser before extracting.",
 			InnerField: "render",
+		},
+		&requestflag.InnerFlag[bool]{
+			Name:       "shared-inputs.resolve-url",
+			Usage:      "When true, search result links that point at a search-engine redirector are resolved to their final destination URLs. Best-effort within a time budget: links that cannot be resolved in time are returned unchanged.",
+			InnerField: "resolve_url",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "shared-inputs.search-engine",
