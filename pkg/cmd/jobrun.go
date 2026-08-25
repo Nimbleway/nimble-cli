@@ -14,7 +14,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var jobsRunsCreate = cli.Command{
+var jobsRunsCreate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "create",
 	Usage:   "Trigger Job Run Public V2",
 	Suggest: true,
@@ -24,10 +24,38 @@ var jobsRunsCreate = cli.Command{
 			Required:  true,
 			PathParam: "job_id",
 		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "inputs",
+			Usage:    "Configuration for the input data a job processes.",
+			BodyPath: "inputs",
+		},
 	},
 	Action:          handleJobsRunsCreate,
 	HideHelpCommand: true,
-}
+}, map[string][]requestflag.HasOuterFlag{
+	"inputs": {
+		&requestflag.InnerFlag[string]{
+			Name:       "inputs.type",
+			Usage:      "How inputs are supplied: an 's3' bucket, 'inline' records, or an uploaded 'file'.",
+			InnerField: "type",
+		},
+		&requestflag.InnerFlag[any]{
+			Name:       "inputs.data",
+			Usage:      "Inline list of input records. Used when type is 'inline'.",
+			InnerField: "data",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "inputs.file-path",
+			Usage:      "Path to the input file; must start with 's3' or 'file_'. Used for 's3'/'file' types.",
+			InnerField: "file_path",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "inputs.node-data",
+			Usage:      "Inline input records keyed by source node id, e.g. {'source_a': [{...}]}. Used when type is 'inline' on a dynamic-workflow job, which has one source node per input file. Mutually exclusive with 'data'.",
+			InnerField: "node_data",
+		},
+	},
+})
 
 var jobsRunsList = cli.Command{
 	Name:    "list",
@@ -99,16 +127,23 @@ func handleJobsRunsCreate(ctx context.Context, cmd *cli.Command) error {
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
 		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
+		ApplicationJSON,
 		false,
 	)
 	if err != nil {
 		return err
 	}
 
+	params := githubcomnimblewaynimblego.JobRunNewParams{}
+
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Jobs.Runs.New(ctx, cmd.Value("job-id").(string), options...)
+	_, err = client.Jobs.Runs.New(
+		ctx,
+		cmd.Value("job-id").(string),
+		params,
+		options...,
+	)
 	if err != nil {
 		return err
 	}
